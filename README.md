@@ -21,10 +21,12 @@ Enter the nine domain scores from your child's ISR and it maps each one to:
 
 | | |
 |---|---|
-| **110 written items** | every answer key independently recomputed by a validator; benchmark limits enforced (perimeter ≤100 units, sums ≤100, coins ≤100¢, clocks on the five-minute grid) |
+| **149 written items** | every answer key independently recomputed by a validator; benchmark limits enforced (perimeter ≤100 units, sums ≤100, coins ≤100¢, clocks on the five-minute grid) |
+| **Three parallel forms** | Form A / B / C — same domain blueprint, same difficulty shape, zero shared items. Verified parallel: the same simulated child scores within **0.07 of 34 marks** across all three, so a change between sittings means the child changed, not the paper |
 | **Procedural generators** | unlimited fresh questions in six domains — 90,000 generated items stress-tested against their own keys |
 | **Interactive figures** | tap unit segments to count a perimeter, tap coins for a running total, tap bars, count a clock by fives, click a shape |
-| **34-question mock** | two modes — *practice* (back / next / flag / pause, fixed form) and *real rules* (adaptive, answers locked, matching how FAST K–2 actually behaves) |
+| **34-question mock** | two modes — *practice* (back / next / flag / pause) and *real rules* (adaptive). Built to the K–2 FAST Test Administration Manual: 3 gating practice questions (pass 2 of 3), audio auto-read with pause/resume/replay, select-then-Next rather than tap-to-commit, 240s per item |
+| **Persistent flagging** | the student marks anything he is unsure of; flags survive across sessions and build their own review list. A lucky guess still surfaces — which a wrong-answer list never catches |
 | **Review tab** | only the questions that went wrong, grouped by domain, with the re-teach for each and a session history |
 
 ## Two things worth knowing about FAST K–2

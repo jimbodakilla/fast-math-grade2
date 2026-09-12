@@ -570,6 +570,12 @@ body.kidmode{background:#F1F4EF}
 .twrap::after{content:"";position:absolute;top:0;right:0;bottom:0;width:26px;pointer-events:none;
   background:linear-gradient(90deg,transparent,var(--surface))}
 </style>
+<style>
+.audiobar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px;padding:10px 14px;
+  background:var(--accent-wash);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);border-radius:12px}
+.audlbl{font-family:var(--ff-ui);font-size:15px;font-weight:600;color:var(--accent-ink);margin-right:auto}
+.audiobar .nbtn{min-height:44px;padding:9px 15px;font-size:15px}
+</style>
 <div class="topbar"><div class="topbar-in">
   <div class="brand"><b>Grade 2 FAST Math Trainer</b><span>FLORIDA B.E.S.T. · PM1 → PM2</span></div>
   <div class="switch" role="group" aria-label="Choose view">
@@ -721,6 +727,7 @@ body.kidmode{background:#F1F4EF}
         <button class="btn" onclick="saveRewards()">Save rewards</button>
         <span class="copied" id="rwSaved" hidden>saved</span>
         <button class="mutebtn" id="muteBtn" onclick="toggleMute()">🔊 Sound on</button>
+        <button class="mutebtn" id="autoBtn" onclick="toggleAutoplay()">🎧 Mock reads aloud</button>
         <button class="btn ghost danger" onclick="resetProgress()">Reset stars &amp; completed days</button>
         <span style="font-size:13px;color:var(--ink3)" id="rwStars"></span>
       </div>
@@ -751,10 +758,10 @@ body.kidmode{background:#F1F4EF}
       <thead><tr><th>Feature</th><th>On the real FAST K–2</th><th>Practice test</th><th>Real-rules test</th></tr></thead>
       <tbody>
         <tr><td>Format</td><td>Computer-adaptive (Renaissance Star) — harder when he is right, easier when he is wrong</td><td>Fixed balanced form</td><td>Adaptive, same as the real one</td></tr>
-        <tr><td>Length</td><td>34 items for grades 1–2, one session</td><td>34</td><td>34</td></tr>
+        <tr><td>Length</td><td>34 items, one session, about <b>20 minutes</b></td><td>34</td><td>34</td></tr>
         <tr><td>Answer choices</td><td>Four, lettered A–D</td><td>Four, order reshuffled each sitting</td><td>Four, reshuffled</td></tr>
-        <tr><td>Going back</td><td><b>Not allowed.</b> Once submitted, an answer is final</td><td>Back, change, and <b>flag</b> for review</td><td><b>Not allowed</b> — matches the real test</td></tr>
-        <tr><td>Timing</td><td>Untimed overall; each item has its own limit</td><td>Per-item clock, warns at 90s, <b>pause any time</b></td><td>Same</td></tr>
+        <tr><td>Going back</td><td>Choose, and you may <b>change it until you press Next</b>. After Next, final</td><td>Back, change, and <b>flag</b> for review</td><td><b>Not allowed</b> — matches the real test</td></tr>
+        <tr><td>Timing</td><td>Untimed overall; <b>240 seconds</b> per item (480 with extended time, 900 with unlimited)</td><td>Per-item clock, warns at 90s, <b>pause any time</b></td><td>Same</td></tr>
         <tr><td>Breaks</td><td>Nothing in the design forbids them; ask for supervised breaks on the 504</td><td>Enforced at Q12 and Q24, clock stopped</td><td>Same</td></tr>
         <tr><td>Read-aloud</td><td>Ask the coordinator whether K–2 items are read to students</td><td><b>Always available, never a penalty</b></td><td>Same</td></tr>
         <tr><td>Feedback</td><td>None during the test</td><td>None until the end</td><td>None until the end</td></tr>
@@ -766,6 +773,21 @@ body.kidmode{background:#F1F4EF}
     <h4>Why there are two versions</h4>
     <p>FAST grades 3–10 run on a platform with back, next and flag. FAST K–2 runs on Renaissance Star, which locks every answer as final. Going back and adaptive testing are incompatible, so the <b>practice test</b> uses a fixed balanced form and lets him review and change answers, which is far better for learning; the <b>real-rules test</b> is adaptive and locked, for rehearsing the actual conditions. Do the practice one first.</p>
   </div>
+  <div class="card lift" style="margin-bottom:16px">
+    <h3 class="sub">Read this to him before the mock — it is what the proctor will say</h3>
+    <p style="font-size:14.5px;color:var(--ink2);line-height:1.55;margin:6px 0 12px">Quoted from the <b>K–2 FAST Test Administration Manual</b>, which tells administrators to read it <em>word for word</em>. If he hears it four times this week it is familiar on the day instead of new — and notice how much of it is reassurance he needs anyway.</p>
+    <div class="script" style="border-left-color:var(--accent)">
+      <div class="who">Read out loud</div>
+      <p>"Today you will take a test called Star. Some of the questions will be easy while others will be more challenging. Don't worry about how many questions you think you get right, or how many you think you get wrong. <b>Everyone will likely miss some of the questions.</b> The main goal is for you to do the best you can.</p>
+      <p style="margin-top:10px">Be sure to look at all of the answer choices carefully before selecting your answer. <b>If you do not know the answer to a question, go ahead and choose what you think is the best answer.</b></p>
+      <p style="margin-top:10px">You will answer the questions on a computer or a tablet, but you can work the problems out on scratch paper.</p>
+      <p style="margin-top:10px">Listen to the audio when a new question is presented to you. You will be able to pause, resume, or replay the audio if you need to.</p>
+      <p style="margin-top:10px">Remember that once you have selected your answer, you will need to select Next to move on to the next question. You can change your answer choice before you select Next but not after. Once you move on to the next question you cannot go back.</p>
+      <p style="margin-top:10px">If you see a picture of a clock at the top of the screen, time is almost up for that question. Choose your best answer and select Next to move on."</p>
+    </div>
+    <p style="font-size:13.5px;color:var(--ink3);line-height:1.5;margin-top:12px">Two lines are worth saying twice: <b>"everyone will likely miss some"</b> and <b>"go ahead and choose what you think is the best answer."</b> A bright child who believes he must get everything right is the one who freezes on a hard item and loses the four after it.</p>
+  </div>
+
   <div class="note warn">
     <h4>Rehearse the thing that will actually cost him points</h4>
     <p>For a combined-type child the risk on this test is not knowledge, it is <b>speed</b>. The test cannot be skipped through and cannot be revisited, so a fast wrong answer is locked in forever, and the adaptive engine immediately hands him an easier question — which drags the estimate down twice. Practise one habit and only one: <b>finger on the screen, read it twice, then choose.</b> That is what the <b>Read it to me</b> button is for: if he cannot decode the question, the only two exits are a wild guess or a refusal, and both look like a math problem when they are not. Using it costs him nothing and is not a hint.</p>
@@ -931,7 +953,7 @@ const DAYS=[
     what:"Make the clock with a split pin and write the fives round the edge in pencil. Call out times, he sets the hands, and rub out one of the pencilled fives each time he gets one right. Then set up a shop with real coins and price tags under a dollar. He pays and works out the change."},
    {tag:"DRILL",mins:30,app:true,title:"Day 4 drill",
     what:"Day 4 in the app, then Endless practice until the 30 minutes are up."},
-   {tag:"MOCK",mins:45,app:true,title:"The full 34-question mock",
+   {tag:"MOCK",mins:30,app:true,title:"The full 34-question mock",
     what:"Do this one <b>fresh</b>, ideally mid-morning, not after everything else. Use the Practice test first so he can flag and go back. Toilet first, water on the table, breaks at question 12 and 24 are built in. When he finishes, press Copy results."},
    {tag:"REVIEW",mins:25,app:true,title:"Go through the misses together",
     what:"Open the Mock review tab. It shows only what he got wrong, grouped by domain, with the re-teach for each. Do the fix-it session at the end, which drills only those. Stop while he is still winning."}]}
@@ -1283,7 +1305,150 @@ const ITEMS = [
  why:"One jump of ten from 30 lands on 40.",trap:"31 is a jump of one, not a jump of ten."},
 {id:"Q9",dom:7,bench:"MA.2.NSO.2.1",d:1,q:"9 + 6 = ?",fig:null,ch:["14","15","16","13"],a:"15",chk:["arith",9,6,"+"],
  why:"9 + 1 = 10, then 5 more makes 15.",trap:"This is a fact to know by heart, not to count on fingers."}
-
+,{id:"O10",dom:0,bench:"MA.2.NSO.2.3",d:2,q:"What do the blocks add up to?",fig:{t:"base10add",a:[4,0],b:[2,3]},
+ ch:["63","57","43","603"],a:"63",chk:["arith",40,23,"+"],
+ why:"4 tens and 2 tens is 6 tens. Then 0 ones and 3 ones is 3 ones. That makes 63.",
+ trap:"Add the tens to the tens and the ones to the ones. Never mix the columns."},
+{id:"O11",dom:0,bench:"MA.2.NSO.2.3",d:3,q:"The number line starts at 56 and jumps up 2 tens and 7 ones. Where do you land?",
+ fig:{t:"jumps",start:56,tens:2,ones:7},ch:["63","76","83","85"],a:"83",chk:["arith",56,27,"+"],
+ why:"Two jumps of ten: 56 to 66 to 76. Then 7 ones takes you to 83.",
+ trap:"63 is only the seven ones. Do the tens first, then the ones."},
+{id:"O12",dom:0,bench:"MA.2.NSO.2.3",d:3,q:"Use place value: 67 - 24. What is left?",fig:{t:"split",a:67,b:24,op:"-"},
+ ch:["33","43","45","91"],a:"43",chk:["arith",67,24,"-"],
+ why:"Take the tens off first: 67 - 20 = 47. Then the ones: 47 - 4 = 43.",
+ trap:"91 is adding instead of subtracting."},
+{id:"O13",dom:0,bench:"MA.2.AR.1.1",d:3,q:"Sam has 24 marbles. Max has 38. Which number sentence shows how many *more* Max has?",
+ fig:null,ch:["38 - 24 = ▢","38 + 24 = ▢","24 - 38 = ▢","▢ - 38 = 24"],a:"38 - 24 = ▢",chk:["val","38 - 24 = ▢",""],
+ why:"How many *more* means find the difference, so you take the smaller from the larger: 38 - 24.",
+ trap:"Adding tells you how many they have altogether, which is a different question."},
+{id:"O14",dom:0,bench:"MA.2.AR.1.1",d:4,q:"Start at 25 on the number line. Jump up 30, then back 12. Where do you land?",
+ fig:{t:"numline",min:0,max:60,mark:25},ch:["43","55","67","7"],a:"43",chk:["val",43,""],
+ why:"Step 1: 25 + 30 = 55. Step 2: 55 - 12 = 43.",
+ trap:"55 is only step 1. There are two jumps."},
+{id:"O15",dom:0,bench:"MA.2.NSO.2.3",d:4,q:"What do the blocks add up to?",fig:{t:"base10add",a:[3,8],b:[4,7]},
+ ch:["75","85","715","81"],a:"85",chk:["arith",38,47,"+"],
+ why:"Tens: 30 + 40 = 70. Ones: 8 + 7 = 15. Then 70 + 15 = 85.",
+ trap:"75 forgets that 8 + 7 makes a whole new ten plus 5."},
+{id:"O16",dom:0,bench:"MA.2.AR.2.2",d:4,q:"The blocks show 52. How many more do you need to make 80?",
+ fig:{t:"base10",h:0,t10:5,o:2},ch:["28","32","38","132"],a:"28",chk:["unk",52,80,"28"],
+ why:"Count up: 52 to 60 is 8, then 60 to 80 is 20. 8 + 20 = 28.",
+ trap:"Counting up in two hops is easier here than taking away."},
+{id:"O17",dom:0,bench:"MA.2.NSO.2.4",d:5,q:"What number do the blocks show?",fig:{t:"base10",h:2,t10:4,o:5},
+ ch:["245","254","2045","209"],a:"245",chk:["b10",2,4,5],
+ why:"2 hundreds, 4 tens, 5 ones. That is 200 + 40 + 5 = 245.",
+ trap:"254 swaps the tens and the ones."},
+{id:"Q10",dom:7,bench:"MA.2.NSO.2.3",d:2,q:"57 - 30 = ?",fig:null,ch:["17","27","37","87"],a:"27",chk:["arith",57,30,"-"],
+ why:"5 tens take away 3 tens is 2 tens. The 7 ones stay, so 27.",trap:"87 is adding instead of subtracting."},
+{id:"Q11",dom:7,bench:"MA.2.NSO.2.3",d:3,q:"36 + 48 = ?",fig:null,ch:["74","84","714","86"],a:"84",chk:["arith",36,48,"+"],
+ why:"30 + 40 = 70, and 6 + 8 = 14. Then 70 + 14 = 84.",trap:"74 drops the extra ten from 6 + 8."},
+{id:"Q12",dom:7,bench:"MA.2.NSO.2.3",d:4,q:"84 - 57 = ?",fig:null,ch:["27","33","37","23"],a:"27",chk:["arith",84,57,"-"],
+ why:"84 - 50 = 34, then 34 - 7 = 27.",trap:"33 takes the smaller digit from the bigger one in each column instead of regrouping."},
+{id:"Q13",dom:7,bench:"MA.2.NSO.2.3",d:4,q:"65 + 28 = ?",fig:null,ch:["83","93","813","87"],a:"93",chk:["arith",65,28,"+"],
+ why:"60 + 20 = 80, and 5 + 8 = 13. Then 80 + 13 = 93.",trap:"83 forgets the ten carried from 5 + 8."},
+{id:"Q14",dom:7,bench:"MA.2.NSO.2.3",d:4,q:"92 - 45 = ?",fig:null,ch:["47","53","57","43"],a:"47",chk:["arith",92,45,"-"],
+ why:"92 - 40 = 52, then 52 - 5 = 47.",trap:"53 subtracts each column the wrong way round."},
+{id:"Q15",dom:7,bench:"MA.2.NSO.2.4",d:5,q:"700 - 250 = ?",fig:null,ch:["350","450","550","250"],a:"450",chk:["arith",700,250,"-"],
+ why:"700 - 200 = 500, then 500 - 50 = 450.",trap:"Take the hundreds off first, then the tens."},
+{id:"Q16",dom:7,bench:"MA.2.NSO.2.1",d:3,q:"13 - 8 = ?",fig:null,ch:["4","5","6","7"],a:"5",chk:["arith",13,8,"-"],
+ why:"8 + 5 = 13, so 13 - 8 = 5.",trap:"This is a fact worth knowing by heart."},
+{id:"G11",dom:3,bench:"MA.2.GR.1.2",d:4,q:"Which one is *not* a closed shape?",fig:{t:"openfig"},
+ ch:["A","B","C","D"],a:"C",chk:["val","C",""],
+ why:"A closed shape has no gaps. Shape C has an opening, so you could walk out of it.",
+ trap:"Look for the gap in the outline, not at how many sides there are."},
+{id:"G12",dom:3,bench:"MA.2.GR.1.3",d:4,q:"How many lines of symmetry does a rectangle have?",fig:{t:"symmLines"},
+ ch:["1","2","4","0"],a:"2",chk:["val","2",""],
+ why:"You can fold a rectangle across the middle two ways, side to side and top to bottom. That is 2.",
+ trap:"4 counts the diagonals, but folding a rectangle on a diagonal does not match up."},
+{id:"G13",dom:3,bench:"MA.2.FR.1.2",d:4,q:"Both squares are cut into 4 equal parts. Which sentence is *true*?",
+ fig:{t:"parts2"},ch:["Each part is a fourth in both squares","The tall parts are bigger","The square parts are bigger","Only one of them shows fourths"],
+ a:"Each part is a fourth in both squares",chk:["val","Each part is a fourth in both squares",""],
+ why:"Both wholes are the same size and both are cut into 4 equal parts, so every part is one fourth.",
+ trap:"A different shape does not mean a different amount."},
+{id:"G14",dom:3,bench:"MA.2.GR.1.2",d:4,q:"Which shape has *more* vertices than a pentagon?",
+ fig:{t:"shapePick",opts:["tri","sq","hex","pent"]},ch:["A","B","C","D"],a:"C",chk:["val","C",""],
+ why:"A pentagon has 5 corners. The hexagon has 6, which is more.",
+ trap:"Count the corners of each shape before you pick."},
+{id:"G15",dom:3,bench:"MA.2.FR.1.1",d:3,q:"The circle is cut into equal parts. What is each part called?",
+ fig:{t:"parts",n:3,shape:"circle"},ch:["Halves","Thirds","Fourths","Wholes"],a:"Thirds",chk:["parts",3],
+ why:"It is cut into 3 equal parts, so each one is a third.",trap:"Count the parts, not the lines."},
+{id:"G16",dom:3,bench:"MA.2.GR.1.1",d:4,q:"A shape has 4 sides. Two sides are long and two are short. All 4 corners are square. Which shape is it?",
+ fig:null,ch:["Square","Rectangle","Pentagon","Triangle"],a:"Rectangle",chk:["val","Rectangle",""],
+ why:"4 square corners and 4 sides means a rectangle. It is not a square, because a square has all 4 sides the same length.",
+ trap:"The long and short sides are the clue. A square would have four equal sides."},
+{id:"A18",dom:1,bench:"MA.2.AR.2.2",d:5,q:"What number goes in the box?    37 + ▢ = 52 + 19",
+ fig:null,ch:["34","28","71","15"],a:"34",chk:["unk",37,71,"34"],
+ why:"Do the side you can first: 52 + 19 = 71. Then 37 + ▢ = 71, so ▢ = 71 - 37 = 34.",
+ trap:"71 is the total for both sides, not the missing part."},
+{id:"A19",dom:1,bench:"MA.2.AR.1.1",d:5,q:"A jar has 46 red beads. There are 18 *fewer* blue beads than red. How many beads in all?",
+ fig:null,ch:["28","64","74","92"],a:"74",chk:["val",74,""],
+ why:"Step 1: blue = 46 - 18 = 28. Step 2: in all = 46 + 28 = 74.",
+ trap:"28 is only the blue beads. The question asks for all of them."},
+{id:"A20",dom:1,bench:"MA.2.AR.3.1",d:5,q:"Which number can be made from *two equal groups* with none left over?",
+ fig:null,ch:["15","17","18","21"],a:"18",chk:["even",[15,17,21,18],"18"],
+ why:"18 splits into 9 and 9 with nothing left over, so it is even.",
+ trap:"15, 17 and 21 all leave one over when you split them in two."},
+{id:"D10",dom:2,bench:"MA.2.DP.1.2",d:4,q:"How many students chose Banana and Peach *in all*?",
+ fig:{t:"bars",title:"Favorite Fruit",lbl:["Apple","Banana","Grape","Peach"],v:[6,9,4,7],step:1,u:"Students"},
+ ch:["2","13","16","23"],a:"16",chk:["catSum",["Apple","Banana","Grape","Peach"],[6,9,4,7],["Banana","Peach"]],
+ why:"Banana is 9 and Peach is 7. 9 + 7 = 16.",
+ trap:"2 is the difference between them. *In all* means add."},
+{id:"D11",dom:2,bench:"MA.2.DP.1.2",d:4,q:"Each ◼ stands for 5 books. How many books did Ben and Leo read *in all*?",
+ fig:{t:"picto",title:"Books Read",key:5,lbl:["Ben","Maya","Leo"],n:[3,5,2],sym:"◼"},
+ ch:["5","20","25","50"],a:"25",chk:["picto",5,5],
+ why:"Ben has 3 blocks and Leo has 2, so 5 blocks together. Each block is 5 books: 5, 10, 15, 20, 25.",
+ trap:"5 is the number of blocks, not the number of books. Use the key."},
+{id:"D12",dom:2,bench:"MA.2.DP.1.2",d:3,q:"Which games got *fewer* than 10 votes?",fig:{t:"tally",lbl:["Soccer","Tag","Swings"],v:[12,7,9]},
+ ch:["Soccer only","Tag only","Tag and Swings","None of them"],a:"Tag and Swings",chk:["val","Tag and Swings",""],
+ why:"Soccer has 12, Tag has 7 and Swings has 9. Both 7 and 9 are fewer than 10.",
+ trap:"Check every row, not just the first one you read."},
+{id:"M13",dom:5,bench:"MA.2.M.1.1",d:3,q:"How long is the leaf?",fig:{t:"ruler",from:3,to:11,u:"cm",obj:"leaf"},
+ ch:["8 cm","11 cm","14 cm","3 cm"],a:"8 cm",chk:["diff",3,11,"cm"],
+ why:"It does not start at 0. From 3 to 11 is 11 - 3 = 8 cm.",
+ trap:"11 is the number it ends on. Always take away where it started."},
+{id:"M14",dom:5,bench:"MA.2.M.1.3",d:4,q:"A shelf is 54 inches long. Sam cuts 17 inches off, then another 9 inches. How long is it now?",
+ fig:null,ch:["26 inches","28 inches","37 inches","46 inches"],a:"28 inches",chk:["val",28,"inches"],
+ why:"Step 1: 54 - 17 = 37. Step 2: 37 - 9 = 28 inches.",
+ trap:"37 is only the first cut. There are two cuts."},
+{id:"M15",dom:5,bench:"MA.2.M.1.2",d:5,q:"Ribbon A is 23 cm. Ribbon B is 9 cm longer than A. How much ribbon is there in all?",
+ fig:null,ch:["32 cm","46 cm","55 cm","14 cm"],a:"55 cm",chk:["val",55,"cm"],
+ why:"Step 1: B = 23 + 9 = 32. Step 2: in all = 23 + 32 = 55 cm.",
+ trap:"32 is only Ribbon B. The question asks for both."},
+{id:"M16",dom:5,bench:"MA.2.M.1.1",d:2,q:"About how long is a school bus?",
+ fig:null,ch:["12 inches","12 feet","12 meters","12 centimeters"],a:"12 meters",chk:["val","12 meters",""],
+ why:"A bus is very long, so you need a big unit. 12 meters is about right.",
+ trap:"The number is the same in every choice. The *unit* is the question."},
+{id:"T16",dom:6,bench:"MA.2.M.2.1",d:3,q:"What time does the clock show?",fig:{t:"clock",h:8,m:25},
+ ch:["8:05","8:25","5:40","9:25"],a:"8:25",chk:["clock",8,25],
+ why:"The long hand is on 5. Count by fives: 5, 10, 15, 20, 25. So 25 minutes past 8.",
+ trap:"8:05 reads the 5 as five minutes instead of counting by fives."},
+{id:"T17",dom:6,bench:"MA.2.M.2.2",d:4,q:"Sam has 90¢. He buys a pencil for 35¢ and an eraser for 20¢. How much is left?",
+ fig:null,ch:["35¢","45¢","55¢","70¢"],a:"35¢",chk:["val","35¢",""],
+ why:"Step 1: 35 + 20 = 55¢ spent. Step 2: 90 - 55 = 35¢ left.",
+ trap:"55¢ is what he spent, not what is left."},
+{id:"T18",dom:6,bench:"MA.2.M.2.1",d:4,q:"A digital clock shows 6:50. Which clock face shows the same time?",
+ fig:{t:"clockPick",opts:[[6,50],[10,30],[6,10],[7,50]]},ch:["A","B","C","D"],a:"A",chk:["val","A",""],
+ why:"50 minutes means the long hand is on 10, because 10 counted by fives is 50. The short hand is past 6.",
+ trap:"D uses the hour it is heading toward instead of the one it has passed."},
+{id:"N15",dom:8,bench:"MA.2.NSO.1.2",d:4,q:"Which one is the *same* as 405?",
+ fig:null,ch:["40 tens and 5 ones","4 tens and 5 ones","45 tens","4 hundreds and 5 tens"],a:"40 tens and 5 ones",chk:["val","40 tens and 5 ones",""],
+ why:"40 tens is 400, plus 5 ones makes 405.",
+ trap:"4 hundreds and 5 tens is 450, which puts the 5 in the wrong place."},
+{id:"N16",dom:8,bench:"MA.2.NSO.1.3",d:4,q:"Which number does the arrow point to?",fig:{t:"numline",min:200,max:300,mark:270},
+ ch:["207","250","270","290"],a:"270",chk:["val",270,""],
+ why:"The line runs 200 to 300 in ten steps, so each step is 10. The arrow is on the seventh step: 270.",
+ trap:"207 misreads which place the 7 belongs in."},
+{id:"P15",dom:4,bench:"MA.2.GR.2.1",d:1,q:"Count the unit segments all the way around the outside.",fig:{t:"gridRect",w:2,h:2},
+ ch:["4 units","6 units","8 units","10 units"],a:"8 units",chk:["perimRect",2,2,"units"],
+ why:"2 + 2 + 2 + 2 = 8 units. Touch each dot as you count.",
+ trap:"4 is how many squares are inside, not the walk around the edge."},
+{id:"P16",dom:4,bench:"MA.2.GR.2.2",d:5,q:"A flower bed is a pentagon with sides 14, 9, 22, 11 and 17 meters. What is the perimeter?",
+ fig:{t:"pent",s:[14,9,22,11,17],u:"m"},ch:["63 m","73 m","83 m","56 m"],a:"73 m",chk:["sum",[14,9,22,11,17],"m"],
+ why:"Add them one at a time: 14 + 9 = 23, + 22 = 45, + 11 = 56, + 17 = 73 m.",
+ trap:"Five two-digit numbers is a lot to hold. Write each running total down."},
+{id:"P17",dom:4,bench:"MA.2.GR.2.2",d:3,q:"Find the perimeter of the square.",fig:{t:"sq",s:7,u:"cm"},
+ ch:["14 cm","21 cm","28 cm","49 cm"],a:"28 cm",chk:["sum",[7,7,7,7],"cm"],
+ why:"A square has 4 equal sides: 7 + 7 + 7 + 7 = 28 cm.",
+ trap:"49 is 7 sevens added up. That is the space inside, not the walk around."}
 ];
 
 
@@ -1442,6 +1607,23 @@ function fCube(){const o=26;let b=`<polygon points="20,${o+18} 80,${o+18} 80,${o
   b+=`<polygon points="20,${o+18} 46,${o-6} 106,${o-6} 80,${o+18}" fill="${AW}" fill-opacity=".6" stroke="${A}" stroke-width="2.6"/>`;
   b+=`<polygon points="80,${o+18} 106,${o-6} 106,${o+54} 80,${o+78}" fill="${AW}" fill-opacity=".35" stroke="${A}" stroke-width="2.6"/>`;
   return svg(130,120,b,"a cube drawn in three dimensions");}
+function fOpenFig(){
+  // four outlines; exactly one has a gap (MA.2.GR.1.2 "whether they are closed or not")
+  const P=[[[10,52],[36,8],[62,52],[10,52]],
+           [[10,10],[58,10],[58,58],[10,58],[10,10]],
+           [[10,52],[36,8],[62,52]],
+           [[24,8],[48,8],[62,30],[48,52],[24,52],[10,30],[24,8]]];
+  let b="";
+  P.forEach((pts,i)=>{const ox=18+i*104;
+    b+=`<polyline points="${pts.map(p=>`${p[0]+ox},${p[1]+14}`).join(" ")}" fill="none" stroke="${A}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+    b+=T(ox+34,92,"ABCD"[i],{s:15,f:I3});});
+  return svg(440,108,b,"four outlines, one of which has a gap");}
+function fSymmLines(){
+  let b=`<rect x="120" y="26" width="200" height="108" fill="${AW}" stroke="${A}" stroke-width="3"/>`;
+  b+=`<line x1="220" y1="16" x2="220" y2="144" stroke="${IK}" stroke-width="2.4" stroke-dasharray="7 5"/>`;
+  b+=`<line x1="110" y1="80" x2="330" y2="80" stroke="${IK}" stroke-width="2.4" stroke-dasharray="7 5"/>`;
+  b+=T(220,164,"try folding on each dashed line",{s:12.5,f:I3});
+  return svg(440,178,b,"a rectangle with two dashed fold lines drawn on it");}
 function fParts(n,shape){
   if(shape==="circle"){const cx=80,cy=80,r=62;
     let b=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${AW}" stroke="${A}" stroke-width="2.8"/>`;
@@ -1518,6 +1700,8 @@ function renderFig(f){ if(!f) return "";
   case "cube":return fCube();
   case "parts":return fParts(f.n,f.shape);
   case "parts2":return fParts2();
+  case "openfig":return fOpenFig();
+  case "symmLines":return fSymmLines();
   case "jumps":return fJumps(f.start,f.tens,f.ones);
   case "split":return fSplit(f.a,f.b,f.op);
   default:return "";
@@ -1714,12 +1898,19 @@ function genItem(dom,d){const f=GEN[dom]; if(!f)return null;
    counts a corner or strays inside the shape.
    ================================================================== */
 const TAPPABLE={gridRect:"segments",coins:"coins",bars:"bars",clock:"fives"};
-function figIsPick(f){return f&&(f.t==="shapePick"&&f.opts.length>1||f.t==="clockPick");}
+function figIsPick(f){return f&&(f.t==="shapePick"&&f.opts.length>1||f.t==="clockPick"||f.t==="openfig");}
 
 function figOptions(f,view,opts){
   // one clickable tile per shape/clock, so nothing has to be matched to a letter
+  const OPEN=[[[10,52],[36,8],[62,52],[10,52]],
+              [[10,10],[58,10],[58,58],[10,58],[10,10]],
+              [[10,52],[36,8],[62,52]],
+              [[24,8],[48,8],[62,30],[48,52],[24,52],[10,30],[24,8]]];
   const cells = f.t==="clockPick"
     ? f.opts.map(o=>svg(150,150,fClockFace(75,75,62,o[0],o[1],0.78),"a clock face"))
+    : f.t==="openfig"
+    ? OPEN.map(pts=>`<svg viewBox="0 0 72 72" width="104" role="img" aria-label="an outline">
+        <polyline points="${pts.map(p=>`${p[0]+5},${p[1]+5}`).join(" ")}" fill="none" stroke="${A}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>`)
     : f.opts.map(k=>`<svg viewBox="0 0 72 72" width="104" role="img" aria-label="a shape">
         <polygon points="${SHAPES[k].map(p=>`${p[0]+10},${p[1]+10}`).join(" ")}" fill="${AW}" stroke="${A}" stroke-width="3"/></svg>`);
   return `<div class="figopts">${cells.map((c,i)=>{
@@ -1804,6 +1995,14 @@ const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem("fastmath_"+k);return v===null?d:JSON.parse(v);}catch(e){return d;}},
              set(k,v){try{localStorage.setItem("fastmath_"+k,JSON.stringify(v));}catch(e){}}};
 let stars=store.get("stars",0), doneDays=store.get("done",[]);
+/* A child can guess right and still not know it. Flags are a separate,
+   persistent signal from "got it wrong" — they are his own uncertainty. */
+let FLAGGED=store.get("flagged",[]);
+const isFlagged=id=>FLAGGED.includes(id);
+function toggleFlagId(id){
+  FLAGGED = isFlagged(id) ? FLAGGED.filter(x=>x!==id) : FLAGGED.concat([id]);
+  store.set("flagged",FLAGGED); return isFlagged(id);}
+function clearFlags(){FLAGGED=[];store.set("flagged",[]);}
 const DEFAULT_REWARDS=[{n:15,w:"an extra story at bedtime"},{n:35,w:"30 minutes of screen time"},{n:60,w:"you pick dinner"}];
 let REWARDS=store.get("rewards",DEFAULT_REWARDS);
 function rewardStrip(){
@@ -1910,6 +2109,9 @@ function toneSeq(notes){
   }catch(e){}}
 const dingOK =()=>toneSeq([[660,0,.13,.16],[880,.08,.18,.14]]);      // rising, brief
 const tockNo =()=>toneSeq([[300,0,.10,.09]]);                        // flat, soft, never descending
+function toggleAutoplay(){
+  AUTOPLAY=!AUTOPLAY; store.set("autoplay",AUTOPLAY);
+  const b=$("autoBtn"); if(b)b.textContent=AUTOPLAY?"🎧 Mock reads aloud":"🎧 Mock stays silent";}
 function toggleMute(){MUTED=!MUTED;store.set("muted",MUTED);renderRewardEditor();
   const b=document.getElementById("muteBtn"); if(b)b.textContent=MUTED?"🔇 Sound off":"🔊 Sound on";}
 
@@ -1964,8 +2166,31 @@ function ttsFallback(){
   const b=document.querySelector(".speak"); if(b){b.textContent="🔇 Ask a grown-up to read it";
     b.classList.add("ttsoff"); b.disabled=true;}
   const n=$("ttsNote"); if(n)n.hidden=false;}
-function speakItem(){const r=state.run;if(!r||!r.cur)return;
-  speak(plain(r.cur.q)+". "+r.cur.ch.map((c,i)=>`${"ABCD"[i]}. ${plain(c)}`).join(". "));}
+function itemScript(){
+  const r=state.run; if(!r||!r.cur)return "";
+  const view=r.view[r.i]||r.cur.ch;
+  return plain(r.cur.q)+". "+view.map((c,i)=>`${"ABCD"[i]}. ${plain(c)}`).join(". ");}
+function speakItem(){speak(itemScript());}
+
+/* Star Math plays the item automatically on every question and lets the student
+   pause, resume or replay it (K-2 FAST TAM, proctor script). Drills stay manual
+   so practice is relaxed; the mock is the dress rehearsal. */
+let AUTOPLAY=store.get("autoplay",true);
+function primeSpeech(){           // browsers need one utterance inside a real gesture
+  try{ if(typeof speechSynthesis==="undefined")return;
+    const u=new SpeechSynthesisUtterance(" "); u.volume=0; speechSynthesis.speak(u);
+  }catch(e){}}
+function autoSpeak(){
+  const r=state.run;
+  if(!r||r.mode!=="mock"||!AUTOPLAY||MUTED||r.paused)return;
+  if(!ttsProbe()){ttsFallback();return;}
+  setTimeout(()=>{ if(state.run&&state.run.mode==="mock"&&!state.run.paused) speakItem(); },250);}
+function audioPause(){try{speechSynthesis.pause();}catch(e){} setAudioBtn("paused");}
+function audioResume(){try{speechSynthesis.resume();}catch(e){} setAudioBtn("playing");}
+function audioReplay(){try{speechSynthesis.cancel();}catch(e){} speakItem(); setAudioBtn("playing");}
+function setAudioBtn(st){const b=$("audPR"); if(!b)return;
+  b.textContent = st==="paused" ? "▶ Resume" : "⏸ Pause";
+  b.setAttribute("onclick", st==="paused" ? "audioResume()" : "audioPause()");}
 
 /* parent gate: press and hold, so a 7-year-old cannot tap into his own behavior plan */
 let holdT=null;
@@ -1989,6 +2214,10 @@ function kidHome(){
          <div class="mmeta"><span class="pill dev">13 questions</span>
            <span class="pill sec" onclick="event.stopPropagation();startEndless(${d.n},false)" style="cursor:pointer">endless ▸</span>
            <span class="pill beg" onclick="event.stopPropagation();startEndless(${d.n},true)" style="cursor:pointer">hard ▸</span></div></button>`;}).join("")}
+     ${FLAGGED.length?`<button class="mission" style="border-color:var(--brass);background:var(--brass-wash)" onclick="startFlagged()">
+       <div class="mn" style="color:var(--brass)">⚑ Not sure about these</div><h3>${FLAGGED.length} question${FLAGGED.length>1?"s":""} to check</h3>
+       <p>The ones you flagged because you were not certain. Go through them again.</p>
+       <div class="mmeta"><span class="pill">${FLAGGED.length} flagged</span></div></button>`:""}
      <button class="mission test" onclick="mockIntro('practice')">
        <div class="mn">Practice test</div><h3>34 questions, with review</h3>
        <p>You can go back, change an answer, and flag ones to come back to. Pause any time.</p>
@@ -2009,12 +2238,46 @@ function pickAdaptive(pool,theta,used){
 function mockSlots(){
   const slots=[]; BLUEPRINT.forEach((n,d)=>{for(let k=0;k<n;k++)slots.push(d);});
   return shuffle(slots);}
+
+/* ==================================================================
+   PARALLEL MOCK FORMS
+   Three fixed 34-item forms on one blueprint: same domain counts,
+   same difficulty shape, no item overlap. Fixed rather than adaptive
+   or generated, so Form A -> B -> C measures the child and not the
+   luck of the draw.
+   ================================================================== */
+const FORM_SPEC={0:[2,3,3,4], 1:[2,3,3,4,5], 2:[2,3,4], 3:[2,3,4], 4:[1,2,3,4],
+                 5:[2,3,4,5], 6:[2,3,3,4], 7:[1,2,3,4], 8:[2,3,4]};
+function buildForms(seed){
+  let r=seed||20260912;
+  const rnd=()=>{r=(r*1103515245+12345)&0x7fffffff;return r/0x7fffffff;};
+  const pick=a=>a[Math.floor(rnd()*a.length)];
+  const used=new Set(), forms=[[],[],[]];
+  for(const dom of Object.keys(FORM_SPEC))
+    FORM_SPEC[dom].forEach(want=>{
+      for(let f=0;f<3;f++){
+        let pool=ITEMS.filter(i=>i.dom==dom&&i.d===want&&!used.has(i.id));
+        if(!pool.length) pool=ITEMS.filter(i=>i.dom==dom&&Math.abs(i.d-want)<=1&&!used.has(i.id));
+        if(!pool.length) pool=ITEMS.filter(i=>i.dom==dom&&!used.has(i.id));
+        if(!pool.length) continue;
+        const it=pick(pool); used.add(it.id); forms[f].push(it);
+      }});
+  return forms.map(f=>{const o=[...f];
+    for(let i=o.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[o[i],o[j]]=[o[j],o[i]];}
+    return o;});
+}
+const FORMS=buildForms();
+const FORM_NAMES=["Form A","Form B","Form C"];
+function nextFormIndex(){
+  const done=store.get("formsDone",[]);
+  for(let i=0;i<FORMS.length;i++) if(!done.includes(i)) return i;
+  return done.length%FORMS.length;
+}
+
 /* fixed balanced form for practice mode: going back is incompatible with an adaptive ladder */
-function buildForm(){
-  const used=new Set(),out=[];
-  mockSlots().forEach(d=>{const pool=ITEMS.filter(x=>x.dom===d&&!used.has(x.id));
-    if(!pool.length)return; const it=pool[(Math.random()*pool.length)|0]; used.add(it.id); out.push(it);});
-  return out;}
+function buildForm(fi){
+  const i=(fi===undefined)?nextFormIndex():fi;
+  return FORMS[i].slice();}
 /* drills: 3 warm-up items from his SECURE domains, then his target domain easy -> hard,
    covering every benchmark in that domain rather than only the difficulty ladder */
 function buildDrill(dayN){
@@ -2036,21 +2299,103 @@ function startEndless(n,hard,mins){
   const day=DAYS.find(x=>x.n===n);
   state={run:{mode:"drill",endless:true,hard:!!hard,day:n,dom:day.dom[0],items:[],i:0,ans:[],meta:[],view:[],
     broke:{},flags:new Set(),theta:hard?4.3:2.6,earned:0,t0:Date.now(),
-    sessionEnd:Date.now()+(mins||(hard?25:35))*60000}};
+    sessionLeft:(mins||(hard?25:35))*60,   // SECONDS REMAINING, ticked down only while working
+    clockRunning:false}};
   $("progWrap").hidden=true; showQ();}
+function startFlagged(){
+  const items=FLAGGED.map(id=>ITEMS.find(x=>x.id===id)).filter(Boolean).sort((a,b)=>a.d-b.d);
+  if(!items.length)return kidHome();
+  state={run:{mode:"drill",review:true,day:0,items,i:0,ans:[],meta:[],view:[],broke:{},
+    flags:new Set(),theta:3,earned:0,t0:Date.now()}};
+  $("progWrap").hidden=false; showQ();}
 function startDrill(n){
   state={run:{mode:"drill",day:n,items:buildDrill(n),i:0,ans:[],meta:[],view:[],broke:{},flags:new Set(),theta:3,earned:0,t0:Date.now()}};
   $("progWrap").hidden=false; showQ();}
 
+
+/* ==================================================================
+   PRACTICE QUESTIONS — the real gate
+   Star Math always shows 3 practice questions first. The student must
+   get 2 of 3. Fail, and a second set of 3 appears. Fail that, and the
+   test does not start. (K-2 FAST Test Administration Manual, p.9)
+   These are deliberately trivial: they test the interface, not the math.
+   ================================================================== */
+const PRACTICE=[
+ [{id:"PR1",dom:7,bench:"practice",d:1,q:"2 + 1 = ?",fig:null,ch:["2","3","4","5"],a:"3",
+   why:"2 and 1 more makes 3.",trap:""},
+  {id:"PR2",dom:8,bench:"practice",d:1,q:"Which number is bigger, 7 or 4?",fig:null,ch:["7","4","They are the same","You cannot tell"],a:"7",
+   why:"7 is bigger than 4.",trap:""},
+  {id:"PR3",dom:3,bench:"practice",d:1,q:"How many sides does a triangle have?",fig:{t:"shapePick",opts:["tri"]},ch:["2","3","4","5"],a:"3",
+   why:"A triangle has 3 sides.",trap:""}],
+ [{id:"PR4",dom:7,bench:"practice",d:1,q:"5 + 2 = ?",fig:null,ch:["6","7","8","9"],a:"7",
+   why:"5 and 2 more makes 7.",trap:""},
+  {id:"PR5",dom:8,bench:"practice",d:1,q:"Which number is smaller, 9 or 3?",fig:null,ch:["9","3","They are the same","You cannot tell"],a:"3",
+   why:"3 is smaller than 9.",trap:""},
+  {id:"PR6",dom:3,bench:"practice",d:1,q:"How many corners does a square have?",fig:{t:"shapePick",opts:["sq"]},ch:["3","4","5","6"],a:"4",
+   why:"A square has 4 corners.",trap:""}]
+];
+function startPractice(variant){
+  primeSpeech();
+  state={run:{mode:"practice",variant,set:0,i:0,right:0,items:PRACTICE[0].slice(),view:[],
+    t0:Date.now(),earned:0,ans:[],meta:[],flags:new Set(),broke:{},theta:3}};
+  $("progWrap").hidden=true; showPractice();}
+function showPractice(){
+  stopAll();
+  const r=state.run, it=r.items[r.i];
+  if(!r.view[r.i])r.view[r.i]=shuffle(it.ch);
+  const view=r.view[r.i];
+  $("kidStage").innerHTML=`
+   <div class="kidtop"><div class="ktitle">Practice question ${r.i+1} of 3</div>
+     <button class="nbtn quiet" onclick="quitToHome()">Stop for now</button></div>
+   <div class="stage">
+    <div class="testnote" style="margin-bottom:16px">These three do not count. They just show you how the buttons work. Get <b>2 out of 3</b> and the real test starts.</div>
+    <div class="qtext">${fmt(it.q)}</div>
+    ${it.fig?`<div class="figbox">${renderFig(it.fig)}</div>`:""}
+    <button class="speak" onclick="speak('${plain(it.q).replace(/'/g,"")}')">🔊 Read it to me</button>
+    <div class="opts" style="margin-top:16px">${view.map((c,k)=>
+      `<button class="opt" onclick="practiceAnswer(${k})"><span class="ltr">${"ABCD"[k]}</span><span>${fmt(c)}</span></button>`).join("")}</div>
+    <div class="fb" id="fb"></div>
+   </div>`;}
+function practiceAnswer(k){
+  const r=state.run, it=r.items[r.i], ok=r.view[r.i][k]===it.a;
+  if(ok)r.right++;
+  document.querySelectorAll(".opt").forEach((b,idx)=>{b.disabled=true;
+    if(r.view[r.i][idx]===it.a)b.classList.add("right");
+    else if(idx===k)b.classList.add("wrong");else b.classList.add("dim");});
+  const fb=$("fb"); fb.className="fb show "+(ok?"ok":"no");
+  fb.innerHTML=`<h4>${ok?"That's it.":"Not that one."}</h4><p>${fmt(it.why)}</p>
+    <div style="margin-top:14px"><button class="btn big" onclick="practiceNext()">Next</button></div>`;}
+function practiceNext(){
+  const r=state.run; r.i++;
+  if(r.i<3) return showPractice();
+  if(r.right>=2) return startMock(r.variant);          // passed: the real test begins
+  if(r.set===0){                                        // one more set, exactly as the real test does
+    r.set=1; r.i=0; r.right=0; r.items=PRACTICE[1].slice(); r.view=[];
+    $("kidStage").innerHTML=`<div class="brk">
+      <div class="big">Let's try three more</div>
+      <p>You got ${r.right} of 3. That is fine. Here are three more practice ones, and then the real test starts.</p>
+      <button class="btn big" onclick="showPractice()">OK</button></div>`;
+    return;}
+  // failed twice: on the real test the session ends here
+  $("kidStage").innerHTML=`<div class="brk">
+    <div class="big">Let's get a grown-up</div>
+    <p>On the real test it would stop here and wait for your teacher. Nothing has gone wrong. Go and get someone, and try again together.</p>
+    <div class="btnrow" style="justify-content:center"><button class="btn big" onclick="kidHome()">Back to missions</button></div></div>`;}
+
 function mockIntro(variant){
   const real=variant==="exam";
+  const fi=nextFormIndex(), doneF=store.get("formsDone",[]);
   $("progWrap").hidden=true;
   $("kidStage").innerHTML=`<div class="kidtop"><div class="ktitle">${real?"Real test rules":"Practice test"}</div>
      <button class="gate" id="gateBtn" onmousedown="gateDown()" onmouseup="gateUp()" onmouseleave="gateUp()"
        ontouchstart="gateDown()" ontouchend="gateUp()">for grown-ups</button></div>
    <div class="stage">
+    ${real?"":`<p style="font-size:17px;color:var(--ink2);margin-bottom:14px;line-height:1.5">This is <b>${FORM_NAMES[fi]}</b>${doneF.length?` — you have already finished ${doneF.map(i=>FORM_NAMES[i]).join(" and ")}.`:", the first of three."} Every form is a different set of 34 questions, built to be exactly as hard as the others.</p>`}
     <div class="testnote" style="margin-bottom:16px">
-      · 34 questions, four answers each: A, B, C or D.<br>
+      · 34 questions, four answers each: A, B, C or D. It takes about <b>20 minutes</b>.<br>
+      · <b>Headphones on.</b> Every question is read out loud to you automatically, just like the real test. You can pause it or play it again.<br>
+      · <b>Scratch paper and a sharpened pencil on the desk.</b> You are allowed to work the problems out on paper, and on the real test they give it to you.<br>
+      · No calculator. That is not allowed on the real test either.<br>
       ${real?"· <b>You cannot go back.</b> Once you pick, it is locked. That is how the real FAST works.<br>· It gets harder when you are right and easier when you are wrong. That is normal."
             :"· You <b>can</b> go back, change an answer, and <b>flag</b> any question to come back to.<br>· At the end you get a map of everything you flagged or left empty."}<br>
       · Press <b>Pause</b> whenever you need to. The clock stops.<br>
@@ -2059,35 +2404,57 @@ function mockIntro(variant){
       · No one tells you if you are right until the end.
     </div>
     ${real?`<div class="note warn" style="margin-bottom:16px"><p style="font-size:14px">This one matches the real test. The practice version with <b>back</b> and <b>flag</b> is better for learning, so do that one first.</p></div>`:""}
-    <div class="btnrow"><button class="btn big" onclick="startMock('${variant}')">Start</button>
+    <div class="btnrow"><button class="btn big" onclick="startPractice('${variant}')">Start</button>
       <button class="btn ghost" onclick="kidHome()">Not yet</button></div></div>`;}
 
 function startMock(variant){
+  primeSpeech();                      // must happen inside the user gesture, or iOS stays silent
   const exam=variant==="exam";
   state={run:{mode:"mock",exam,i:0,ans:[],meta:[],view:[],broke:{},theta:3,used:new Set(),earned:0,t0:Date.now(),
-    slots:exam?mockSlots():null, form:exam?[]:buildForm(), flags:new Set(), paused:false, elapsed:0}};
+    slots:exam?mockSlots():null, formIdx:exam?null:nextFormIndex(),
+    form:exam?[]:buildForm(), flags:new Set(), paused:false, elapsed:0}};
   $("progWrap").hidden=false; showQ();}
 
 /* ---------- timing ---------- */
 let tick=null;
 function stopAll(){clearInterval(tick);tick=null;try{speechSynthesis.cancel();}catch(e){}}
 function startClock(){
-  clearInterval(tick); const r=state.run; r.left=360;
-  if(r.mode!=="mock"){                       // drills are untimed; track silently for the parent report
-    tick=setInterval(()=>{if(state.run&&!state.run.paused){r.left--;r.elapsed=(r.elapsed||0)+1;}},1000);
-    return;}
-  tick=setInterval(()=>{
-    if(!state.run||state.run.paused)return;
-    r.left--; r.elapsed++;
-    const c=$("clk"); if(!c){clearInterval(tick);return;}
+  clearInterval(tick); const r=state.run;
+  // Only reset the per-item clock when we actually move to a DIFFERENT question.
+  // Re-rendering the same one (selecting an answer, toggling a flag) must not
+  // hand him a fresh four minutes.
+  if(r.clockFor!==r.i){ r.left=240; r.clockFor=r.i; }   // TAM Appendix C: 240s standard
+  const tickOnce=()=>{
+    if(!state.run||state.run.paused)return;              // paused: nothing burns, not even the session
+    r.elapsed=(r.elapsed||0)+1;
+    if(r.sessionLeft!=null){
+      r.sessionLeft--;
+      const sl=$("sessLeft"); if(sl)sl.textContent=Math.max(0,Math.ceil(r.sessionLeft/60));
+    }
+    if(r.mode!=="mock")return;                           // drills untimed: session ticks, item does not
+    r.left--;
+    const c=$("clk"); if(!c)return;
     if(r.left<=90){c.className="clockchip warn";c.textContent="⏱ "+Math.max(0,r.left)+"s";}
     else{c.className="clockchip";c.textContent="⏱ "+Math.floor(r.left/60)+":"+String(r.left%60).padStart(2,"0");}
     if(r.left<=0){clearInterval(tick);timeUp();}
-  },1000);}
-function timeUp(){ // never silently score it wrong: offer a break or a guess
-  const f=$("fb"); if(!f)return;
-  f.className="fb show no";
-  f.innerHTML=`<h4>Still thinking?</h4><p>Take a break, or have a go. A guess is better than nothing.</p>`;}
+  };
+  tick=setInterval(tickOnce,1000);
+}
+function timeUp(){
+  const r=state.run; if(!r)return;
+  if(r.mode!=="mock"){                       // drills are untimed; nudge only
+    const f=$("fb"); if(!f)return;
+    f.className="fb show no";
+    f.innerHTML=`<h4>Still thinking?</h4><p>Take a break, or have a go. A guess is better than nothing.</p>`;
+    return;}
+  // the real test: a message, then the next question a few seconds later
+  $("kidStage").innerHTML=`<div class="brk"><div class="big">Time is up for that question</div>
+    <p>That is all right. The next question is coming.</p></div>`;
+  setTimeout(()=>{ if(!state.run)return;
+    if(state.run.ans[state.run.i]===undefined)state.run.meta[state.run.i]={
+      id:state.run.cur.id,dom:state.run.cur.dom,d:state.run.cur.d,bench:state.run.cur.bench,
+      ok:false,chose:"(ran out of time)",answer:state.run.cur.a,flag:false};
+    state.run.i++; showQ(); },3000);}
 function togglePause(){
   const r=state.run; if(!r)return; r.paused=!r.paused;
   if(r.paused){try{speechSynthesis.cancel();}catch(e){}
@@ -2118,7 +2485,7 @@ function showQ(){
   const r=state.run; if(!r)return;
   if(r.i>=total())return r.mode==="mock"&&!r.exam?showMap(true):showResults();
   if(r.mode==="mock"&&(r.i===12||r.i===24)&&!r.broke[r.i]){r.broke[r.i]=1;return showBreak();}
-  if(r.endless&&r.sessionEnd&&Date.now()>r.sessionEnd&&!r.overran){r.overran=1;return sessionDone();}
+  if(r.endless&&r.sessionLeft!=null&&r.sessionLeft<=0&&!r.overran){r.overran=1;return sessionDone();}
   if(r.endless&&r.i>0&&r.i%8===0&&!r.broke[r.i]){r.broke[r.i]=1;return showBreak();}
   if(r.mode==="drill"&&!r.endless&&r.i===5&&!r.broke[5]){r.broke[5]=1;return showBreak();}
   const it=curItem(); r.cur=it;
@@ -2128,20 +2495,26 @@ function showQ(){
     r.view[r.i]=positional?it.ch.slice():shuffle(it.ch);}
   const view=r.view[r.i], prev=r.ans[r.i];
   $("progBar").style.width=(r.i/total()*100)+"%";
-  const locked=r.mode==="mock"&&r.exam&&prev!==undefined;
+  const locked=r.mode==="mock"&&r.exam&&r.committed&&r.committed.has(r.i);
   const answered=prev!==undefined;
   const showMark=r.mode==="drill"&&answered;
   $("kidStage").innerHTML=`
-   <div class="kidtop"><div class="ktitle">${r.mode==="drill"?(r.day?((DAYS.find(x=>x.n===r.day)||{}).kidTitle||"Day "+r.day):"Fix-it round"):(r.exam?"Real rules":"Practice")}</div>
+   <div class="kidtop"><div class="ktitle">${r.mode==="drill"?(r.review?"Checking your flags":(r.day?((DAYS.find(x=>x.n===r.day)||{}).kidTitle||"Day "+r.day):"Fix-it round")):(r.exam?"Real rules":FORM_NAMES[r.formIdx]||"Practice")}</div>
      <button class="nbtn quiet" onclick="quitToHome()">Stop for now</button>
      ${r.mode==="mock"?`<span class="clockchip" id="clk"></span>`:""}
      <button class="gate" id="gateBtn" onmousedown="gateDown()" onmouseup="gateUp()" onmouseleave="gateUp()"
        ontouchstart="gateDown()" ontouchend="gateUp()">for grown-ups</button></div>
    <div class="stage">
-    <div class="qhead"><span class="qnum">${r.endless?`Question ${r.i+1} · ${r.meta.filter(m=>m&&m.ok).length} right${r.sessionEnd?` · ${Math.max(0,Math.ceil((r.sessionEnd-Date.now())/60000))} min left`:""}`:`Question ${r.i+1} of ${total()}`}</span>
+    <div class="qhead"><span class="qnum">${r.endless?`Question ${r.i+1} · ${r.meta.filter(m=>m&&m.ok).length} right${r.sessionLeft!=null?` · <span id="sessLeft">${Math.max(0,Math.ceil(r.sessionLeft/60))}</span> min left`:""}`:`Question ${r.i+1} of ${total()}`}</span>
       </div>
     <div class="qtext">${fmt(it.q)}</div>
-    <button class="speak" onclick="speakItem()">🔊 Read it to me</button>
+    ${r.mode==="mock"
+      ? `<div class="audiobar">
+           <span class="audlbl">🔊 Listening</span>
+           <button class="nbtn" id="audPR" onclick="audioPause()">⏸ Pause</button>
+           <button class="nbtn" onclick="audioReplay()">↻ Play again</button>
+         </div>`
+      : `<button class="speak" onclick="speakItem()">🔊 Read it to me</button>`}
     <div id="ttsNote" hidden class="testnote" style="margin:10px 0 0">This device will not read out loud. Ask a grown-up to read the question to you. That is allowed and it is not cheating.</div>
     ${it.fig&&!figIsPick(it.fig)?`<div class="figbox">${interactiveFig(it)}</div>`:""}
     ${figIsPick(it.fig)
@@ -2157,25 +2530,44 @@ function showQ(){
     <div class="navbar">
       ${r.mode==="mock"&&!r.exam?`<button class="nbtn" onclick="go(-1)" ${r.i===0?"disabled":""}>← Back</button>`:""}
       <button class="nbtn" onclick="togglePause()">⏸ Pause</button>
-      ${r.mode==="mock"?`<button class="nbtn ${r.flags.has(r.i)?"flagged":""}" onclick="toggleFlag()">⚑ ${r.flags.has(r.i)?"Flagged":"Flag"}</button>`:""}
+      <button class="nbtn ${isFlagged(it.id)?"flagged":""}" onclick="toggleFlag()">
+        ${isFlagged(it.id)?"⚑ Flagged":"⚐ Not sure"}</button>
       <span class="spacer"></span>
       ${r.mode==="mock"&&!r.exam?`<button class="nbtn" onclick="showMap(false)">Review all</button>`:""}
       ${r.endless?`<button class="nbtn" onclick="endEndless()">Stop &amp; see how I did</button>`:""}
-      <button class="nbtn primary" id="nextBtn" onclick="go(1)" ${r.mode==="drill"&&!answered?"disabled":""}>${r.endless?"Next →":(r.i===total()-1?"Finish":"Next →")}</button>
+      <button class="nbtn primary" id="nextBtn" onclick="go(1)" ${(r.mode==="drill"||(r.mode==="mock"&&r.exam))&&!answered?"disabled":""}>${r.endless?"Next →":(r.i===total()-1?"Finish":"Next →")}</button>
     </div>
    </div>`;
-  startClock(); tapState={n:0,set:new Set()};
+  startClock(); tapState={n:0,set:new Set()}; autoSpeak();
   try{window.scrollTo({top:0,behavior:"smooth"});}catch(e){window.scrollTo(0,0);}
 }
 function quitToHome(){ stopAll(); state={run:null}; kidHome(); }
-function toggleFlag(){const r=state.run;r.flags.has(r.i)?r.flags.delete(r.i):r.flags.add(r.i);showQ();}
-function go(step){const r=state.run;r.i=Math.max(0,r.i+step);showQ();}
+function toggleFlag(){
+  const r=state.run; if(!r||!r.cur)return;
+  const on=toggleFlagId(r.cur.id);
+  if(r.mode==="mock"){ on?r.flags.add(r.i):r.flags.delete(r.i); }   // also drives the review map
+  showQ();}
+function go(step){
+  const r=state.run;
+  if(step>0&&r.mode==="mock"&&r.exam){
+    if(r.ans[r.i]===undefined)return;                 // must choose something before Next
+    const m=r.meta[r.i];
+    r.theta=Math.min(5,Math.max(1,r.theta+(m&&m.ok?0.55:-0.7)));   // adapt only once committed
+    r.committed=r.committed||new Set(); r.committed.add(r.i);
+  }
+  r.i=Math.max(0,r.i+step); showQ();}
 
 function answerValue(v){const r=state.run;answer(r.view[r.i].indexOf(v));}
 function answer(k){
-  if(k<0||state.locking)return;                       // an impulsive child double-taps by default
-  state.locking=true; setTimeout(()=>{state.locking=false;},450);
-  if(!state.run||!state.run.view[state.run.i])return;
+  if(k<0||!state.run||!state.run.view[state.run.i])return;
+  // The guard exists because an impulsive child double-taps. It is only needed where a
+  // tap is consequential — in drills a tap commits and reveals the answer. In the mock a
+  // tap merely selects, and he is entitled to change his mind until he presses Next.
+  const consequential = state.run.mode==="drill";
+  if(consequential){
+    if(state.locking)return;
+    state.locking=true; setTimeout(()=>{state.locking=false;},450);
+  }
   const r=state.run, it=r.cur, view=r.view[r.i], chosen=view[k], ok=chosen===it.a;
   const first=r.ans[r.i]===undefined;
   r.ans[r.i]=chosen;
@@ -2189,10 +2581,11 @@ function answer(k){
     showQ();
     const fb=$("fb"); fb.className="fb show "+(ok?"ok":"no");
     fb.innerHTML=`<h4>${ok?"Yes. Two stars.":"Not this time. One star for trying."}</h4>
-      <p>${fmt(it.why)}</p><p class="trap"><b>Watch out</b><br>${fmt(it.trap)}</p>`;
+      <p>${fmt(it.why)}</p><p class="trap"><b>Watch out</b><br>${fmt(it.trap)}</p>
+      ${ok&&isFlagged(it.id)?`<div style="margin-top:12px"><button class="nbtn" onclick="toggleFlag();">⚑ Got it now — take the flag off</button></div>`:""}`;
   } else {
-    if(r.exam){ r.theta=Math.min(5,Math.max(1,r.theta+(ok?0.55:-0.7))); r.i++; setTimeout(showQ,600); }
-    else showQ();
+    showQ();   // the answer is only SELECTED; "Next" commits it (TAM: "You can change your
+               // answer choice before you select Next but not after.")
   }
 }
 
@@ -2235,7 +2628,7 @@ function showMap(final){
 function jump(i){state.run.i=i;showQ();}
 function finishMock(){state.run.i=34;showResults();}
 function endEndless(){state.run.endless=false;showResults();}
-function moreTime(){state.run.sessionEnd=Date.now()+10*60000;state.run.overran=0;showQ();}
+function moreTime(){state.run.sessionLeft=10*60;state.run.overran=0;showQ();}
 function sessionDone(){
   stopAll(); const r=state.run, right=r.meta.filter(m=>m&&m.ok).length;
   $("kidStage").innerHTML=`<div class="brk">
@@ -2263,7 +2656,7 @@ function buildExport(r){
   const wrong=r.meta.filter(Boolean).filter(m=>!m.ok);
   const L=[];
   L.push("=== FAST GRADE 2 MATH · MOCK RESULT ===");
-  L.push(`when: ${new Date().toISOString().slice(0,16).replace("T"," ")}   mode: ${r.exam?"exam (no going back)":"practice (back/flag)"}`);
+  L.push(`when: ${new Date().toISOString().slice(0,16).replace("T"," ")}   form: ${r.formIdx!=null?FORM_NAMES[r.formIdx]:"adaptive"}   mode: ${r.exam?"exam (no going back)":"practice (back/flag)"}`);
   L.push(`score: ${r.meta.filter(m=>m&&m.ok).length} of ${r.meta.filter(Boolean).length}   time: ${mmss(r.elapsed||Math.round((Date.now()-r.t0)/1000))}`);
   L.push("");
   L.push(`GOT WRONG (${wrong.length}) — id | domain | benchmark | difficulty | he chose -> correct | flagged`);
@@ -2274,7 +2667,8 @@ function buildExport(r){
   DOMAINS.forEach((n,d)=>{const rows=r.meta.filter(Boolean).filter(m=>m.dom===d);
     if(rows.length)L.push(`  ${n}: ${rows.filter(m=>m.ok).length}/${rows.length}   (PM1 was ${PM1[d]})`);});
   const fl=r.meta.filter(Boolean).filter(m=>m.flag&&m.ok).map(m=>m.id);
-  if(fl.length){L.push("");L.push("FLAGGED BUT CORRECT (unsure, worth re-checking): "+fl.join(", "));}
+  if(fl.length){L.push("");L.push("FLAGGED BUT CORRECT (he was unsure, worth re-checking): "+fl.join(", "));}
+  if(FLAGGED.length){L.push("");L.push("ALL FLAGS STANDING ("+FLAGGED.length+"): "+FLAGGED.join(", "));}
   L.push("");
   L.push("DATA:"+JSON.stringify({v:1,exam:!!r.exam,t:r.elapsed||0,
     a:r.meta.filter(Boolean).map(m=>[m.id,m.ok?1:0,m.flag?1:0,plain(m.chose)])}));
@@ -2289,7 +2683,10 @@ function showResults(){
     if(pass&&!r.endless&&r.day&&!doneDays.includes(r.day)){doneDays.push(r.day);store.set("done",doneDays);}
     logAttempt(r,meta);
   } else {
+    if(r.formIdx!=null){const df=store.get("formsDone",[]);
+      if(!df.includes(r.formIdx)){df.push(r.formIdx);store.set("formsDone",df);}}
     store.set("lastMock",{when:Date.now(),exam:!!r.exam,elapsed:r.elapsed,
+      form:r.formIdx!=null?FORM_NAMES[r.formIdx]:null,
       a:meta.map(m=>({id:m.id,ok:m.ok,flag:m.flag,chose:m.chose,answer:m.answer,dom:m.dom,bench:m.bench,gen:m.gen}))});
     logAttempt(r,meta);
   }
@@ -2321,7 +2718,7 @@ function showResults(){
     ${r.mode==="mock"?`
       <textarea id="exportTxt" readonly style="position:absolute;left:-9999px" aria-hidden="true">${esc(exportTxt)}</textarea>
       <div class="btnrow" style="margin-top:22px;justify-content:center;align-items:center">
-        <button class="btn ghost" onclick="copyExport()">Send my score to Dad</button>
+        <button class="btn ghost" onclick="copyExport()">Send my score to my grown-up</button>
         <span class="copied" id="copiedMsg" hidden>sent</span></div>`:""}
     <div class="btnrow" style="justify-content:center;margin-top:26px">
       <button class="btn big" onclick="kidHome()">Back to missions</button></div></div>`;
@@ -2363,6 +2760,7 @@ function renderReview(txt){
   if(!last||!last.a||!last.a.length){
     $("reviewStage").innerHTML=`<div class="eyebrow">Mock review</div>
       <h2 class="sec">No attempt yet</h2>
+      ${flaggedBlock()}
       <p class="prose" style="margin-top:10px">Once Sam finishes a practice test, this tab fills with only the questions he got wrong, grouped by domain, with the re-teach for each one and a button to drill exactly those.</p>${box}`;
     return;}
 
@@ -2377,7 +2775,7 @@ function renderReview(txt){
   const seen={}; rows.forEach(x=>{const d=x.it.dom;seen[d]=seen[d]||[0,0];seen[d][1]++;if(x.ok)seen[d][0]++;});
 
   $("reviewStage").innerHTML=`
-    <div class="eyebrow">Mock review · ${last.exam?"exam rules":"practice mode"}${last.when?" · "+new Date(last.when).toLocaleDateString():""}</div>
+    <div class="eyebrow">Mock review · ${last.form?esc(last.form)+" · ":""}${last.exam?"exam rules":"practice mode"}${last.when?" · "+new Date(last.when).toLocaleDateString():""}</div>
     <h2 class="sec">${wrong.length} wrong out of ${rows.length}</h2>
     <p class="prose" style="margin-top:10px;margin-bottom:18px">Only the misses are below, heaviest domain first. Each one shows what he picked, why it is wrong, and the specific misconception behind it. ${unsure.length?`He also flagged <b>${unsure.length}</b> that he got right — worth checking he was not guessing.`:""}</p>
 
@@ -2390,6 +2788,7 @@ function renderReview(txt){
       </tbody></table></div>
     <p style="font-size:13px;color:var(--ink3);margin:-12px 0 22px;line-height:1.5;max-width:66ch">Counts, not scores. Three to five questions per domain is far too few to produce a reliable 0–100 estimate, so this table deliberately shows raw correct-out-of-seen instead of a number that looks comparable to his PM1 domain score.</p>
 
+    ${flaggedBlock()}
     ${historyBlock()}
 
     ${order.map(d=>`<div class="rgroup">
@@ -2414,6 +2813,25 @@ function renderReview(txt){
     </div>
     ${box}`;
 }
+function flaggedBlock(){
+  const items=FLAGGED.map(id=>ITEMS.find(x=>x.id===id)).filter(Boolean);
+  if(!items.length) return "";
+  const byDom={}; items.forEach(i=>{(byDom[i.dom]=byDom[i.dom]||[]).push(i);});
+  return `<div class="card lift" style="margin-bottom:22px;border-color:var(--brass)">
+    <h3 class="sub">⚑ ${items.length} question${items.length>1?"s":""} he was not sure about</h3>
+    <p style="font-size:14.5px;color:var(--ink2);margin:6px 0 12px;line-height:1.5">He flagged these himself. This is a different signal from getting one wrong — a guess that happens to be right still shows up here, and that is exactly what you want to catch before PM2.</p>
+    ${Object.keys(byDom).map(Number).sort((a,b)=>PM1[a]-PM1[b]).map(d=>`
+      <div style="margin-bottom:12px">
+        <div class="minihd">${esc(DOMAINS[d])} <span class="pill ${band(PM1[d])[0]}">PM1 ${PM1[d]}</span></div>
+        ${byDom[d].map(i=>`<div class="rq" style="padding:10px 0;border-bottom:1px dashed var(--line)">
+          <div class="stem" style="font-size:14.5px">${fmt(i.q)}</div>
+          <div class="teach" style="margin-top:5px"><b>Answer:</b> ${esc(plain(i.a))} &nbsp;·&nbsp; ${fmt(i.why)}</div>
+          <div class="bench" style="margin-top:4px">${esc(i.bench)}</div></div>`).join("")}
+      </div>`).join("")}
+    <div class="btnrow" style="margin-top:6px">
+      <button class="btn" onclick="setMode('kid');startFlagged()">Go through them with him</button>
+      <button class="btn ghost" onclick="if(confirm('Clear all flags?')){clearFlags();renderReview();}">Clear all flags</button>
+    </div></div>`;}
 function historyBlock(){
   const h=store.get("history",[]);
   if(h.length<2)return `<p style="font-size:13.5px;color:var(--ink3);margin:-6px 0 20px;line-height:1.5">Once he has done more than one session, a running record of every domain will appear here so you can compare Day 1 with Day 4.</p>`;
@@ -2456,8 +2874,10 @@ function renderRewardEditor(){
     <label>Tier ${i+1}</label>
     <div class="setrow"><input type="number" id="rwN${i}" value="${r.n}" min="1" max="999" aria-label="stars needed">
     <input type="text" id="rwW${i}" value="${esc(r.w)}" aria-label="reward"></div></div>`).join("");
-  const st=$("rwStars"); if(st)st.textContent=`Sam has ${stars} stars and has finished ${doneDays.length} of 4 days.`;
-  const mb=$("muteBtn"); if(mb)mb.textContent=MUTED?"🔇 Sound off":"🔊 Sound on";}
+  const st=$("rwStars"); if(st){const df=store.get("formsDone",[]);
+    st.textContent=`Sam has ${stars} stars, has finished ${doneDays.length} of 4 days, has sat ${df.length} of 3 mock forms${df.length?" ("+df.map(i=>FORM_NAMES[i]).join(", ")+")":""}, and has ${FLAGGED.length} question${FLAGGED.length===1?"":"s"} flagged as unsure.`;}
+  const mb=$("muteBtn"); if(mb)mb.textContent=MUTED?"🔇 Sound off":"🔊 Sound on";
+  const ab=$("autoBtn"); if(ab)ab.textContent=AUTOPLAY?"🎧 Mock reads aloud":"🎧 Mock stays silent";}
 function saveRewards(){
   const out=REWARDS.map((_,i)=>({n:Math.max(1,parseInt($("rwN"+i).value)||1),w:$("rwW"+i).value.trim()||"a treat"}))
     .sort((a,b)=>a.n-b.n);
@@ -2466,6 +2886,7 @@ function saveRewards(){
 function resetProgress(){
   if(!confirm("Reset Sam's stars and completed days? This cannot be undone."))return;
   setStars(0); doneDays=[]; store.set("done",[]); store.set("lastMock",null); store.set("history",[]);
+  clearFlags(); store.set("formsDone",[]);
   renderRewardEditor(); if(document.body.classList.contains("kidmode"))kidHome();}
 renderRewardEditor();
 
