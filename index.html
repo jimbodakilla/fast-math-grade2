@@ -2987,16 +2987,16 @@ function isrReport(last){
 
     <div class="note warn" style="margin-top:16px">
       <h4>Why there is no FAST Equivalent Score here</h4>
-      <p>His real report gives <b>175</b> on a 38–369 scale, with Level 4 starting at <b>185</b>. Converting a
+      <p>The real report gives a <b>FAST Equivalent Score</b> on a 38–369 scale, with Level 4 starting at <b>185</b>. Converting a
       mastery percentage onto that scale needs Cambium's conversion table. I have exactly one anchor — his
-      175 — and one point gives no slope, so any scaled score I printed would be <b>made up</b>, and it would
+      one score — and one point gives no slope, so any scaled score printed here would be <b>made up</b>, and it would
       look official enough for you to repeat to the school. What is real above is the mastery percentage and
       the domain pattern, both in Florida's own units.</p>
     </div>
 
     <div class="isr-ladder">
-      <div class="minihd">Where his September score sits</div>
-      ${ladderSVG(175)}
+      <div class="minihd">The B.E.S.T. achievement levels</div>
+      ${ladderSVG(null)}
       <p style="font-size:13.5px;color:var(--ink2);line-height:1.5;margin-top:8px">
         ${mastery>=predicted+10
           ? `He is answering <b>${delta} points</b> more of the grade-level material than his September profile predicted. That is the direction Level 4 is in. Whether it is worth the 10 scale points he needs, only PM2 will say.`
@@ -3008,10 +3008,8 @@ function isrReport(last){
 
 function ladderSVG(score){
   const x=v=>30+(v-158)/(201-158)*340;
-  return `<svg viewBox="0 0 400 92" width="100%" role="img" aria-label="score ${score} on the B.E.S.T. scale; Level 4 begins at 185">
-    <text x="${x(score)}" y="16" text-anchor="middle" ${MONO} font-size="9.5" fill="var(--ink3)">PM1</text>
-    <text x="${x(score)}" y="35" text-anchor="middle" ${UI} font-size="18" font-weight="700" fill="var(--ink)">${score}</text>
-    <path d="M${x(score)-6} 39 L${x(score)+6} 39 L${x(score)} 47 Z" fill="var(--ink)"/>
+  const pin = score==null ? "" : `
+    ${pin}
     <rect x="30"  y="49" width="103" height="28" fill="var(--amber-wash)" stroke="var(--line)"/>
     <rect x="133" y="49" width="111" height="28" fill="var(--brass-wash)" stroke="var(--line)"/>
     <rect x="244" y="49" width="126" height="28" fill="var(--leaf-wash)" stroke="var(--line)"/>
