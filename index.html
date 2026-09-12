@@ -576,6 +576,23 @@ body.kidmode{background:#F1F4EF}
 .audlbl{font-family:var(--ff-ui);font-size:15px;font-weight:600;color:var(--accent-ink);margin-right:auto}
 .audiobar .nbtn{min-height:44px;padding:9px 15px;font-size:15px}
 </style>
+<style>
+.isr-hd{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.isr-hd h3{margin:0}
+.isr-hd .pill{margin-left:auto}
+.isr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.isr-grid div{background:var(--surface);padding:12px 14px}
+.isr-grid dt{font-family:var(--ff-mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px;line-height:1.3}
+.isr-grid dd{margin:0;font-size:27px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+.isr-grid dd small{font-size:13px;font-weight:600;color:var(--ink3);letter-spacing:0}
+.isr-sub{font-size:16px;margin:20px 0 10px}
+.isrbar{display:inline-block;width:54px;height:8px;background:var(--sunk);border:1px solid var(--line);
+  border-radius:99px;overflow:hidden;vertical-align:middle;margin-right:7px}
+.isrbar i{display:block;height:100%;border-radius:99px}
+.isr-ladder{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+@media (max-width:520px){.isr-grid dd{font-size:23px}}
+</style>
 <div class="topbar"><div class="topbar-in">
   <div class="brand"><b>Grade 2 FAST Math Trainer</b><span>FLORIDA B.E.S.T. · PM1 → PM2</span></div>
   <div class="switch" role="group" aria-label="Choose view">
@@ -723,6 +740,15 @@ body.kidmode{background:#F1F4EF}
       <h3 class="sub">Set the reward rate now, before Day 1</h3>
       <p style="font-size:14.5px;color:var(--ink2);line-height:1.55;margin-top:6px">He earns <b>1 star for every question he attempts</b> and <b>2 for every one he gets right</b>, so a bad session still pays — which is what stops the spiral. Agree these three now and do not renegotiate mid-session; renegotiating is the reward he is actually testing for. He sees the bar and the next prize on his own screen the whole time.</p>
       <div class="settings" id="rewardEditor"></div>
+      <div style="margin-top:14px">
+        <label style="font-family:var(--ff-mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:5px">Where his results get emailed</label>
+        <div class="setrow">
+          <input type="email" id="pEmail" placeholder="your@email.com" style="flex:1;min-height:44px;font-family:var(--ff-ui);font-size:14px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink)">
+          <button class="btn ghost" onclick="saveParentEmail()">Save</button>
+          <span class="copied" id="pEmailSaved" hidden>saved</span>
+        </div>
+        <p style="font-size:13px;color:var(--ink3);margin-top:7px;line-height:1.45">Stored only on this device. Once it is set, his results screen shows a <b>Send my score</b> button that opens the iPad's Mail app with the whole thing already written.</p>
+      </div>
       <div class="btnrow" style="margin-top:14px;align-items:center">
         <button class="btn" onclick="saveRewards()">Save rewards</button>
         <span class="copied" id="rwSaved" hidden>saved</span>
@@ -840,7 +866,7 @@ const DOMAINS=["Operations","Algebraic Thinking","Data Analysis","Geometric Conc
 
 /* Nine domain scores, entered by the parent from their own ISR.
    The defaults below are a worked example, not any real child. */
-const EXAMPLE=[78,49,76,81,24,45,60,80,74];
+const EXAMPLE=[70,62,68,77,41,55,64,73,66];   // synthetic sample profile, not a real child
 let PM1=(function(){try{const v=JSON.parse(localStorage.getItem("fast_pm1"));
   return (Array.isArray(v)&&v.length===9)?v:EXAMPLE.slice();}catch(e){return EXAMPLE.slice();}})();
 let USING_EXAMPLE=(function(){try{return !localStorage.getItem("fast_pm1");}catch(e){return true;}})();
@@ -2716,10 +2742,11 @@ function showResults(){
     ${rewardStrip()}
     ${rev}
     ${r.mode==="mock"?`
-      <textarea id="exportTxt" readonly style="position:absolute;left:-9999px" aria-hidden="true">${esc(exportTxt)}</textarea>
-      <div class="btnrow" style="margin-top:22px;justify-content:center;align-items:center">
-        <button class="btn ghost" onclick="copyExport()">Send my score to my grown-up</button>
-        <span class="copied" id="copiedMsg" hidden>sent</span></div>`:""}
+      <div class="testnote" style="margin-top:22px;text-align:center">
+        <b>Your score is saved.</b> ${parentEmail()
+          ? `<br><a class="btn" style="display:inline-block;margin-top:12px;text-decoration:none" href="${mailtoLink()}">✉ Send my score to my grown-up</a>`
+          : `Show a grown-up the <b>Mock review</b> page and it will be there.`}
+      </div>`:""}
     <div class="btnrow" style="justify-content:center;margin-top:26px">
       <button class="btn big" onclick="kidHome()">Back to missions</button></div></div>`;
   window.scrollTo(0,0);
@@ -2788,6 +2815,7 @@ function renderReview(txt){
       </tbody></table></div>
     <p style="font-size:13px;color:var(--ink3);margin:-12px 0 22px;line-height:1.5;max-width:66ch">Counts, not scores. Three to five questions per domain is far too few to produce a reliable 0–100 estimate, so this table deliberately shows raw correct-out-of-seen instead of a number that looks comparable to his PM1 domain score.</p>
 
+    ${isrReport(last)}
     ${flaggedBlock()}
     ${historyBlock()}
 
@@ -2807,12 +2835,193 @@ function renderReview(txt){
     </div>`).join("")}
 
     <div class="card lift" style="margin-top:20px">
+      <h3 class="sub">Send this result to Claude</h3>
+      <p style="font-size:14.5px;color:var(--ink2);margin:6px 0 12px;line-height:1.5">Copies a short summary of only what went wrong, plus his flags. If the copy is blocked — it often is inside an embedded page on an iPad — the text appears below for you to select by hand.</p>
+      <div class="btnrow" style="align-items:center">
+        <a class="btn" id="mailBtn" style="text-decoration:none" href="#" onclick="this.href=mailtoLink()">✉ Email it</a>
+        <button class="btn ghost" onclick="copyResult()">Copy result</button>
+        <button class="btn ghost" onclick="revealExport()">Show the text</button>
+        <span class="copied" id="outNote" hidden></span>
+      </div>
+      <textarea class="exportbox" id="outBox" hidden readonly onclick="this.select()" style="margin-top:12px"></textarea>
+    </div>
+
+    <div class="card lift" style="margin-top:20px">
       <h3 class="sub">Drill exactly these</h3>
       <p style="font-size:14.5px;color:var(--ink2);margin:6px 0 12px;line-height:1.5">Builds a session from only the ${wrong.length} he missed, easiest first, with the explanation after every one.</p>
       <button class="btn" onclick="drillMisses(${JSON.stringify(wrong.map(x=>x.id)).replace(/"/g,'&quot;')})">Start a fix-it session</button>
     </div>
     ${box}`;
 }
+/* Copying from a sandboxed iframe is unreliable, so never claim success we
+   cannot verify: confirm only when the clipboard write actually resolves, and
+   otherwise reveal the text so it can be selected by hand. */
+/* A sandboxed page cannot send mail itself, but it CAN hand the device's own
+   mail app a pre-filled message. On iPad that opens Mail with everything in it. */
+function parentEmail(){return store.get("parentEmail","");}
+function mailtoLink(){
+  const to=parentEmail();
+  const subj="Sam's math mock result";
+  return "mailto:"+encodeURIComponent(to)+"?subject="+encodeURIComponent(subj)
+        +"&body="+encodeURIComponent(compactResult());
+}
+/* Encoding roughly triples the length, so the email carries a compact form:
+   the headline, the misses, and the machine-readable block Claude parses. */
+function compactResult(){
+  const last=store.get("lastMock",null);
+  if(!last||!last.a||!last.a.length)return "No attempt saved on this device yet.";
+  const got=last.a.filter(x=>x.ok).length, n=last.a.length;
+  const per={}; last.a.forEach(x=>{const it=ITEMS.find(i=>i.id===x.id);
+    const d=x.dom!=null?x.dom:(it&&it.dom); if(d==null)return;
+    per[d]=per[d]||[0,0]; per[d][1]++; if(x.ok)per[d][0]++;});
+  const L=[];
+  L.push(`${last.form||"Mock"}: ${got}/${n} on ${new Date(last.when).toISOString().slice(0,10)}`);
+  L.push("");
+  L.push("Missed: "+(last.a.filter(x=>!x.ok).map(x=>x.id).join(", ")||"none"));
+  L.push("By domain: "+Object.keys(per).map(Number).sort()
+    .map(d=>`${DOMAINS[d].split(",")[0]} ${per[d][0]}/${per[d][1]}`).join("; "));
+  if(FLAGGED.length)L.push("Flagged: "+FLAGGED.join(", "));
+  L.push("");
+  L.push("--- paste everything below to Claude ---");
+  L.push("DATA:"+JSON.stringify({v:1,f:last.form||null,t:last.elapsed||0,
+    a:last.a.map(x=>[x.id,x.ok?1:0,x.flag?1:0])}));
+  return L.join("\n");}
+function saveParentEmail(){
+  const v=($("pEmail")&&$("pEmail").value||"").trim();
+  store.set("parentEmail",v);
+  const m=$("pEmailSaved"); if(m){m.hidden=false;setTimeout(()=>{m.hidden=true;},2000);}}
+function exportText(){
+  const last=store.get("lastMock",null);
+  if(!last||!last.a||!last.a.length)return "";
+  const L=[];
+  L.push("=== FAST GRADE 2 MATH · MOCK RESULT ===");
+  L.push(`when: ${new Date(last.when).toISOString().slice(0,16).replace("T"," ")}   form: ${last.form||"adaptive"}   mode: ${last.exam?"exam":"practice"}`);
+  L.push(`score: ${last.a.filter(x=>x.ok).length} of ${last.a.length}   time: ${Math.floor((last.elapsed||0)/60)}m ${String((last.elapsed||0)%60).padStart(2,"0")}s`);
+  L.push("");
+  const wrong=last.a.filter(x=>!x.ok);
+  L.push(`GOT WRONG (${wrong.length}) — id | domain | benchmark | he chose -> correct | flagged`);
+  wrong.forEach(x=>{const it=ITEMS.find(i=>i.id===x.id)||{};
+    L.push(`  ${x.id} | ${DOMAINS[x.dom!=null?x.dom:(it.dom||0)]} | ${x.bench||it.bench||"?"} | "${plain(x.chose)}" -> "${plain(x.answer||it.a||"?")}"${x.flag?" | FLAGGED":""}`);});
+  const per={}; last.a.forEach(x=>{const it=ITEMS.find(i=>i.id===x.id); const d=x.dom!=null?x.dom:(it&&it.dom);
+    if(d==null)return; per[d]=per[d]||[0,0]; per[d][1]++; if(x.ok)per[d][0]++;});
+  L.push(""); L.push("BY DOMAIN (correct / seen)");
+  Object.keys(per).map(Number).sort().forEach(d=>L.push(`  ${DOMAINS[d]}: ${per[d][0]}/${per[d][1]}   (PM1 was ${PM1[d]})`));
+  const fl=last.a.filter(x=>x.flag&&x.ok).map(x=>x.id);
+  if(fl.length){L.push("");L.push("FLAGGED BUT CORRECT (unsure): "+fl.join(", "));}
+  if(FLAGGED.length){L.push("");L.push("ALL FLAGS STANDING ("+FLAGGED.length+"): "+FLAGGED.join(", "));}
+  L.push(""); L.push("DATA:"+JSON.stringify({v:1,exam:!!last.exam,t:last.elapsed||0,
+    a:last.a.map(x=>[x.id,x.ok?1:0,x.flag?1:0,plain(x.chose)])}));
+  return L.join("\n");}
+function revealExport(){
+  const box=$("outBox"); if(!box)return;
+  box.hidden=false; box.value=exportText(); box.focus(); box.select();
+  const n=$("outNote"); if(n){n.hidden=false;n.textContent="Select all of the text above, copy it, and paste it into the chat.";}}
+function copyResult(){
+  const txt=exportText();
+  if(!txt){const n=$("outNote");if(n){n.hidden=false;n.textContent="No attempt saved on this device yet.";}return;}
+  const say=m=>{const n=$("outNote");if(n){n.hidden=false;n.textContent=m;}};
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(
+      ()=>say("Copied. Paste it into the chat."),
+      ()=>revealExport());            // only reveal on genuine failure
+  } else revealExport();}
+
+/* ==================================================================
+   PRACTICE SCORE REPORT
+   Laid out like the Individual Student Report, in FAST's own units:
+   domain scores 0-100 with the Beginning / Developing / Secure bands,
+   and overall mastery as "percent of grade-level items correct" —
+   which is exactly how Florida defines a domain score.
+   The FAST Equivalent Score is deliberately NOT estimated. Converting
+   mastery to the 38-369 scale needs Cambium's table; we have one
+   anchor point and no slope, so any number here would be invented.
+   ================================================================== */
+function isrReport(last){
+  const rows=last.a.map(x=>{const it=ITEMS.find(i=>i.id===x.id);
+    return {...x,dom:x.dom!=null?x.dom:(it&&it.dom)};}).filter(x=>x.dom!=null);
+  const seen={}; rows.forEach(x=>{const d=seen[x.dom]=seen[x.dom]||[0,0];d[1]++;if(x.ok)d[0]++;});
+  const got=rows.filter(x=>x.ok).length, n=rows.length;
+  const mastery=n?Math.round(1000*got/n)/10:0;
+  // what his PM1 profile predicted for this same blueprint
+  let pw=0,pn=0; Object.keys(seen).forEach(d=>{pw+=seen[d][1]*PM1[d];pn+=seen[d][1];});
+  const predicted=pn?Math.round(10*pw/pn)/10:0;
+  const delta=Math.round(10*(mastery-predicted))/10;
+  const bandOf=v=>v>=80?["sec","Secure"]:v>=60?["dev","Developing"]:["beg","Beginning"];
+  const [ocls,olbl]=bandOf(mastery);
+
+  return `<div class="card lift isr" style="margin-bottom:22px">
+    <div class="isr-hd">
+      <div>
+        <div class="eyebrow" style="margin:0 0 4px">Practice score report</div>
+        <h3 style="font-size:21px">${esc(last.form||"Practice mock")} · ${n} questions</h3>
+      </div>
+      <span class="pill ${ocls}">${olbl}</span>
+    </div>
+    <div class="isr-grid">
+      <div><dt>Answered correctly</dt><dd>${got}<small> / ${n}</small></dd></div>
+      <div><dt>Mastery of grade-level items</dt><dd>${mastery}<small>%</small></dd></div>
+      <div><dt>His PM1 profile predicted</dt><dd>${predicted}<small>%</small></dd></div>
+      <div><dt>Change</dt><dd style="color:var(--${delta>0?"leaf":delta<0?"amber":"ink3"})">${delta>0?"+":""}${delta}<small> pts</small></dd></div>
+    </div>
+    <p style="font-size:14px;color:var(--ink2);line-height:1.55;margin-top:14px">
+      Florida defines a domain score as <em>"the percent of grade-level items in that domain the student
+      would be expected to answer correctly."</em> That is the unit above, so <b>${mastery}%</b> is directly
+      comparable to the 0–100 numbers on his real report — and to the <b>${predicted}%</b> his September
+      profile predicted for this exact mix of questions.</p>
+
+    <h4 class="isr-sub">How he did on different areas of the test</h4>
+    <div class="twrap"><table><thead><tr>
+      <th>Category</th><th>Performance</th><th>Score (out of 100)</th><th>PM1</th></tr></thead><tbody>
+      ${DOMAINS.map((nm,d)=>{ if(!seen[d])return "";
+        const v=Math.round(100*seen[d][0]/seen[d][1]), [c,l]=bandOf(v), pv=PM1[d];
+        const mv=v-pv;
+        return `<tr><td><b>${esc(nm)}</b></td>
+          <td><span class="pill ${c}">${l}</span></td>
+          <td class="num"><span class="isrbar"><i style="width:${v}%;background:var(--${c==="sec"?"leaf":c==="dev"?"brass":"amber"})"></i></span> ${v}
+            <small style="color:var(--ink3)"> (${seen[d][0]}/${seen[d][1]})</small></td>
+          <td class="num">${pv} <small class="delta ${mv>0?"up":mv<0?"dn":"same"}">${mv>0?"+":""}${mv}</small></td></tr>`;}).join("")}
+    </tbody></table></div>
+    <p style="font-size:12.5px;color:var(--ink3);line-height:1.5;margin-top:10px">Three to five questions per
+      domain is far too few for a stable 0–100 estimate — treat each row as a direction, not a measurement.
+      The raw count in brackets is the honest version.</p>
+
+    <div class="note warn" style="margin-top:16px">
+      <h4>Why there is no FAST Equivalent Score here</h4>
+      <p>His real report gives <b>175</b> on a 38–369 scale, with Level 4 starting at <b>185</b>. Converting a
+      mastery percentage onto that scale needs Cambium's conversion table. I have exactly one anchor — his
+      175 — and one point gives no slope, so any scaled score I printed would be <b>made up</b>, and it would
+      look official enough for you to repeat to the school. What is real above is the mastery percentage and
+      the domain pattern, both in Florida's own units.</p>
+    </div>
+
+    <div class="isr-ladder">
+      <div class="minihd">Where his September score sits</div>
+      ${ladderSVG(175)}
+      <p style="font-size:13.5px;color:var(--ink2);line-height:1.5;margin-top:8px">
+        ${mastery>=predicted+10
+          ? `He is answering <b>${delta} points</b> more of the grade-level material than his September profile predicted. That is the direction Level 4 is in. Whether it is worth the 10 scale points he needs, only PM2 will say.`
+          : mastery>=predicted
+          ? `He is roughly where his September profile predicted, a little above. Hold the practice.`
+          : `He is below what his September profile predicted for this mix. Look at which domains dragged, not at the total.`}</p>
+    </div>
+  </div>`;}
+
+function ladderSVG(score){
+  const x=v=>30+(v-158)/(201-158)*340;
+  return `<svg viewBox="0 0 400 92" width="100%" role="img" aria-label="score ${score} on the B.E.S.T. scale; Level 4 begins at 185">
+    <text x="${x(score)}" y="16" text-anchor="middle" ${MONO} font-size="9.5" fill="var(--ink3)">PM1</text>
+    <text x="${x(score)}" y="35" text-anchor="middle" ${UI} font-size="18" font-weight="700" fill="var(--ink)">${score}</text>
+    <path d="M${x(score)-6} 39 L${x(score)+6} 39 L${x(score)} 47 Z" fill="var(--ink)"/>
+    <rect x="30"  y="49" width="103" height="28" fill="var(--amber-wash)" stroke="var(--line)"/>
+    <rect x="133" y="49" width="111" height="28" fill="var(--brass-wash)" stroke="var(--line)"/>
+    <rect x="244" y="49" width="126" height="28" fill="var(--leaf-wash)" stroke="var(--line)"/>
+    <text x="81"  y="67" text-anchor="middle" ${MONO} font-size="9.5" font-weight="600" fill="var(--amber)">LEVEL 2</text>
+    <text x="188" y="67" text-anchor="middle" ${MONO} font-size="9.5" font-weight="600" fill="var(--brass)">LEVEL 3</text>
+    <text x="307" y="67" text-anchor="middle" ${MONO} font-size="9.5" font-weight="600" fill="var(--leaf)">LEVEL 4</text>
+    <text x="133" y="88" text-anchor="middle" ${MONO} font-size="9" fill="var(--ink3)">171</text>
+    <text x="244" y="88" text-anchor="middle" ${MONO} font-size="9" fill="var(--ink3)">185</text>
+  </svg>`;}
+
 function flaggedBlock(){
   const items=FLAGGED.map(id=>ITEMS.find(x=>x.id===id)).filter(Boolean);
   if(!items.length) return "";
@@ -2877,6 +3086,7 @@ function renderRewardEditor(){
   const st=$("rwStars"); if(st){const df=store.get("formsDone",[]);
     st.textContent=`Sam has ${stars} stars, has finished ${doneDays.length} of 4 days, has sat ${df.length} of 3 mock forms${df.length?" ("+df.map(i=>FORM_NAMES[i]).join(", ")+")":""}, and has ${FLAGGED.length} question${FLAGGED.length===1?"":"s"} flagged as unsure.`;}
   const mb=$("muteBtn"); if(mb)mb.textContent=MUTED?"🔇 Sound off":"🔊 Sound on";
+  const pe=$("pEmail"); if(pe&&!pe.value)pe.value=parentEmail();
   const ab=$("autoBtn"); if(ab)ab.textContent=AUTOPLAY?"🎧 Mock reads aloud":"🎧 Mock stays silent";}
 function saveRewards(){
   const out=REWARDS.map((_,i)=>({n:Math.max(1,parseInt($("rwN"+i).value)||1),w:$("rwW"+i).value.trim()||"a treat"}))
