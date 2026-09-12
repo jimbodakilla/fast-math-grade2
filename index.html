@@ -626,6 +626,67 @@ body.kidmode{background:#F1F4EF}
 .ci-ref{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--ink3);border-radius:2px}
 .ci-scale{display:flex;justify-content:space-between;font-family:var(--ff-mono);font-size:10.5px;color:var(--ink3);margin-top:6px}
 </style>
+<style>
+/* ===== replica of the ISR "How Did Your Student Do on the Test?" panel ===== */
+.isrpanel{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden;margin-top:6px}
+.isrpanel-hd{font-weight:700;font-size:15px;padding:11px 14px;border-bottom:1px solid var(--line);
+  background:var(--sunk);color:var(--ink)}
+.isrladder{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0;padding:14px 14px 14px 0;align-items:stretch}
+.fastbox{background:var(--brass-wash);border:1.6px solid var(--brass);border-radius:6px;padding:10px 12px;
+  margin:0 12px 0 14px;align-self:center;text-align:center;min-width:104px;position:relative}
+.fastbox div{font-weight:700;font-size:12.5px;line-height:1.25;color:var(--ink)}
+.fastbox b{display:block;font-size:26px;font-weight:800;margin-top:6px;color:var(--ink);font-variant-numeric:tabular-nums}
+.lvcol{display:flex;flex-direction:column}
+.lvrow{display:grid;grid-template-columns:46px 20px minmax(0,1fr);gap:0;align-items:stretch;min-height:62px}
+.lvbar{position:relative;border:1.6px solid var(--ink);border-bottom:0;background:var(--surface)}
+.lvrow:last-child .lvbar{border-bottom:1.6px solid var(--ink)}
+.lvrow.cur .lvbar{background:var(--brass-wash)}
+.lvbar.lv1,.lvbar.lv2{background:var(--amber-wash)}
+.lvrow.cur .lvbar.lv3{background:var(--brass-wash)}
+.lvtop{position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-family:var(--ff-mono);
+  font-size:10.5px;color:var(--ink2);background:var(--surface);padding:0 3px}
+.lvbot{position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);font-family:var(--ff-mono);
+  font-size:10.5px;color:var(--ink2);background:var(--surface);padding:0 3px}
+.lvpin{position:absolute;left:-4px;right:-4px;bottom:26%;height:2.5px;background:var(--ink)}
+.lvrail{display:grid;place-items:center;font-size:11px;color:#fff;font-weight:700}
+.lvrail.meets{background:var(--leaf)} .lvrail.nomeet{background:var(--amber)}
+.lvtext{padding:8px 12px;font-size:12.5px;line-height:1.42;color:var(--ink2);border-bottom:1px solid var(--line)}
+.lvrow:last-child .lvtext{border-bottom:0}
+.lvrow.cur .lvtext{background:var(--brass-wash);color:var(--ink)}
+.lvtext b{color:var(--ink)}
+.lvtarget{padding:10px 14px;border-top:1px solid var(--line);background:var(--leaf-wash);
+  font-size:13.5px;color:var(--ink);font-weight:500}
+@media (max-width:560px){
+  .isrladder{grid-template-columns:1fr;padding:12px}
+  .fastbox{margin:0 0 12px;align-self:flex-start;display:flex;align-items:center;gap:12px;text-align:left}
+  .fastbox b{margin:0}
+  .lvtext{font-size:12px}
+  .lvrow{grid-template-columns:34px 16px minmax(0,1fr)}
+}
+</style>
+<style>
+.lvrail{position:relative;overflow:hidden}
+.lvrail .arw{font-size:12px;line-height:1}
+.lvrail .railtxt{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(180deg);
+  writing-mode:vertical-rl;white-space:nowrap;font-size:9.5px;font-weight:700;letter-spacing:.02em;color:#fff}
+</style>
+<style>
+.lvgrid{display:grid;grid-template-columns:46px 22px minmax(0,1fr);align-items:stretch}
+.lvgrid .lvbar{grid-column:1;position:relative;border:1.6px solid var(--ink);border-bottom:0;background:var(--surface);min-height:62px}
+.lvgrid .lvbar.lv1{border-bottom:1.6px solid var(--ink)}
+.lvgrid .lvbar.lv1,.lvgrid .lvbar.lv2{background:var(--amber-wash)}
+.lvgrid .lvbar.cur{background:var(--brass-wash)}
+.lvgrid .lvrail{grid-column:2;display:grid;place-items:center;overflow:hidden}
+.lvgrid .lvrail.meets{background:var(--leaf)} .lvgrid .lvrail.nomeet{background:var(--amber)}
+.lvgrid .lvrail span{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;
+  font-size:10px;font-weight:700;color:#fff;letter-spacing:.02em}
+.lvgrid .lvtext{grid-column:3;padding:8px 12px;font-size:12.5px;line-height:1.42;color:var(--ink2);
+  border-bottom:1px solid var(--line)}
+.lvgrid .lvtext:last-of-type{border-bottom:0}
+.lvgrid .lvtext.cur{background:var(--brass-wash);color:var(--ink)}
+.lvgrid .lvtext b{color:var(--ink)}
+@media (max-width:560px){.lvgrid{grid-template-columns:34px 18px minmax(0,1fr)}.lvgrid .lvtext{font-size:12px}}
+</style>
 <div class="topbar"><div class="topbar-in">
   <div class="brand"><b>Grade 2 FAST Math Trainer</b><span>FLORIDA B.E.S.T. · PM1 → PM2</span></div>
   <div class="switch" role="group" aria-label="Choose view">
@@ -3071,8 +3132,8 @@ function isrReport(last){
       <div class="minihd">Where he sits on the B.E.S.T. scale</div>
       ${ladderSVG(null,{target:185})}
       <p style="font-size:13px;color:var(--ink3);line-height:1.5;margin-top:8px">
-        The dashed line is the Level 4 threshold at 185. Your child’s measured score comes from their own report.
-        A practice test cannot place a new pin on this scale — only PM2 can.</p>
+        This is the achievement-level panel from the Individual Student Report. Your child’s measured score appears on their own report.
+        A practice test cannot place a new mark on this scale — only PM2 can.</p>
     </div>
 
     <div class="ci-block">
@@ -3105,33 +3166,33 @@ function wilson(k,n,z){z=z||1.96; if(!n)return[0,0];
    place a new pin on this scale. */
 function ladderSVG(score,opts){
   opts=opts||{};
-  const W=580,Hh=330,bx=100,bw=62,top=26,bot=300;
-  const CUT=[38,158,171,185,201,369];
-  const y=v=>bot-(v-38)/(369-38)*(bot-top);
-  const bands=[["Level 1 · Well Below Grade Level",38,158,"var(--amber-wash)"],
-               ["Level 2 · Below Grade Level",158,171,"var(--amber-wash)"],
-               ["Level 3 · On Grade Level",171,185,"var(--brass-wash)"],
-               ["Level 4 · Proficient",185,201,"var(--leaf-wash)"],
-               ["Level 5 · Exemplary",201,369,"var(--leaf-wash)"]];
-  let b="";
-  bands.forEach(([nm,lo,hi,fill])=>{
-    const yt=y(hi),yb=y(lo);
-    b+=`<rect x="${bx}" y="${yt}" width="${bw}" height="${yb-yt}" fill="${fill}" stroke="var(--ink)" stroke-width="1.4"/>`;
-    b+=`<text x="${bx+bw+18}" y="${(yt+yb)/2+4.5}" ${UI} font-size="12.5" font-weight="600" fill="var(--ink)">${nm}</text>`;});
-  CUT.forEach(v=>{b+=`<text x="${bx-8}" y="${y(v)+4}" text-anchor="end" ${MONO} font-size="11" fill="var(--ink2)">${v}</text>`;});
-  b+=`<rect x="${bx+bw+2}" y="${y(369)}" width="7" height="${y(171)-y(369)}" fill="var(--leaf)"/>`;
-  b+=`<rect x="${bx+bw+2}" y="${y(171)}" width="7" height="${y(38)-y(171)}" fill="var(--amber)"/>`;
-  if(opts.target!=null){
-    const ty=y(opts.target);
-    b+=`<line x1="${bx-5}" y1="${ty}" x2="${bx+bw+5}" y2="${ty}" stroke="var(--leaf)" stroke-width="2.6" stroke-dasharray="6 4"/>`;}
-  if(score!=null){
-    const sy=y(score);
-    b+=`<rect x="4" y="${sy-31}" width="88" height="62" rx="6" fill="var(--brass-wash)" stroke="var(--brass)" stroke-width="1.6"/>`;
-    b+=`<text x="48" y="${sy-13}" text-anchor="middle" ${UI} font-size="11" font-weight="700" fill="var(--ink)">FAST</text>`;
-    b+=`<text x="48" y="${sy}" text-anchor="middle" ${UI} font-size="11" font-weight="700" fill="var(--ink)">Equivalent</text>`;
-    b+=`<text x="48" y="${sy+22}" text-anchor="middle" ${UI} font-size="20" font-weight="800" fill="var(--ink)">${score}</text>`;
-    b+=`<line x1="92" y1="${sy}" x2="${bx+bw}" y2="${sy}" stroke="var(--ink)" stroke-width="2"/>`;}
-  return `<svg viewBox="0 0 ${W} ${Hh}" width="100%" style="max-width:580px" role="img" aria-label="Achievement level ladder; the measured score sits in Level 3 and Level 4 begins at 185.">${b}</svg>`;}
+  // Level descriptions verbatim from the Individual Student Report.
+  const LV=[
+   [5,201,369,"Exemplary","Students who score in Level 5 demonstrate exemplary success with the challenging content on the B.E.S.T. Standards. They are highly likely to excel in the next grade."],
+   [4,185,201,"Proficient","Students who score in Level 4 demonstrate proficient success with the challenging content on the B.E.S.T. Standards. They are likely to excel in the next grade."],
+   [3,171,185,"On Grade Level","Students who score in Level 3 demonstrate on grade level success with the challenging content on the B.E.S.T. Standards. They may need additional support to excel in the next grade."],
+   [2,158,171,"Below Grade Level","Students who score in Level 2 demonstrate below grade level skills and are not yet demonstrating On Grade Level success with the challenging content on the B.E.S.T. Standards. To be prepared for the next grade, students who score in Level 2 at the end of the year (PM3) are likely to need substantial support."],
+   [1,38,158,"Well Below Grade Level","Students who score in Level 1 demonstrate well below grade level skills and are not yet demonstrating On Grade Level success with the challenging content on the B.E.S.T. Standards. To be prepared for the next grade, students who score in Level 1 at the end of the year (PM3) are likely to need substantial support."]];
+  const lvlOf=v=>v>=201?5:v>=185?4:v>=171?3:v>=158?2:1;
+  const here=score==null?null:lvlOf(score);
+  // one grid: bars column, a rail column with two SPANNING segments, text column
+  const cells=LV.map(([n,lo,hi,nm,desc],i)=>{
+    const cur=here===n;
+    return `<div class="lvbar lv${n}${cur?" cur":""}" style="grid-row:${i+1}">
+        <span class="lvtop">${hi}</span>${cur?'<span class="lvpin"></span>':""}${n===1?'<span class="lvbot">38</span>':""}
+      </div>
+      <div class="lvtext${cur?" cur":""}" style="grid-row:${i+1}"><b>Level ${n} ${nm}:</b> ${desc}</div>`;}).join("");
+  const rails=`<div class="lvrail meets" style="grid-row:1 / span 3"><span>▲ Meets State Standard</span></div>
+     <div class="lvrail nomeet" style="grid-row:4 / span 2"><span>Does Not Meet State Standard ▼</span></div>`;
+  return `<div class="isrpanel">
+    <div class="isrpanel-hd">How Did Your Student Do on the Test?</div>
+    <div class="isrladder">
+      ${score!=null?`<div class="fastbox" style="--at:${lvlOf(score)}">
+        <div>FAST<br>Equivalent<br>Score</div><b>${score}</b></div>`:""}
+      <div class="lvgrid">${cells}${rails}</div>
+    </div>
+    ${opts.target!=null?`<div class="lvtarget">Level 4 begins at <b>${opts.target}</b> on the FAST Equivalent scale.</div>`:""}
+  </div>`;}
 
 function flaggedBlock(){
   const items=FLAGGED.map(id=>ITEMS.find(x=>x.id===id)).filter(Boolean);
