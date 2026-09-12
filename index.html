@@ -687,6 +687,48 @@ body.kidmode{background:#F1F4EF}
 .lvgrid .lvtext b{color:var(--ink)}
 @media (max-width:560px){.lvgrid{grid-template-columns:34px 18px minmax(0,1fr)}.lvgrid .lvtext{font-size:12px}}
 </style>
+<style>
+/* the bar is a thermometer: nothing is shaded unless a score says so */
+.lvgrid .lvbar{background:var(--surface)!important;overflow:hidden}
+.lvgrid .lvbar.lv1,.lvgrid .lvbar.lv2{background:var(--surface)!important}
+.lvfill{position:absolute;left:0;right:0;bottom:0;background:var(--brass-wash);
+  border-top:0;display:block}
+.lvgrid .lvbar.cur{box-shadow:inset 0 0 0 2px var(--brass)}
+.lvmark{position:absolute;left:-5px;right:-5px;top:-1.5px;height:3px;background:var(--ink);z-index:2}
+.lvbanner{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;padding:12px 14px;
+  border-bottom:1px solid var(--line);background:var(--brass-wash)}
+.lvbanner b{font-size:17px;color:var(--ink)}
+.lvbanner span{font-size:13.5px;color:var(--ink2)}
+.lvbanner.lv4,.lvbanner.lv5{background:var(--leaf-wash)}
+.lvbanner.lv1,.lvbanner.lv2{background:var(--amber-wash)}
+.lvyou{display:inline-block;font-family:var(--ff-mono);font-size:9.5px;font-weight:700;letter-spacing:.09em;
+  background:var(--ink);color:var(--paper);padding:3px 8px;border-radius:99px;margin-right:8px;vertical-align:1px}
+.lvempty{padding:12px 14px;border-bottom:1px solid var(--line);background:var(--sunk);
+  font-size:14px;line-height:1.5;color:var(--ink2)}
+.lvempty span{display:block;margin-top:5px;font-size:13px;color:var(--ink3)}
+</style>
+<style>
+/* the gradient carries the fill, so the bar must not clip and must not be overridden */
+.lvgrid .lvbar{overflow:visible!important}
+.lvgrid .lvbar,.lvgrid .lvbar.lv1,.lvgrid .lvbar.lv2{background-color:transparent}
+.lvfill{display:none}
+.lvmark{position:absolute;left:-6px;right:-6px;height:3px;background:var(--ink);z-index:3;margin-bottom:-1.5px}
+.lvtop,.lvbot{z-index:4}
+</style>
+<style>
+.lvmock{padding:13px 14px;border-bottom:1px solid var(--line);background:var(--accent-wash)}
+.lvmock-hd{font-size:13.5px;color:var(--accent-ink);margin-bottom:10px}
+.lvmock-hd b{color:var(--ink)}
+.lvmock-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:12px}
+.lvmock-grid div{min-width:0}
+.lvmock-grid dt{font-family:var(--ff-mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:3px}
+.lvmock-grid dd{margin:0;font-size:25px;font-weight:800;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.lvmock-grid dd small{font-size:13px;font-weight:600;color:var(--ink3)}
+.lvmock-grid i{display:block;font-style:normal;font-size:11.5px;color:var(--ink3);margin-top:4px;line-height:1.35}
+.lvmock p{font-size:14px;color:var(--ink2);line-height:1.5;margin-top:11px}
+.lvmock p b{color:var(--ink)}
+</style>
+<style>.lvcav{display:block;margin-top:7px;font-size:12.5px;color:var(--ink3);line-height:1.45}</style>
 <div class="topbar"><div class="topbar-in">
   <div class="brand"><b>Grade 2 FAST Math Trainer</b><span>FLORIDA B.E.S.T. · PM1 → PM2</span></div>
   <div class="switch" role="group" aria-label="Choose view">
@@ -834,6 +876,16 @@ body.kidmode{background:#F1F4EF}
       <h3 class="sub">Set the reward rate now, before Day 1</h3>
       <p style="font-size:14.5px;color:var(--ink2);line-height:1.55;margin-top:6px">He earns <b>1 star for every question he attempts</b> and <b>2 for every one he gets right</b>, so a bad session still pays — which is what stops the spiral. Agree these three now and do not renegotiate mid-session; renegotiating is the reward he is actually testing for. He sees the bar and the next prize on his own screen the whole time.</p>
       <div class="settings" id="rewardEditor"></div>
+      <div style="margin-top:14px">
+        <label style="font-family:var(--ff-mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:5px">FAST Equivalent Score from the report</label>
+        <div class="setrow">
+          <input type="number" id="fScore" min="38" max="369" placeholder="e.g. 175" style="width:120px;min-height:44px;font-family:var(--ff-ui);font-size:14px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink)">
+          <button class="btn ghost" onclick="saveFastScore()">Save</button>
+          <span class="copied" id="fScoreSaved" hidden>saved</span>
+        </div>
+        <p style="font-size:13px;color:var(--ink3);margin-top:7px;line-height:1.45">The number in the yellow box on the Individual Student Report. Stored only on this device; it marks the achievement-level panel in Mock review.</p>
+      </div>
+
       <div style="margin-top:14px">
         <label style="font-family:var(--ff-mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:5px">Where his results get emailed</label>
         <div class="setrow">
@@ -2985,6 +3037,10 @@ function compactResult(){
   L.push("DATA:"+JSON.stringify({v:1,f:last.form||null,t:last.elapsed||0,
     a:last.a.map(x=>[x.id,x.ok?1:0,x.flag?1:0])}));
   return L.join("\n");}
+function saveFastScore(){
+  const v=parseInt(($("fScore")&&$("fScore").value)||"",10);
+  store.set("fastScore",(v>=38&&v<=369)?v:null);
+  const m=$("fScoreSaved"); if(m){m.hidden=false;setTimeout(()=>{m.hidden=true;},2000);}}
 function saveParentEmail(){
   const v=($("pEmail")&&$("pEmail").value||"").trim();
   store.set("parentEmail",v);
@@ -3120,9 +3176,8 @@ function isrReport(last){
       <h4>Why there is no FAST Equivalent Score here — and what to aim at instead</h4>
       <p>The real report gives a FAST Equivalent Score on a 38–369 scale; Level 4 starts at <b>185</b>. To turn a
       mastery percentage into that scale you need Cambium's conversion table, and a single score is only one
-      anchor. One point gives no slope. Depending on what I assumed 100% mastery was worth, the same data produces
-      wildly different answers. That is a guess wearing a decimal point, and you would end up repeating it to
-      the school.</p>
+      anchor. One point gives no slope. Depending on what I assume 100% mastery is worth, the same data produces answers nearly a hundred
+      points apart. That is a guess wearing a decimal point, and you would end up repeating it to the school.</p>
       <p style="margin-top:9px"><b>Aim at two real numbers instead.</b> <b>185</b> is the Level 4 line and only
       PM2 can put him over it. <b>Nine Secure domains</b> is the thing you can actually move at home, it is
       scored in Florida's own bands, and it is what drives the number underneath.</p>
@@ -3130,10 +3185,12 @@ function isrReport(last){
 
     <div class="isr-ladder">
       <div class="minihd">Where he sits on the B.E.S.T. scale</div>
-      ${ladderSVG(null,{target:185})}
+      ${ladderSVG(null,{mock:{form:last.form,when:new Date(last.when).toLocaleDateString(),
+        sec:nowSec,wasSec:wasSec,mastery:mastery,predicted:predicted,
+        got:got,n:n,ciLo:ciLo,ciHi:ciHi}})}
       <p style="font-size:13px;color:var(--ink3);line-height:1.5;margin-top:8px">
-        This is the achievement-level panel from the Individual Student Report. Your child’s measured score appears on their own report.
-        A practice test cannot place a new mark on this scale — only PM2 can.</p>
+        The shaded bar is the <b>measured</b> score from the Individual Student Report (enter it in Parent &amp; teacher). The block above it is
+        his <b>latest mock</b>. They are shown separately on purpose: only the real test can move the pin.</p>
     </div>
 
     <div class="ci-block">
@@ -3164,9 +3221,13 @@ function wilson(k,n,z){z=z||1.96; if(!n)return[0,0];
 /* A replica of the achievement-level ladder printed on the real ISR, so the two
    read side by side. The pin marks his MEASURED score; a practice test cannot
    place a new pin on this scale. */
+/* The real ISR fills the bar from the bottom up to the student's score, like a
+   thermometer, and highlights the band they land in. Shading levels without a
+   score reads as "you are here", which is how this panel got misread. */
+function parentScore(){const v=store.get("fastScore",null);return (typeof v==="number"&&v>=38&&v<=369)?v:null;}
 function ladderSVG(score,opts){
   opts=opts||{};
-  // Level descriptions verbatim from the Individual Student Report.
+  if(score==null)score=parentScore();
   const LV=[
    [5,201,369,"Exemplary","Students who score in Level 5 demonstrate exemplary success with the challenging content on the B.E.S.T. Standards. They are highly likely to excel in the next grade."],
    [4,185,201,"Proficient","Students who score in Level 4 demonstrate proficient success with the challenging content on the B.E.S.T. Standards. They are likely to excel in the next grade."],
@@ -3175,23 +3236,61 @@ function ladderSVG(score,opts){
    [1,38,158,"Well Below Grade Level","Students who score in Level 1 demonstrate well below grade level skills and are not yet demonstrating On Grade Level success with the challenging content on the B.E.S.T. Standards. To be prepared for the next grade, students who score in Level 1 at the end of the year (PM3) are likely to need substantial support."]];
   const lvlOf=v=>v>=201?5:v>=185?4:v>=171?3:v>=158?2:1;
   const here=score==null?null:lvlOf(score);
-  // one grid: bars column, a rail column with two SPANNING segments, text column
+  const cur=here?LV.find(L=>L[0]===here):null;
+
   const cells=LV.map(([n,lo,hi,nm,desc],i)=>{
-    const cur=here===n;
-    return `<div class="lvbar lv${n}${cur?" cur":""}" style="grid-row:${i+1}">
-        <span class="lvtop">${hi}</span>${cur?'<span class="lvpin"></span>':""}${n===1?'<span class="lvbot">38</span>':""}
+    const isHere=here===n;
+    // thermometer: full below his band, part-filled in it, empty above
+    let pct=0;
+    if(score!=null) pct = score>=hi ? 100 : (score>lo ? Math.round(100*(score-lo)/(hi-lo)) : 0);
+    const bg = pct>0
+      ? `background:linear-gradient(to top,var(--brass-wash) ${pct}%,var(--surface) ${pct}%)`
+      : "background:var(--surface)";
+    return `<div class="lvbar${isHere?" cur":""}" style="grid-row:${i+1};${bg}">
+        <span class="lvtop">${hi}</span>${n===1?'<span class="lvbot">38</span>':""}
+        ${isHere?`<span class="lvmark" style="bottom:${pct}%"></span>`:""}
       </div>
-      <div class="lvtext${cur?" cur":""}" style="grid-row:${i+1}"><b>Level ${n} ${nm}:</b> ${desc}</div>`;}).join("");
+      <div class="lvtext${isHere?" cur":""}" style="grid-row:${i+1}">
+        ${isHere?'<span class="lvyou">YOUR CHILD IS HERE</span>':""}
+        <b>Level ${n} ${nm}:</b> ${desc}</div>`;}).join("");
   const rails=`<div class="lvrail meets" style="grid-row:1 / span 3"><span>▲ Meets State Standard</span></div>
      <div class="lvrail nomeet" style="grid-row:4 / span 2"><span>Does Not Meet State Standard ▼</span></div>`;
+
+  // what the most recent mock evidences, shown as a separate row so the
+  // measured score and the practice evidence are never confused
+  const m=opts.mock;
+  const mockRow = !m ? "" : `<div class="lvmock">
+      <div class="lvmock-hd"><b>Latest mock</b> · ${esc(m.form||"practice")} · ${m.when}</div>
+      <div class="lvmock-grid">
+        <div><dt>Secure domains</dt><dd>${m.sec}<small> / 9</small></dd><i>was ${m.wasSec} in September</i></div>
+        <div><dt>Mastery</dt><dd>${m.mastery}<small>%</small></dd><i>September profile predicted ${m.predicted}%</i></div>
+        <div><dt>Score</dt><dd>${m.got}<small> / ${m.n}</small></dd><i>95% CI ${m.ciLo}–${m.ciHi}%</i></div>
+      </div>
+      <p>${m.sec>=8
+        ? `On the domains it tested, that is <b>Level 4 work</b>. It still cannot move the number above — only PM2 does that.`
+        : m.sec>m.wasSec
+        ? `<b>${m.sec-m.wasSec} more Secure domains</b> than September. The direction is toward Level 4; the ${9-m.sec} still short are named below.`
+        : `Level unchanged by this. Look at the domains below for where it went.`}
+        <span class="lvcav">This is practice evidence. It cannot move the score or the level above — only PM2 does that.</span></p>
+    </div>`;
+
+  const banner = score==null
+    ? `<div class="lvempty">No score entered yet. Put the <b>FAST Equivalent Score</b> from the Individual
+         Student Report into <b>Parent &amp; teacher → settings</b> and this panel will mark the level.
+         <span>Nothing is shaded above because nothing is known yet.</span></div>`
+    : `<div class="lvbanner lv${here}">
+         <b>Level ${here} — ${cur[3]}</b>
+         <span>FAST Equivalent Score <b>${score}</b>${here<4?` · Level 4 begins at 185, ${185-score} points away`:""}</span>
+       </div>`;
+
   return `<div class="isrpanel">
     <div class="isrpanel-hd">How Did Your Student Do on the Test?</div>
+    ${banner}
+    ${mockRow}
     <div class="isrladder">
-      ${score!=null?`<div class="fastbox" style="--at:${lvlOf(score)}">
-        <div>FAST<br>Equivalent<br>Score</div><b>${score}</b></div>`:""}
+      ${score!=null?`<div class="fastbox"><div>FAST<br>Equivalent<br>Score</div><b>${score}</b></div>`:""}
       <div class="lvgrid">${cells}${rails}</div>
     </div>
-    ${opts.target!=null?`<div class="lvtarget">Level 4 begins at <b>${opts.target}</b> on the FAST Equivalent scale.</div>`:""}
   </div>`;}
 
 function flaggedBlock(){
@@ -3288,6 +3387,7 @@ function renderRewardEditor(){
     st.textContent=`Sam has ${stars} stars, has finished ${doneDays.length} of 4 days, has sat ${df.length} of 3 mock forms${df.length?" ("+df.map(i=>FORM_NAMES[i]).join(", ")+")":""}, and has ${FLAGGED.length} question${FLAGGED.length===1?"":"s"} flagged as unsure.`;}
   const mb=$("muteBtn"); if(mb)mb.textContent=MUTED?"🔇 Sound off":"🔊 Sound on";
   const pe=$("pEmail"); if(pe&&!pe.value)pe.value=parentEmail();
+  const fs=$("fScore"); if(fs&&!fs.value&&parentScore()!=null)fs.value=parentScore();
   const ab=$("autoBtn"); if(ab)ab.textContent=AUTOPLAY?"🎧 Mock reads aloud":"🎧 Mock stays silent";}
 function saveRewards(){
   const out=REWARDS.map((_,i)=>({n:Math.max(1,parseInt($("rwN"+i).value)||1),w:$("rwW"+i).value.trim()||"a treat"}))
