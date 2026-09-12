@@ -2308,7 +2308,9 @@ function buildForm(fi){
    covering every benchmark in that domain rather than only the difficulty ladder */
 function buildDrill(dayN){
   const day=DAYS.find(x=>x.n===dayN);
-  const strong=ITEMS.filter(i=>PM1[i.dom]>=78&&i.d<=2);
+  // pick from his strongest domains relative to his own profile, not a fixed cutoff
+  const rank=[...PM1.keys()].sort((a,b)=>PM1[b]-PM1[a]).slice(0,3);
+  const strong=ITEMS.filter(i=>rank.includes(i.dom)&&i.d<=2);
   const warm=shuffle(strong).slice(0,3);
   const pool=ITEMS.filter(i=>day.dom.includes(i.dom));
   const benches=[...new Set(pool.map(i=>i.bench))];
