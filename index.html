@@ -879,7 +879,7 @@ body.kidmode{background:#F1F4EF}
       <div style="margin-top:14px">
         <label style="font-family:var(--ff-mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:5px">FAST Equivalent Score from the report</label>
         <div class="setrow">
-          <input type="number" id="fScore" min="38" max="369" placeholder="e.g. 175" style="width:120px;min-height:44px;font-family:var(--ff-ui);font-size:14px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink)">
+          <input type="number" id="fScore" min="38" max="369" placeholder="e.g. 180" style="width:120px;min-height:44px;font-family:var(--ff-ui);font-size:14px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink)">
           <button class="btn ghost" onclick="saveFastScore()">Save</button>
           <span class="copied" id="fScoreSaved" hidden>saved</span>
         </div>
@@ -3185,11 +3185,11 @@ function isrReport(last){
 
     <div class="isr-ladder">
       <div class="minihd">Where he sits on the B.E.S.T. scale</div>
-      ${ladderSVG(null,{mock:{form:last.form,when:new Date(last.when).toLocaleDateString(),
+      ${ladderSVG(175,{mock:{form:last.form,when:new Date(last.when).toLocaleDateString(),
         sec:nowSec,wasSec:wasSec,mastery:mastery,predicted:predicted,
         got:got,n:n,ciLo:ciLo,ciHi:ciHi}})}
       <p style="font-size:13px;color:var(--ink3);line-height:1.5;margin-top:8px">
-        The shaded bar is the <b>measured</b> score from the Individual Student Report (enter it in Parent &amp; teacher). The block above it is
+        The shaded bar and the pin are his <b>measured</b> September result. The block above it is
         his <b>latest mock</b>. They are shown separately on purpose: only the real test can move the pin.</p>
     </div>
 
