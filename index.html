@@ -593,6 +593,21 @@ body.kidmode{background:#F1F4EF}
 .isr-ladder{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
 @media (max-width:520px){.isr-grid dd{font-size:23px}}
 </style>
+<style>
+.scoreboard{display:grid;grid-template-columns:minmax(150px,auto) minmax(0,1fr);gap:20px;align-items:center;
+  background:var(--sunk);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 20px}
+.sb-num{font-size:52px;font-weight:800;letter-spacing:-.035em;line-height:1;color:var(--leaf);font-variant-numeric:tabular-nums}
+.sb-num span{font-size:24px;font-weight:600;color:var(--ink3);margin-left:4px}
+.sb-lbl{font-size:15px;color:var(--ink2);margin-top:4px}
+.sb-was{font-family:var(--ff-mono);font-size:12px;color:var(--ink3);margin-top:8px}
+.sb-track{display:flex;flex-direction:column;gap:5px}
+.sb-row{display:grid;grid-template-columns:minmax(0,1fr) 14px 14px 14px;gap:7px;align-items:center;font-size:13px}
+.sb-nm{color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:1.5px solid var(--line)}
+.sb-dot.beg{background:var(--amber)} .sb-dot.dev{background:var(--brass)} .sb-dot.sec{background:var(--leaf)}
+.sb-arrow{color:var(--ink3);font-size:11px;text-align:center}
+@media (max-width:560px){.scoreboard{grid-template-columns:1fr;gap:14px}.sb-num{font-size:44px}}
+</style>
 <div class="topbar"><div class="topbar-in">
   <div class="brand"><b>Grade 2 FAST Math Trainer</b><span>FLORIDA B.E.S.T. · PM1 → PM2</span></div>
   <div class="switch" role="group" aria-label="Choose view">
@@ -2951,6 +2966,12 @@ function isrReport(last){
   const bandOf=v=>v>=80?["sec","Secure"]:v>=60?["dev","Developing"]:["beg","Beginning"];
   const [ocls,olbl]=bandOf(mastery);
 
+  // Florida's own bands are the scoreboard: Beginning <60, Developing 60-79, Secure 80+
+  const nowSec=Object.keys(seen).filter(d=>Math.round(100*seen[d][0]/seen[d][1])>=80).length;
+  const nowBeg=Object.keys(seen).filter(d=>Math.round(100*seen[d][0]/seen[d][1])<60).length;
+  const wasSec=PM1.filter(v=>v>=80).length, wasBeg=PM1.filter(v=>v<60).length;
+  const nDom=Object.keys(seen).length;
+
   return `<div class="card lift isr" style="margin-bottom:22px">
     <div class="isr-hd">
       <div>
@@ -2959,17 +2980,42 @@ function isrReport(last){
       </div>
       <span class="pill ${ocls}">${olbl}</span>
     </div>
-    <div class="isr-grid">
+
+    <div class="scoreboard">
+      <div class="sb-main">
+        <div class="sb-num">${nowSec}<span>/ ${nDom}</span></div>
+        <div class="sb-lbl">domains <b>Secure</b></div>
+        <div class="sb-was">his September report: <b>${wasSec} of 9</b></div>
+      </div>
+      <div class="sb-track">
+        ${DOMAINS.map((nm,d)=>{ if(seen[d]===undefined)return "";
+          const v=Math.round(100*seen[d][0]/seen[d][1]);
+          const c=v>=80?"sec":v>=60?"dev":"beg";
+          const p=PM1[d]>=80?"sec":PM1[d]>=60?"dev":"beg";
+          return `<div class="sb-row" title="${esc(nm)}">
+            <span class="sb-nm">${esc(nm)}</span>
+            <span class="sb-dot ${p}" aria-label="was"></span>
+            <span class="sb-arrow">→</span>
+            <span class="sb-dot ${c}" aria-label="now"></span></div>`;}).join("")}
+      </div>
+    </div>
+    <p style="font-size:14.5px;color:var(--ink2);line-height:1.55;margin-top:14px">
+      <b>This is the scoreboard to beat.</b> Florida grades every domain <em>Beginning</em> (under 60),
+      <em>Developing</em> (60–79) or <em>Secure</em> (80+). Those are the words on his real report, so
+      <b>${wasSec} Secure → ${nowSec} Secure</b> is progress measured in the state's own units.
+      Nine of nine is the finish line${nowBeg?`, and the ${nowBeg} still in Beginning are named below`:""}.</p>
+
+    <div class="isr-grid" style="margin-top:16px">
       <div><dt>Answered correctly</dt><dd>${got}<small> / ${n}</small></dd></div>
       <div><dt>Mastery of grade-level items</dt><dd>${mastery}<small>%</small></dd></div>
       <div><dt>His PM1 profile predicted</dt><dd>${predicted}<small>%</small></dd></div>
       <div><dt>Change</dt><dd style="color:var(--${delta>0?"leaf":delta<0?"amber":"ink3"})">${delta>0?"+":""}${delta}<small> pts</small></dd></div>
     </div>
-    <p style="font-size:14px;color:var(--ink2);line-height:1.55;margin-top:14px">
+    <p style="font-size:14px;color:var(--ink2);line-height:1.55;margin-top:12px">
       Florida defines a domain score as <em>"the percent of grade-level items in that domain the student
-      would be expected to answer correctly."</em> That is the unit above, so <b>${mastery}%</b> is directly
-      comparable to the 0–100 numbers on his real report — and to the <b>${predicted}%</b> his September
-      profile predicted for this exact mix of questions.</p>
+      would be expected to answer correctly."</em> So <b>${mastery}%</b> is in the same unit as the 0–100
+      numbers on his report, and <b>${predicted}%</b> is what his September profile predicted for this exact
+      mix of questions.</p>
 
     <h4 class="isr-sub">How he did on different areas of the test</h4>
     <div class="twrap"><table><thead><tr>
@@ -2988,12 +3034,15 @@ function isrReport(last){
       The raw count in brackets is the honest version.</p>
 
     <div class="note warn" style="margin-top:16px">
-      <h4>Why there is no FAST Equivalent Score here</h4>
-      <p>The real report gives a <b>FAST Equivalent Score</b> on a 38–369 scale, with Level 4 starting at <b>185</b>. Converting a
-      mastery percentage onto that scale needs Cambium's conversion table. I have exactly one anchor — his
-      one score — and one point gives no slope, so any scaled score printed here would be <b>made up</b>, and it would
-      look official enough for you to repeat to the school. What is real above is the mastery percentage and
-      the domain pattern, both in Florida's own units.</p>
+      <h4>Why there is no FAST Equivalent Score here — and what to aim at instead</h4>
+      <p>The real report gives a FAST Equivalent Score on a 38–369 scale; Level 4 starts at <b>185</b>. To turn a
+      mastery percentage into that scale you need Cambium's conversion table, and a single score is only one
+      anchor. One point gives no slope. Depending on what I assumed 100% mastery was worth, the same data produces
+      wildly different answers. That is a guess wearing a decimal point, and you would end up repeating it to
+      the school.</p>
+      <p style="margin-top:9px"><b>Aim at two real numbers instead.</b> <b>185</b> is the Level 4 line and only
+      PM2 can put him over it. <b>Nine Secure domains</b> is the thing you can actually move at home, it is
+      scored in Florida's own bands, and it is what drives the number underneath.</p>
     </div>
 
     <div class="isr-ladder">
