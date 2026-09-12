@@ -729,6 +729,19 @@ body.kidmode{background:#F1F4EF}
 .lvmock p b{color:var(--ink)}
 </style>
 <style>.lvcav{display:block;margin-top:7px;font-size:12.5px;color:var(--ink3);line-height:1.45}</style>
+<style>
+.projbox{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:var(--surface);
+  border:2px solid var(--leaf);border-radius:12px;padding:13px 16px;margin-bottom:13px}
+.projnum{font-size:40px;font-weight:800;letter-spacing:-.03em;color:var(--leaf);line-height:1;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.projnum span{font-size:24px;font-weight:600;color:var(--ink3);margin:0 2px}
+.projlbl{min-width:0}
+.projlbl b{display:block;font-size:15px;color:var(--ink)}
+.projlbl span{display:block;font-size:12.5px;color:var(--ink3);margin-top:3px;line-height:1.4}
+.projband{position:absolute;left:-3px;right:-3px;background:repeating-linear-gradient(45deg,
+  color-mix(in srgb,var(--leaf) 45%,transparent) 0 5px,transparent 5px 10px);
+  border-top:2px solid var(--leaf);border-bottom:2px solid var(--leaf);z-index:2;pointer-events:none}
+</style>
 <div class="topbar"><div class="topbar-in">
   <div class="brand"><b>Grade 2 FAST Math Trainer</b><span>FLORIDA B.E.S.T. · PM1 → PM2</span></div>
   <div class="switch" role="group" aria-label="Choose view">
@@ -3187,7 +3200,8 @@ function isrReport(last){
       <div class="minihd">Where he sits on the B.E.S.T. scale</div>
       ${ladderSVG(null,{mock:{form:last.form,when:new Date(last.when).toLocaleDateString(),
         sec:nowSec,wasSec:wasSec,mastery:mastery,predicted:predicted,
-        got:got,n:n,ciLo:ciLo,ciHi:ciHi}})}
+        got:got,n:n,ciLo:ciLo,ciHi:ciHi,anchor:parentScore(),
+        proj:projectScore(mastery,predicted,parentScore())}})}
       <p style="font-size:13px;color:var(--ink3);line-height:1.5;margin-top:8px">
         The shaded bar and the pin are his <b>measured</b> September result. The block above it is
         his <b>latest mock</b>. They are shown separately on purpose: only the real test can move the pin.</p>
@@ -3224,6 +3238,26 @@ function wilson(k,n,z){z=z||1.96; if(!n)return[0,0];
 /* The real ISR fills the bar from the bottom up to the student's score, like a
    thermometer, and highlights the band they land in. Shading levels without a
    score reads as "you are here", which is how this panel got misread. */
+/* ---------- projecting the mock onto the FAST Equivalent scale ----------
+   The FAST Equivalent Score is a linear rescale of the Star Unified Scale:
+   FAST = 38 + (Unified-600)/800 * 331. Checked against this report — Unified 931
+   predicts 174.95 against a printed 175. That fixes the scale.
+   The remaining unknown is what score equals 100% mastery of GRADE-2 content.
+   38-369 spans K through 10, so 369 is a tenth-grader, not a perfect second
+   grader. The plausible anchors sit at the top of grade-2 expectation, i.e.
+   Level 5 (201) up to well inside it (230). Both ends are reported. */
+const F_LO=38,F_HI=369,U_LO=600,U_HI=1400;
+const fastToUnified=f=>Math.round(U_LO+(f-F_LO)/(F_HI-F_LO)*(U_HI-U_LO));
+function projectScore(nowM,predM,anchor){
+  if(predM==null||anchor==null||nowM==null)return null;
+  if(Math.abs(100-predM)<1)return null;
+  const est=T=>anchor+(nowM-predM)*((T-anchor)/(100-predM));
+  const lo=est(201), hi=est(230);
+  if(!isFinite(lo)||!isFinite(hi))return null;
+  const clamp=v=>Math.max(F_LO,Math.min(F_HI,v));
+  const L=Math.round(clamp(Math.min(lo,hi))), H=Math.round(clamp(Math.max(lo,hi)));
+  const lvl=v=>v>=201?5:v>=185?4:v>=171?3:v>=158?2:1;
+  return {lo:L,hi:H,loLvl:lvl(L),hiLvl:lvl(H),uLo:fastToUnified(L),uHi:fastToUnified(H)};}
 function parentScore(){const v=store.get("fastScore",null);return (typeof v==="number"&&v>=38&&v<=369)?v:null;}
 function ladderSVG(score,opts){
   opts=opts||{};
@@ -3249,6 +3283,9 @@ function ladderSVG(score,opts){
     return `<div class="lvbar${isHere?" cur":""}" style="grid-row:${i+1};${bg}">
         <span class="lvtop">${hi}</span>${n===1?'<span class="lvbot">38</span>':""}
         ${isHere?`<span class="lvmark" style="bottom:${pct}%"></span>`:""}
+        ${(()=>{const p=opts.mock&&opts.mock.proj; if(!p)return "";
+          const a=Math.max(lo,p.lo), b=Math.min(hi,p.hi); if(b<=a)return "";
+          return `<span class="projband" style="bottom:${100*(a-lo)/(hi-lo)}%;height:${100*(b-a)/(hi-lo)}%"></span>`;})()}
       </div>
       <div class="lvtext${isHere?" cur":""}" style="grid-row:${i+1}">
         ${isHere?'<span class="lvyou">YOUR CHILD IS HERE</span>':""}
@@ -3261,6 +3298,13 @@ function ladderSVG(score,opts){
   const m=opts.mock;
   const mockRow = !m ? "" : `<div class="lvmock">
       <div class="lvmock-hd"><b>Latest mock</b> · ${esc(m.form||"practice")} · ${m.when}</div>
+      ${m.proj?`<div class="projbox">
+        <div class="projnum">${m.proj.lo}<span>–</span>${m.proj.hi}</div>
+        <div class="projlbl"><b>Estimated FAST Equivalent Score</b>
+          <span>${m.proj.loLvl===m.proj.hiLvl?`Level ${m.proj.loLvl}`:`Level ${m.proj.loLvl} into Level ${m.proj.hiLvl}`}
+          · measured ${m.anchor} in September · Level 4 line is 185</span>
+          <span>Unified Scale ${m.proj.uLo}–${m.proj.uHi}, against ${fastToUnified(m.anchor)} measured</span></div>
+      </div>`:""}
       <div class="lvmock-grid">
         <div><dt>Secure domains</dt><dd>${m.sec}<small> / 9</small></dd><i>was ${m.wasSec} in September</i></div>
         <div><dt>Mastery</dt><dd>${m.mastery}<small>%</small></dd><i>September profile predicted ${m.predicted}%</i></div>
@@ -3271,7 +3315,10 @@ function ladderSVG(score,opts){
         : m.sec>m.wasSec
         ? `<b>${m.sec-m.wasSec} more Secure domains</b> than September. The direction is toward Level 4; the ${9-m.sec} still short are named below.`
         : `Level unchanged by this. Look at the domains below for where it went.`}
-        <span class="lvcav">This is practice evidence. It cannot move the score or the level above — only PM2 does that.</span></p>
+        <span class="lvcav"><b>How that estimate is built:</b> the FAST Equivalent Score is a linear rescale of
+        the Star Unified Scale, which reproduces his measured ${m.anchor} to within a tenth of a point. Anchoring
+        there and asking what score a perfect grade-2 performance would earn gives the range above. It is
+        <b>this page's estimate from ${m.n} questions, not a FAST score</b> — only PM2 produces the real one.</span></p>
     </div>`;
 
   const banner = score==null
