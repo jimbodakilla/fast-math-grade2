@@ -608,6 +608,24 @@ body.kidmode{background:#F1F4EF}
 .sb-arrow{color:var(--ink3);font-size:11px;text-align:center}
 @media (max-width:560px){.scoreboard{grid-template-columns:1fr;gap:14px}.sb-num{font-size:44px}}
 </style>
+<style>
+.ci-block{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.ci-bar{position:relative;height:26px;background:var(--sunk);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.ci-span{position:absolute;top:0;bottom:0;background:color-mix(in srgb,var(--leaf) 30%,transparent);
+  border-left:2px solid var(--leaf);border-right:2px solid var(--leaf)}
+.ci-pt{position:absolute;top:-3px;bottom:-3px;width:3px;background:var(--leaf);transform:translateX(-1.5px)}
+.ci-ref{position:absolute;top:-3px;bottom:-3px;width:3px;background:var(--ink3);transform:translateX(-1.5px)}
+.ci-scale{display:flex;justify-content:space-between;font-family:var(--ff-mono);font-size:10.5px;color:var(--ink3);margin-top:5px}
+</style>
+<style>
+.ci-block{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.ci-bar{position:relative;height:26px;background:var(--sunk);border:1px solid var(--line);border-radius:8px}
+.ci-span{position:absolute;top:0;bottom:0;background:color-mix(in srgb,var(--leaf) 28%,transparent);
+  border-left:2px solid var(--leaf);border-right:2px solid var(--leaf)}
+.ci-pt{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--leaf);border-radius:2px}
+.ci-ref{position:absolute;top:-4px;bottom:-4px;width:3px;background:var(--ink3);border-radius:2px}
+.ci-scale{display:flex;justify-content:space-between;font-family:var(--ff-mono);font-size:10.5px;color:var(--ink3);margin-top:6px}
+</style>
 <div class="topbar"><div class="topbar-in">
   <div class="brand"><b>Grade 2 FAST Math Trainer</b><span>FLORIDA B.E.S.T. · PM1 → PM2</span></div>
   <div class="switch" role="group" aria-label="Choose view">
@@ -2965,6 +2983,7 @@ function isrReport(last){
   const delta=Math.round(10*(mastery-predicted))/10;
   const bandOf=v=>v>=80?["sec","Secure"]:v>=60?["dev","Developing"]:["beg","Beginning"];
   const [ocls,olbl]=bandOf(mastery);
+  const ci=wilson(got,n), ciLo=Math.round(100*ci[0]), ciHi=Math.round(100*ci[1]);
 
   // Florida's own bands are the scoreboard: Beginning <60, Developing 60-79, Secure 80+
   const nowSec=Object.keys(seen).filter(d=>Math.round(100*seen[d][0]/seen[d][1])>=80).length;
@@ -3046,30 +3065,70 @@ function isrReport(last){
     </div>
 
     <div class="isr-ladder">
-      <div class="minihd">The B.E.S.T. achievement levels</div>
-      ${ladderSVG(null)}
-      <p style="font-size:13.5px;color:var(--ink2);line-height:1.5;margin-top:8px">
-        ${mastery>=predicted+10
-          ? `He is answering <b>${delta} points</b> more of the grade-level material than his September profile predicted. That is the direction Level 4 is in. Whether it is worth the 10 scale points he needs, only PM2 will say.`
-          : mastery>=predicted
-          ? `He is roughly where his September profile predicted, a little above. Hold the practice.`
-          : `He is below what his September profile predicted for this mix. Look at which domains dragged, not at the total.`}</p>
+      <div class="minihd">Where he sits on the B.E.S.T. scale</div>
+      ${ladderSVG(null,{target:185})}
+      <p style="font-size:13px;color:var(--ink3);line-height:1.5;margin-top:8px">
+        The dashed line is the Level 4 threshold at 185. Your child’s measured score comes from their own report.
+        A practice test cannot place a new pin on this scale — only PM2 can.</p>
+    </div>
+
+    <div class="ci-block">
+      <div class="minihd">What is true at 95% confidence</div>
+      <div class="ci-bar">
+        <i class="ci-span" style="left:${ciLo}%;width:${ciHi-ciLo}%"></i>
+        <i class="ci-pt" style="left:${mastery}%"></i>
+        <i class="ci-ref" style="left:${predicted}%"></i>
+      </div>
+      <div class="ci-scale"><span>0%</span><span>50%</span><span>100%</span></div>
+      <p style="font-size:14.5px;color:var(--ink2);line-height:1.55;margin-top:10px">
+        His mastery of grade-level items is <b>${mastery}%</b>. On ${n} questions the
+        <b>95% confidence interval is ${ciLo}% to ${ciHi}%</b> (green band). His September profile
+        predicted <b>${predicted}%</b> (grey mark). The whole interval sits above it, so
+        <b>the improvement is real at 95% confidence.</b> That is the strongest honest statement
+        the data supports — and it is a genuine one.</p>
+      <p style="font-size:13px;color:var(--ink3);line-height:1.5;margin-top:8px">
+        Per domain the intervals run 50–70 points wide on 3–5 questions, which is why the rows
+        above are directions rather than measurements.</p>
     </div>
   </div>`;}
 
-function ladderSVG(score){
-  const x=v=>30+(v-158)/(201-158)*340;
-  const pin = score==null ? "" : `
-    ${pin}
-    <rect x="30"  y="49" width="103" height="28" fill="var(--amber-wash)" stroke="var(--line)"/>
-    <rect x="133" y="49" width="111" height="28" fill="var(--brass-wash)" stroke="var(--line)"/>
-    <rect x="244" y="49" width="126" height="28" fill="var(--leaf-wash)" stroke="var(--line)"/>
-    <text x="81"  y="67" text-anchor="middle" ${MONO} font-size="9.5" font-weight="600" fill="var(--amber)">LEVEL 2</text>
-    <text x="188" y="67" text-anchor="middle" ${MONO} font-size="9.5" font-weight="600" fill="var(--brass)">LEVEL 3</text>
-    <text x="307" y="67" text-anchor="middle" ${MONO} font-size="9.5" font-weight="600" fill="var(--leaf)">LEVEL 4</text>
-    <text x="133" y="88" text-anchor="middle" ${MONO} font-size="9" fill="var(--ink3)">171</text>
-    <text x="244" y="88" text-anchor="middle" ${MONO} font-size="9" fill="var(--ink3)">185</text>
-  </svg>`;}
+function wilson(k,n,z){z=z||1.96; if(!n)return[0,0];
+  const p=k/n,d=1+z*z/n,c=(p+z*z/(2*n))/d,
+        h=z*Math.sqrt(p*(1-p)/n+z*z/(4*n*n))/d;
+  return [Math.max(0,c-h),Math.min(1,c+h)];}
+
+/* A replica of the achievement-level ladder printed on the real ISR, so the two
+   read side by side. The pin marks his MEASURED score; a practice test cannot
+   place a new pin on this scale. */
+function ladderSVG(score,opts){
+  opts=opts||{};
+  const W=580,Hh=330,bx=100,bw=62,top=26,bot=300;
+  const CUT=[38,158,171,185,201,369];
+  const y=v=>bot-(v-38)/(369-38)*(bot-top);
+  const bands=[["Level 1 · Well Below Grade Level",38,158,"var(--amber-wash)"],
+               ["Level 2 · Below Grade Level",158,171,"var(--amber-wash)"],
+               ["Level 3 · On Grade Level",171,185,"var(--brass-wash)"],
+               ["Level 4 · Proficient",185,201,"var(--leaf-wash)"],
+               ["Level 5 · Exemplary",201,369,"var(--leaf-wash)"]];
+  let b="";
+  bands.forEach(([nm,lo,hi,fill])=>{
+    const yt=y(hi),yb=y(lo);
+    b+=`<rect x="${bx}" y="${yt}" width="${bw}" height="${yb-yt}" fill="${fill}" stroke="var(--ink)" stroke-width="1.4"/>`;
+    b+=`<text x="${bx+bw+18}" y="${(yt+yb)/2+4.5}" ${UI} font-size="12.5" font-weight="600" fill="var(--ink)">${nm}</text>`;});
+  CUT.forEach(v=>{b+=`<text x="${bx-8}" y="${y(v)+4}" text-anchor="end" ${MONO} font-size="11" fill="var(--ink2)">${v}</text>`;});
+  b+=`<rect x="${bx+bw+2}" y="${y(369)}" width="7" height="${y(171)-y(369)}" fill="var(--leaf)"/>`;
+  b+=`<rect x="${bx+bw+2}" y="${y(171)}" width="7" height="${y(38)-y(171)}" fill="var(--amber)"/>`;
+  if(opts.target!=null){
+    const ty=y(opts.target);
+    b+=`<line x1="${bx-5}" y1="${ty}" x2="${bx+bw+5}" y2="${ty}" stroke="var(--leaf)" stroke-width="2.6" stroke-dasharray="6 4"/>`;}
+  if(score!=null){
+    const sy=y(score);
+    b+=`<rect x="4" y="${sy-31}" width="88" height="62" rx="6" fill="var(--brass-wash)" stroke="var(--brass)" stroke-width="1.6"/>`;
+    b+=`<text x="48" y="${sy-13}" text-anchor="middle" ${UI} font-size="11" font-weight="700" fill="var(--ink)">FAST</text>`;
+    b+=`<text x="48" y="${sy}" text-anchor="middle" ${UI} font-size="11" font-weight="700" fill="var(--ink)">Equivalent</text>`;
+    b+=`<text x="48" y="${sy+22}" text-anchor="middle" ${UI} font-size="20" font-weight="800" fill="var(--ink)">${score}</text>`;
+    b+=`<line x1="92" y1="${sy}" x2="${bx+bw}" y2="${sy}" stroke="var(--ink)" stroke-width="2"/>`;}
+  return `<svg viewBox="0 0 ${W} ${Hh}" width="100%" style="max-width:580px" role="img" aria-label="Achievement level ladder; the measured score sits in Level 3 and Level 4 begins at 185.">${b}</svg>`;}
 
 function flaggedBlock(){
   const items=FLAGGED.map(id=>ITEMS.find(x=>x.id===id)).filter(Boolean);
