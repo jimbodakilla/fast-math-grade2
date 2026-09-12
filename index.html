@@ -2705,9 +2705,11 @@ function sessionDone(){
 function logAttempt(r,meta){
   const h=store.get("history",[]);
   const per={}; meta.forEach(m=>{const d=per[m.dom]=per[m.dom]||[0,0];d[1]++;if(m.ok)d[0]++;});
+  const sec=Object.keys(per).filter(d=>per[d][1]&&Math.round(100*per[d][0]/per[d][1])>=80).length;
   h.push({when:Date.now(),
     kind:r.mode==="mock"?(r.exam?"mock-exam":"mock-practice"):(r.endless?"endless":"drill"),
-    day:r.day||0, n:meta.length, ok:meta.filter(m=>m.ok).length, per});
+    form:(r.formIdx!=null?FORM_NAMES[r.formIdx]:null),
+    day:r.day||0, n:meta.length, ok:meta.filter(m=>m.ok).length, sec, per});
   store.set("history",h.slice(-60));}
 function domScore(rows){const w=rows.reduce((a,x)=>a+x.d,0); if(!w)return null;
   return Math.round(100*rows.reduce((a,x)=>a+(x.ok?x.d:0),0)/w);}
@@ -2851,6 +2853,7 @@ function renderReview(txt){
     <p style="font-size:13px;color:var(--ink3);margin:-12px 0 22px;line-height:1.5;max-width:66ch">Counts, not scores. Three to five questions per domain is far too few to produce a reliable 0–100 estimate, so this table deliberately shows raw correct-out-of-seen instead of a number that looks comparable to his PM1 domain score.</p>
 
     ${isrReport(last)}
+    ${mockHistoryBlock()}
     ${flaggedBlock()}
     ${historyBlock()}
 
@@ -3149,6 +3152,35 @@ function flaggedBlock(){
       <button class="btn" onclick="setMode('kid');startFlagged()">Go through them with him</button>
       <button class="btn ghost" onclick="if(confirm('Clear all flags?')){clearFlags();renderReview();}">Clear all flags</button>
     </div></div>`;}
+/* Mock attempts only. A drill is 13 questions aimed at one domain with easy
+   warm-ups, so averaging it with a 34-item mock makes "progress" meaningless.
+   These rows are like-for-like. */
+function mockHistoryBlock(){
+  const mocks=store.get("history",[]).filter(a=>/^mock/.test(a.kind));
+  if(!mocks.length)return "";
+  const rows=mocks.map(a=>({...a,mastery:a.n?Math.round(1000*a.ok/a.n)/10:0}));
+  const first=rows[0], last=rows[rows.length-1];
+  return `<div class="card lift" style="margin-bottom:22px;border-color:var(--accent)">
+    <h3 class="sub">Mock by mock</h3>
+    <p style="font-size:14.5px;color:var(--ink2);margin:6px 0 14px;line-height:1.5">
+      ${rows.length===1
+        ? "One full mock so far. The three forms are built to be equally hard, so when he sits Form B and Form C these rows compare like with like."
+        : rows.length+" full mocks. The forms are equally hard by construction, so a change here is him, not the paper."}</p>
+    <div class="twrap"><table><thead><tr>
+      <th>Form</th><th>When</th><th>Score</th><th>Mastery</th><th>Secure domains</th></tr></thead><tbody>
+      ${rows.map((a,i)=>{const prev=i?rows[i-1]:null;
+        const dS=prev?a.sec-prev.sec:null, dM=prev?Math.round(10*(a.mastery-prev.mastery))/10:null;
+        return `<tr><td><b>${esc(a.form||"Mock")}</b>${a.kind==="mock-exam"?' <span class="pill">real rules</span>':""}</td>
+          <td class="num">${new Date(a.when).toLocaleDateString()}</td>
+          <td class="num">${a.ok}/${a.n}</td>
+          <td class="num">${a.mastery}%${dM!=null?` <small class="delta ${dM>0?"up":dM<0?"dn":"same"}">${dM>0?"+":""}${dM}</small>`:""}</td>
+          <td class="num"><b>${a.sec!=null?a.sec:"—"}</b> / 9${dS!=null?` <small class="delta ${dS>0?"up":dS<0?"dn":"same"}">${dS>0?"+":""}${dS}</small>`:""}</td></tr>`;}).join("")}
+    </tbody></table></div>
+    ${rows.length>1
+      ? `<p style="font-size:14px;color:var(--ink2);margin-top:12px;line-height:1.5">From <b>${esc(first.form||"the first mock")}</b> to <b>${esc(last.form||"the latest")}</b>: <b>${last.ok-first.ok>0?"+":""}${last.ok-first.ok}</b> marks and <b>${last.sec-first.sec>0?"+":""}${last.sec-first.sec}</b> Secure domains.</p>`
+      : `<p style="font-size:13px;color:var(--ink3);margin-top:10px;line-height:1.5">Form B is next: same blueprint, same difficulty, none of the same questions.</p>`}
+  </div>`;}
+
 function historyBlock(){
   const h=store.get("history",[]);
   if(h.length<2)return `<p style="font-size:13.5px;color:var(--ink3);margin:-6px 0 20px;line-height:1.5">Once he has done more than one session, a running record of every domain will appear here so you can compare Day 1 with Day 4.</p>`;
@@ -3164,8 +3196,8 @@ function historyBlock(){
       <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
       <circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.4" fill="var(--accent)"/></svg>`;};
   return `<div class="card lift" style="margin-bottom:22px">
-    <h3 class="sub">Every session so far</h3>
-    <p style="font-size:13.5px;color:var(--ink2);margin:5px 0 12px;line-height:1.5">${h.length} sessions logged. The line is the share he got right in that domain, oldest to newest. Look for the shape of the line, not any single point.</p>
+    <h3 class="sub">Every practice session</h3>
+    <p style="font-size:13.5px;color:var(--ink2);margin:5px 0 12px;line-height:1.5">${h.length} sessions, <b>drills and mocks together</b>. Drills are shorter and aimed at one domain, so read this for the shape of the trend and the table above for like-for-like comparison.</p>
     <div class="twrap"><table><thead><tr><th>Domain</th><th>PM1</th><th>Trend</th><th>First</th><th>Latest</th><th>Total</th></tr></thead><tbody>
     ${doms.map(d=>{const rows=per[d],f=rows[0],l=rows[rows.length-1];
       const tot=rows.reduce((a,r)=>[a[0]+r.ok,a[1]+r.n],[0,0]);
