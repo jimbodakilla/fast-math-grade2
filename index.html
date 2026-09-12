@@ -1,0 +1,2475 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Grade 2 FAST Math Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,400;0,500;0,600;0,700;0,800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* ============ TOKENS: complete light palette on bare :root ============ */
+:root{
+  --paper:#F1F4EF; --surface:#FFFFFF; --surface2:#E9EEE7; --sunk:#E3E9E0;
+  --ink:#14312F; --ink2:#3B5653; --ink3:#566B68; --line:#D3DDD3; --grid:#DFE7DD;
+  --accent:#0E7C7B; --accent-ink:#0A5E5D; --accent-wash:#DFEFEE;
+  --amber:#B4551A; --amber-wash:#F7E6D8;
+  --brass:#8F6C0E; --brass-wash:#F6EED4;
+  --leaf:#37702F; --leaf-wash:#E0EEDB;
+  --star:#C97F14; --star-bright:#E8A33D;
+  --on-accent:#FFFFFF; --on-leaf:#FFFFFF; --on-amber:#FFFFFF;
+  --wood:#E8D5B0; --wood-ink:#4A3418; --metal:#8E949C;
+  --shadow:0 1px 2px rgba(20,49,47,.06),0 4px 14px rgba(20,49,47,.05);
+  --shadow-lift:0 2px 6px rgba(20,49,47,.10),0 14px 34px rgba(20,49,47,.10);
+  --r:10px; --r-lg:16px;
+  --ff-ui:"Rubik",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --ff-serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --ff-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --on-accent:#06201F; --on-leaf:#0B1A08; --on-amber:#2A1408;
+  --wood:#6B5638; --wood-ink:#F0E4CC; --metal:#6E757D;
+  --paper:#0E1A1B; --surface:#152628; --surface2:#1B3032; --sunk:#101E20;
+  --ink:#E4EDE6; --ink2:#AFC4C0; --ink3:#7F9793; --line:#27403F; --grid:#1F3436;
+  --accent:#54BDB6; --accent-ink:#8BD8D1; --accent-wash:#14383A;
+  --amber:#E6904F; --amber-wash:#3A2415;
+  --brass:#D9B444; --brass-wash:#332A0F;
+  --leaf:#7FC06F; --leaf-wash:#17300F;
+  --star:#E8A33D; --star-bright:#F5BE64;
+  --shadow:0 1px 2px rgba(0,0,0,.34),0 4px 14px rgba(0,0,0,.30);
+  --shadow-lift:0 2px 6px rgba(0,0,0,.40),0 14px 34px rgba(0,0,0,.38);
+}}
+:root[data-theme="dark"]{
+  --on-accent:#06201F; --on-leaf:#0B1A08; --on-amber:#2A1408;
+  --wood:#6B5638; --wood-ink:#F0E4CC; --metal:#6E757D;
+  --paper:#0E1A1B; --surface:#152628; --surface2:#1B3032; --sunk:#101E20;
+  --ink:#E4EDE6; --ink2:#AFC4C0; --ink3:#7F9793; --line:#27403F; --grid:#1F3436;
+  --accent:#54BDB6; --accent-ink:#8BD8D1; --accent-wash:#14383A;
+  --amber:#E6904F; --amber-wash:#3A2415;
+  --brass:#D9B444; --brass-wash:#332A0F;
+  --leaf:#7FC06F; --leaf-wash:#17300F;
+  --star:#E8A33D; --star-bright:#F5BE64;
+  --shadow:0 1px 2px rgba(0,0,0,.34),0 4px 14px rgba(0,0,0,.30);
+  --shadow-lift:0 2px 6px rgba(0,0,0,.40),0 14px 34px rgba(0,0,0,.38);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--ff-ui);
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;text-wrap:balance;line-height:1.18;font-weight:700;letter-spacing:-.015em}
+p{margin:0}
+a{color:var(--accent-ink)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* graph-paper ground — the subject's own material */
+.graph{background-image:
+   linear-gradient(var(--grid) 1px,transparent 1px),
+   linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px;background-position:-1px -1px}
+
+/* ============ SHELL ============ */
+.topbar{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1180px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:9px;margin-right:auto;min-width:0}
+.brand b{font-size:16px;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+.brand span{font-family:var(--ff-mono);font-size:10.5px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase}
+.switch{display:flex;background:var(--sunk);border:1px solid var(--line);border-radius:999px;padding:3px;gap:2px}
+.switch button{font-family:var(--ff-ui);font-size:13.5px;font-weight:600;border:0;background:transparent;
+  color:var(--ink2);padding:7px 15px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.switch button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+
+.wrap{max-width:1180px;margin:0 auto;padding-inline:18px;padding-block:0 72px}
+.col{max-width:none}
+.prose{font-family:var(--ff-serif);font-size:17.5px;line-height:1.65;color:var(--ink2);max-width:66ch}
+.prose strong{color:var(--ink);font-weight:600}
+
+/* section rhythm */
+section.blk{padding-block:40px;border-top:1px solid var(--line)}
+section.blk:first-of-type{border-top:0}
+.eyebrow{font-family:var(--ff-mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--accent-ink);font-weight:600;margin-bottom:9px}
+h2.sec{font-size:clamp(23px,3.4vw,31px);margin-bottom:12px}
+h3.sub{font-size:19px;margin-bottom:8px}
+.stack{display:flex;flex-direction:column}
+.g14{gap:14px}.g18{gap:18px}.g24{gap:24px}.g10{gap:10px}.g8{gap:8px}
+
+/* ============ HERO ============ */
+.hero{border-bottom:1px solid var(--line);background:var(--surface)}
+.hero-in{max-width:1180px;margin:0 auto;padding-inline:18px;padding-block:34px 30px;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:34px;align-items:start}
+.hero h1{font-size:clamp(30px,5.2vw,46px);letter-spacing:-.032em;margin-bottom:14px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.verdict{display:inline-flex;align-items:center;gap:8px;font-family:var(--ff-mono);font-size:11.5px;
+  font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:var(--leaf-wash);color:var(--leaf);
+  border:1px solid color-mix(in srgb,var(--leaf) 32%,transparent);padding:5px 12px;border-radius:999px;margin-bottom:15px}
+.scorestrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:20px}
+.scorestrip div{background:var(--surface);padding:12px 13px}
+.scorestrip dt{font-family:var(--ff-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px}
+.scorestrip dd{margin:0;font-size:25px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.scorestrip dd small{font-size:12.5px;font-weight:500;color:var(--ink3);letter-spacing:0}
+
+/* ============ LEVEL LADDER ============ */
+.ladder{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px 18px 18px;box-shadow:var(--shadow)}
+.ladder h4{font-family:var(--ff-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;font-weight:600}
+
+/* ============ CARDS / BANDS ============ */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px 22px}
+.card.lift{box-shadow:var(--shadow)}
+.note{border-left:3px solid var(--accent);background:var(--accent-wash);padding:14px 17px;border-radius:0 var(--r) var(--r) 0}
+.note.warn{border-left-color:var(--amber);background:var(--amber-wash)}
+.note h4{font-size:15px;margin-bottom:5px}
+.note p{font-size:14.5px;color:var(--ink2);line-height:1.55}
+.pill{display:inline-block;font-family:var(--ff-mono);font-size:10.5px;font-weight:600;letter-spacing:.05em;
+  text-transform:uppercase;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.pill.beg{background:var(--amber-wash);color:var(--amber)}
+.pill.dev{background:var(--brass-wash);color:var(--brass)}
+.pill.sec{background:var(--leaf-wash);color:var(--leaf)}
+.bench{font-family:var(--ff-mono);font-size:11px;color:var(--ink3);letter-spacing:.02em}
+
+/* ============ DOMAIN LIST (ruler bars) ============ */
+.dom{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.dom + .dom{margin-top:9px}
+.dom.focus{border-color:color-mix(in srgb,var(--amber) 46%,transparent);border-width:1.5px}
+.dom > summary{list-style:none;cursor:pointer;padding:13px 16px;display:grid;
+  grid-template-columns:24px minmax(0,1.15fr) minmax(150px,2fr) auto;gap:14px;align-items:center}
+.dom > summary::-webkit-details-marker{display:none}
+.dom > summary:hover{background:var(--surface2)}
+.rank{font-family:var(--ff-mono);font-size:12px;font-weight:600;color:var(--ink3);text-align:right;font-variant-numeric:tabular-nums}
+.dname{font-weight:600;font-size:15px;min-width:0}
+.dname small{display:block;font-weight:400;font-size:12px;color:var(--ink3);font-family:var(--ff-mono);margin-top:2px}
+.dscore{font-family:var(--ff-mono);font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;text-align:right;min-width:46px}
+.dom-body{padding:2px 16px 18px;border-top:1px solid var(--line);background:var(--sunk)}
+.dom-body > * + *{margin-top:13px}
+.quote{font-family:var(--ff-serif);font-style:italic;font-size:15.5px;color:var(--ink2);
+  border-left:2px solid var(--accent);padding-left:13px;line-height:1.55}
+.quote cite{display:block;font-style:normal;font-family:var(--ff-mono);font-size:10.5px;
+  text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-top:6px}
+.minihd{font-family:var(--ff-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink3);font-weight:600;margin-bottom:5px}
+.benchlist{display:flex;flex-direction:column;gap:7px}
+.benchrow{display:grid;grid-template-columns:104px minmax(0,1fr);gap:11px;font-size:14px;color:var(--ink2);align-items:start}
+.benchrow b{font-family:var(--ff-mono);font-size:11.5px;color:var(--accent-ink);font-weight:600;padding-top:2px}
+
+/* ============ TABLES ============ */
+.twrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--ff-mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--ink3);font-weight:600;background:var(--sunk)}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--ff-mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+
+/* ============ 4-DAY PLAN ============ */
+.days{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.day{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column}
+.day-hd{padding:14px 17px 13px;border-bottom:1px solid var(--line)}
+.day-n{font-family:var(--ff-mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+.day-hd h3{font-size:17.5px;margin:5px 0 6px}
+.day-goal{font-size:13px;color:var(--ink2);line-height:1.45}
+.blocks{padding:6px 17px 16px;display:flex;flex-direction:column;flex:1}
+.block{display:grid;grid-template-columns:52px minmax(0,1fr);gap:11px;padding:11px 0;border-bottom:1px dashed var(--line);align-items:start}
+.block:last-child{border-bottom:0}
+.btime{font-family:var(--ff-mono);font-size:11px;color:var(--ink3);font-variant-numeric:tabular-nums;padding-top:2px}
+.btitle{font-weight:600;font-size:14px;margin-bottom:3px}
+.bdesc{font-size:13px;color:var(--ink2);line-height:1.48}
+.move{background:var(--accent-wash);border-radius:8px;padding:8px 11px;margin:3px 0}
+.move .btitle{color:var(--accent-ink);font-size:13px;margin:0}
+.move .bdesc{font-size:12.5px}
+
+/* ============ SCRIPT / COACH CARDS ============ */
+.script{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--brass);
+  border-radius:0 var(--r) var(--r) 0;padding:13px 16px}
+.script .who{font-family:var(--ff-mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);font-weight:600;margin-bottom:4px}
+.script p{font-family:var(--ff-serif);font-size:15.5px;font-style:italic;color:var(--ink);line-height:1.5}
+.dont{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.dont > div{border-radius:var(--r);padding:13px 15px;font-size:14px;line-height:1.5}
+.dont .no{background:var(--amber-wash);border:1px solid color-mix(in srgb,var(--amber) 25%,transparent)}
+.dont .yes{background:var(--leaf-wash);border:1px solid color-mix(in srgb,var(--leaf) 25%,transparent)}
+.dont h5{margin:0 0 5px;font-size:12px;font-family:var(--ff-mono);letter-spacing:.07em;text-transform:uppercase;font-weight:600}
+.dont .no h5{color:var(--amber)} .dont .yes h5{color:var(--leaf)}
+
+/* ============ BUTTONS ============ */
+.btn{font-family:var(--ff-ui);font-size:15px;font-weight:600;border-radius:var(--r);border:1px solid transparent;
+  padding:11px 20px;cursor:pointer;background:var(--accent);color:var(--on-accent);transition:filter .15s,transform .08s}
+.btn:hover{filter:brightness(1.08)} .btn:active{transform:translateY(1px)}
+.btn.ghost{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{background:var(--surface2);filter:none}
+.btn:disabled,.btn[disabled]{background:var(--sunk);color:var(--ink3);border-color:var(--line);
+  cursor:default;box-shadow:none;filter:none}
+.nbtn.quiet{border-style:dashed;color:var(--ink3);font-weight:500;font-size:15px;padding:10px 16px;min-height:44px}
+.nbtn.quiet:hover{color:var(--ink2);border-color:var(--ink3);background:transparent}
+.btn.big{font-size:19px;padding:16px 28px;border-radius:14px}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap}
+
+/* ============ SOURCES ============ */
+.srcs{display:flex;flex-direction:column;gap:9px;font-size:13.5px}
+.srcs a{display:block;color:var(--ink2);text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:9px}
+.srcs a:hover{color:var(--accent-ink)}
+.srcs b{display:block;color:var(--ink);font-weight:600;font-size:14px;margin-bottom:2px}
+.srcs span{font-family:var(--ff-mono);font-size:11px;color:var(--ink3);word-break:break-all}
+
+@media (max-width:840px){
+  .hero-in{grid-template-columns:1fr;gap:24px;padding-block:26px 24px}
+  .dom > summary{grid-template-columns:20px minmax(0,1fr) auto;gap:10px}
+  .dom > summary .rulerwrap{grid-column:1/-1;margin-top:2px}
+}
+@media (max-width:460px){
+  body{font-size:15.5px}
+  .prose{font-size:16.5px}
+  .brand span{display:none}
+  .scorestrip dd{font-size:22px}
+}
+</style>
+<style>
+/* ================= KID MODE — one task on screen, nothing else ================= */
+#kid{display:none}
+body.kidmode #parent{display:none}
+body.kidmode #kid{display:block}
+.kwrap{max-width:820px;margin:0 auto;padding-inline:18px;padding-block:22px 60px}
+
+
+.kbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.stars{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);
+  border-radius:999px;padding:7px 16px 7px 12px;font-family:var(--ff-mono);font-weight:600;font-size:17px;
+  font-variant-numeric:tabular-nums;box-shadow:var(--shadow)}
+.stars svg{display:block}
+.prog{flex:1;min-width:120px;height:10px;background:var(--sunk);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .35s ease}
+
+/* mission picker */
+.missions{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:13px}
+.mission{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r-lg);
+  padding:18px 19px;cursor:pointer;font-family:var(--ff-ui);color:var(--ink);transition:transform .12s,box-shadow .15s,border-color .15s}
+.mission:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift);border-color:var(--accent)}
+.mission .mn{font-family:var(--ff-mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--accent-ink);font-weight:600}
+.mission h3{font-size:20px;margin:6px 0 6px}
+.mission p{font-size:13.5px;color:var(--ink2);line-height:1.45}
+.mission .mmeta{margin-top:11px;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.mission.test{border-color:color-mix(in srgb,var(--amber) 50%,transparent);background:var(--amber-wash)}
+.mission.done{opacity:.62}
+.mission.done .mn::after{content:" — done";color:var(--leaf)}
+
+/* the stage: one question, huge */
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:26px 26px 22px;box-shadow:var(--shadow)}
+.qhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.qnum{font-family:var(--ff-mono);font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+.qtext{font-size:clamp(19px,3.1vw,25px);font-weight:600;line-height:1.35;letter-spacing:-.015em;margin-bottom:18px}
+.figbox{display:flex;justify-content:center;padding:14px 4px 20px}
+.figbox svg{max-width:100%;height:auto}
+
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.opt{display:flex;align-items:center;gap:13px;text-align:left;font-family:var(--ff-ui);font-size:19px;font-weight:600;
+  color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:14px;
+  padding:16px 18px;cursor:pointer;min-height:62px;transition:border-color .12s,background .12s,transform .08s}
+.opt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-wash)}
+.opt:active:not(:disabled){transform:translateY(1px)}
+.opt .ltr{flex:none;width:32px;height:32px;border-radius:9px;background:var(--sunk);color:var(--ink3);
+  font-family:var(--ff-mono);font-size:15px;font-weight:600;display:grid;place-items:center}
+.opt.right{border-color:var(--leaf);background:var(--leaf-wash)}
+.opt.right .ltr{background:var(--leaf);color:var(--on-leaf)}
+.opt.wrong{border-color:var(--amber);background:var(--amber-wash)}
+.opt.wrong .ltr{background:var(--amber);color:var(--on-amber)}
+.opt:disabled{cursor:default}
+.opt.dim{opacity:.45}
+
+.fb{margin-top:18px;border-radius:14px;padding:17px 19px;display:none}
+.fb.show{display:block}
+.fb.ok{background:var(--leaf-wash);border:1.5px solid color-mix(in srgb,var(--leaf) 34%,transparent)}
+.fb.no{background:var(--amber-wash);border:1.5px solid color-mix(in srgb,var(--amber) 34%,transparent)}
+.fb h4{font-size:19px;margin-bottom:7px}
+.fb.ok h4{color:var(--leaf)} .fb.no h4{color:var(--amber)}
+.fb p{font-size:16px;line-height:1.52;color:var(--ink)}
+.fb .trap{margin-top:9px;font-size:15.5px;color:var(--ink);padding-top:9px;border-top:1px dashed color-mix(in srgb,var(--ink3) 40%,transparent)}
+.fb .trap b{font-family:var(--ff-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+
+/* movement break */
+.brk{text-align:center;background:var(--accent-wash);border:2px dashed color-mix(in srgb,var(--accent) 42%,transparent);
+  border-radius:20px;padding:34px 24px}
+.brk .big{font-size:clamp(26px,5vw,38px);font-weight:800;letter-spacing:-.028em;color:var(--accent-ink);margin-bottom:10px}
+.brk p{font-size:18px;color:var(--ink);max-width:44ch;margin:0 auto 18px;line-height:1.5}
+.timer{font-family:var(--ff-mono);font-size:52px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--accent);margin-bottom:14px}
+
+/* results */
+.res-hd{text-align:center;padding:8px 0 22px}
+.res-hd .big{font-size:clamp(34px,7vw,56px);font-weight:800;letter-spacing:-.035em;line-height:1}
+.res-hd p{font-size:17px;color:var(--ink2);margin-top:8px}
+.domres{display:flex;flex-direction:column;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.domres > div{background:var(--surface);padding:11px 14px;display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;font-size:14px}
+.domres b{font-weight:600}
+.domres .sc{font-family:var(--ff-mono);font-weight:600;font-variant-numeric:tabular-nums}
+.delta{font-family:var(--ff-mono);font-size:12px;font-weight:600}
+.delta.up{color:var(--leaf)} .delta.dn{color:var(--amber)} .delta.same{color:var(--ink3)}
+
+.rev{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.rev + .rev{margin-top:8px}
+.rev summary{cursor:pointer;padding:12px 15px;display:flex;gap:11px;align-items:center;font-size:14.5px;list-style:none}
+.rev summary::-webkit-details-marker{display:none}
+.rev summary:hover{background:var(--surface2)}
+.rev .mark{flex:none;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--on-accent)}
+.rev .mark.ok{background:var(--leaf)} .rev .mark.no{background:var(--amber)}
+.rev-body{padding:4px 15px 16px;border-top:1px solid var(--line);background:var(--sunk);font-size:14.5px;line-height:1.55;color:var(--ink2)}
+.rev-body > * + *{margin-top:9px}
+
+.testnote{background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);padding:14px 17px;font-size:14px;color:var(--ink2);line-height:1.55}
+.testnote b{color:var(--ink)}
+.centr{text-align:center}
+/* ===== child-facing type: no monospace, no uppercase, no negative tracking ===== */
+#kid .pill,#kid .mn,#kid .qnum,#kid .tapnote,#kid .counter small,#kid .counter button,
+#kid .fb .trap b,#kid .figopt .lbl,#kid .opt .ltr,#kid .qcell,#kid .legend,#kid .rw-txt,#kid .gate{
+  font-family:var(--ff-ui);text-transform:none;letter-spacing:0}
+#kid h1,#kid h2,#kid h3,#kid h4,#kid .big,#kid .qtext{letter-spacing:0}
+#kid .rw-txt b,#kid .counter,#kid .stars{font-variant-numeric:tabular-nums}
+.qnum{font-size:17px;font-weight:700;color:var(--ink2)}
+.qtext{font-size:clamp(24px,4.4vw,31px);line-height:1.45;font-weight:600;max-width:34ch}
+.opt{font-size:21px;line-height:1.35;min-height:84px;padding:18px 20px}
+.opts{gap:18px}
+.opt .ltr{width:38px;height:38px;font-size:17px;color:var(--ink2)}
+.fb .trap b{font-size:15px;font-weight:700;color:var(--ink2)}
+.fb h4{font-size:21px} .fb p{font-size:17px}
+.tapnote{font-size:14px;font-weight:500}
+.counter{font-size:22px} .counter small{font-size:13.5px}
+.mission h3{font-size:22px} .mission p{font-size:15px;line-height:1.4}
+.mission .mn{font-size:12.5px;font-weight:600}
+.speak{font-size:17px;padding:14px 18px;width:100%;justify-content:center;margin-top:6px}
+.nbtn{min-height:56px;font-size:16px}
+.navbar{gap:14px}
+@media (max-width:560px){
+  .opts{grid-template-columns:1fr}
+  .qhead{flex-direction:column;align-items:stretch;gap:10px}
+}
+@media (max-width:460px){
+  .opts{grid-template-columns:1fr}
+  .stage{padding:20px 17px 18px;border-radius:16px}
+  .opt{font-size:18px;min-height:58px}
+}
+</style>
+
+<style>
+/* ===== kid-mode safety: the parent report must be unreachable from here ===== */
+body.kidmode .topbar{display:none}
+.kidtop{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.kidtop .ktitle{font-weight:800;font-size:19px;letter-spacing:-.02em;margin-right:auto}
+.gate{margin-left:auto;font-family:var(--ff-mono);font-size:11px;color:var(--ink3);background:transparent;
+  border:1px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer;white-space:nowrap}
+.gate:hover{color:var(--ink2);border-color:var(--ink3)}
+.gate[data-hold="1"]{background:var(--accent-wash);color:var(--accent-ink);border-color:var(--accent)}
+
+/* ===== test navigation: back / next / flag / pause ===== */
+.navbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.navbar .spacer{flex:1}
+.nbtn{font-family:var(--ff-ui);font-size:15px;font-weight:600;border-radius:10px;border:1.5px solid var(--line);
+  background:var(--surface);color:var(--ink);padding:11px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.nbtn:hover:not(:disabled){background:var(--surface2);border-color:var(--accent)}
+.nbtn:disabled{opacity:.38;cursor:default}
+.nbtn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.nbtn.primary:hover{filter:brightness(1.08);background:var(--accent)}
+.nbtn.flagged{background:var(--brass-wash);border-color:var(--brass);color:var(--brass)}
+.clockchip{font-family:var(--ff-mono);font-size:13px;font-variant-numeric:tabular-nums;color:var(--ink3);
+  display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--sunk);border:1px solid var(--line)}
+.clockchip.warn{color:var(--amber);background:var(--amber-wash);border-color:var(--amber)}
+.speak{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 13px;cursor:pointer;
+  font-family:var(--ff-ui);font-size:14px;font-weight:600;color:var(--accent-ink);display:inline-flex;align-items:center;gap:7px}
+.speak:hover{background:var(--accent-wash);border-color:var(--accent)}
+.opt.picked{border-color:var(--accent);background:var(--accent-wash)}
+.opt .tick{margin-left:auto;font-size:19px;font-weight:800}
+
+/* ===== paused overlay ===== */
+.paused{text-align:center;padding:56px 24px;background:var(--sunk);border:2px dashed var(--line);border-radius:20px}
+.paused .big{font-size:clamp(26px,5vw,36px);font-weight:800;letter-spacing:-.028em;margin-bottom:10px}
+.paused p{font-size:17px;color:var(--ink2);max-width:40ch;margin:0 auto 20px}
+
+/* ===== end-of-test review panel (flagged / unanswered) ===== */
+.qmap{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:7px;margin:14px 0 4px}
+.qcell{aspect-ratio:1;border-radius:9px;border:1.5px solid var(--line);background:var(--surface);
+  font-family:var(--ff-mono);font-size:13px;font-weight:600;cursor:pointer;color:var(--ink2);display:grid;place-items:center}
+.qcell:hover{border-color:var(--accent)}
+.qcell.done{background:var(--accent-wash);border-color:var(--accent);color:var(--accent-ink)}
+.qcell.flag{background:var(--brass-wash);border-color:var(--brass);color:var(--brass)}
+.qcell.empty{border-style:dashed;color:var(--ink3)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--ink3);margin-top:10px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:13px;height:13px;border-radius:4px;display:inline-block;border:1.5px solid var(--line)}
+
+/* ===== export / share ===== */
+.exportbox{width:100%;min-height:150px;font-family:var(--ff-mono);font-size:11.5px;line-height:1.5;
+  padding:13px;border-radius:10px;border:1px solid var(--line);background:var(--sunk);color:var(--ink2);resize:vertical}
+.copied{font-family:var(--ff-mono);font-size:12px;color:var(--leaf);font-weight:600}
+
+/* ===== mock review tab ===== */
+body.reviewmode #parent,body.reviewmode #kid{display:none}
+#review{display:none}
+body.reviewmode #review{display:block}
+.rgroup{border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);overflow:hidden;margin-bottom:13px}
+.rgroup-hd{padding:13px 17px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:11px;flex-wrap:wrap;background:var(--sunk)}
+.rgroup-hd b{font-size:15.5px}
+.rgroup-hd .cnt{font-family:var(--ff-mono);font-size:12px;color:var(--ink3);margin-left:auto}
+.rq{padding:15px 17px;border-bottom:1px dashed var(--line)}
+.rq:last-child{border-bottom:0}
+.rq .stem{font-size:15px;font-weight:600;margin-bottom:9px;line-height:1.4}
+.rq .ab{display:flex;gap:10px;flex-wrap:wrap;font-size:14px;margin-bottom:9px}
+.rq .ab span{padding:4px 11px;border-radius:8px;font-family:var(--ff-mono);font-size:12.5px}
+.rq .chose{background:var(--amber-wash);color:var(--amber)}
+.rq .right{background:var(--leaf-wash);color:var(--leaf)}
+.rq .teach{font-size:14.5px;line-height:1.55;color:var(--ink2)}
+.rq .teach b{color:var(--ink)}
+@media (max-width:460px){.navbar{gap:7px}.nbtn{padding:10px 13px;font-size:14px}}
+</style>
+<style>
+/* ===== interactive figures ===== */
+.figwrap{display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px 0 16px}
+.tapnote{font-family:var(--ff-mono);font-size:11.5px;letter-spacing:.04em;color:var(--accent-ink);
+  background:var(--accent-wash);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);
+  border-radius:999px;padding:5px 13px}
+.counter{display:inline-flex;align-items:center;gap:10px;font-family:var(--ff-mono);font-weight:600;
+  font-size:20px;font-variant-numeric:tabular-nums;background:var(--surface);border:1.5px solid var(--accent);
+  border-radius:12px;padding:9px 16px;color:var(--accent-ink)}
+.counter small{font-family:var(--ff-ui);font-size:12px;font-weight:600;color:var(--ink3);letter-spacing:0}
+.counter button{font-family:var(--ff-ui);font-size:14px;font-weight:600;border:1px solid var(--line);
+  background:var(--surface);color:var(--ink2);border-radius:8px;padding:9px 14px;cursor:pointer;min-height:44px}
+.counter button:hover{background:var(--surface2)}
+svg .seg,svg .coin,svg .bar,svg .fivemark{cursor:pointer}
+svg .seg{transition:r .1s}
+svg .seg[fill="transparent"]{pointer-events:all}
+svg .seg[stroke]:hover{stroke-width:3.4}
+svg .readout{pointer-events:none}
+
+/* clickable figure choices (replaces matching a shape to a letter) */
+.figopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:12px;margin-top:6px}
+.figopt{background:var(--surface);border:2.5px solid var(--line);border-radius:16px;padding:14px 10px 10px;
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;transition:border-color .12s,background .12s,transform .08s}
+.figopt:hover:not(:disabled){border-color:var(--accent);background:var(--accent-wash)}
+.figopt:active:not(:disabled){transform:translateY(1px)}
+.figopt .lbl{font-family:var(--ff-mono);font-size:14px;font-weight:600;color:var(--ink3)}
+.figopt.picked{border-color:var(--accent);background:var(--accent-wash)}
+.figopt.right{border-color:var(--leaf);background:var(--leaf-wash)}
+.figopt.right .lbl{color:var(--leaf)}
+.figopt.wrong{border-color:var(--amber);background:var(--amber-wash)}
+.figopt.wrong .lbl{color:var(--amber)}
+.figopt.dim{opacity:.45}
+.figopt:disabled{cursor:default}
+.figopt svg{max-width:100%;height:auto}
+</style>
+<style>
+.days{grid-template-columns:repeat(auto-fit,minmax(420px,1fr))}  /* 2x2 so no card is orphaned */
+.splitbar{width:100%}
+.splitbar{display:flex;align-items:center;gap:8px;margin-top:11px;font-family:var(--ff-mono);font-size:10px;
+  letter-spacing:.04em;color:var(--ink3);text-transform:uppercase;flex-wrap:wrap}
+.splitbar i{display:block;height:7px;border-radius:99px;background:var(--accent);flex:none;min-width:8px;
+  box-shadow:0 0 0 1px var(--line)}
+.splitbar b{font-weight:600}
+.sess{padding:13px 0;border-bottom:1px dashed var(--line)}
+.sess-hd{display:flex;align-items:center;gap:9px;margin-bottom:6px;flex-wrap:wrap}
+.sess-hd b{font-size:14.5px;flex:1;min-width:0}
+.sess-hd .mins{font-family:var(--ff-mono);font-size:11.5px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.gap{font-family:var(--ff-mono);font-size:10.5px;color:var(--ink3);text-align:center;padding:7px 0;letter-spacing:.03em}
+</style>
+<style>
+.rewards{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;margin-bottom:20px}
+.rw-bar{height:11px;background:var(--sunk);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin-bottom:9px}
+.rw-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--star),var(--star-bright));border-radius:999px;transition:width .4s ease}
+.rw-txt{font-size:14.5px;color:var(--ink2);line-height:1.45}
+.rw-txt b{color:var(--ink);font-family:var(--ff-mono);font-variant-numeric:tabular-nums}
+.speak.ttsoff{opacity:.65;color:var(--ink3);border-style:dashed;cursor:default}
+.settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:12px}
+.setrow{display:flex;align-items:center;gap:9px}
+.setrow input[type=number]{width:72px}
+.settings input,.settings select{font-family:var(--ff-ui);font-size:14px;padding:8px 10px;border-radius:8px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);min-width:0;flex:1}
+.settings label{font-family:var(--ff-mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);display:block;margin-bottom:5px}
+.danger{background:var(--amber-wash);color:var(--amber);border:1px solid color-mix(in srgb,var(--amber) 35%,transparent)}
+.danger:hover{filter:brightness(1.03);background:var(--amber-wash)}
+</style>
+<style>
+/* ===== kid mode commits to light: a 7-year-old should not get dark teal on near-black at 8pm ===== */
+body.kidmode{color-scheme:light}
+body.kidmode #kid{
+  --paper:#F1F4EF; --surface:#FFFFFF; --surface2:#E9EEE7; --sunk:#E3E9E0;
+  --ink:#14312F; --ink2:#3B5653; --ink3:#566B68; --line:#D3DDD3; --grid:#DFE7DD;
+  --accent:#0E7C7B; --accent-ink:#0A5E5D; --accent-wash:#DFEFEE;
+  --amber:#B4551A; --amber-wash:#F7E6D8; --brass:#8F6C0E; --brass-wash:#F6EED4;
+  --leaf:#37702F; --leaf-wash:#E0EEDB; --star:#C97F14; --star-bright:#E8A33D;
+  --on-accent:#FFFFFF; --on-leaf:#FFFFFF; --on-amber:#FFFFFF;
+  --wood:#E8D5B0; --wood-ink:#4A3418; --metal:#8E949C;
+  color:var(--ink);
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),
+                   linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px; background-position:-1px -1px;
+  min-height:100vh;
+}
+body.kidmode .kbar{background:var(--paper)}
+body.kidmode{background:#F1F4EF}
+
+/* ===== amber means exactly one thing in kid mode: this answer was wrong ===== */
+#kid .mission.test{border-color:var(--line);background:var(--surface2)}
+#kid .pill{background:var(--surface2);color:var(--ink2);font-weight:600}
+
+/* ===== the reward has to be visible at the moment it is earned ===== */
+.kbar{position:sticky;top:0;z-index:40;background:var(--paper);padding-block:10px;margin-bottom:10px}
+.stars{transition:transform .18s cubic-bezier(.34,1.56,.64,1)}
+.stars.pop{transform:scale(1.18)}
+.rw-mini{height:8px;background:var(--sunk);border:1px solid var(--line);border-radius:99px;overflow:hidden;flex:1;min-width:90px}
+.rw-mini i{display:block;height:100%;background:linear-gradient(90deg,var(--star),var(--star-bright));transition:width .45s ease}
+.rw-goal{font-size:13px;color:var(--ink3);white-space:nowrap}
+.flyStar{position:fixed;z-index:200;pointer-events:none;width:30px;height:30px;
+  transition:transform .5s cubic-bezier(.4,0,.5,1),opacity .5s ease}
+@media (prefers-reduced-motion:reduce){.flyStar{display:none}.stars.pop{transform:none}}
+.mutebtn{font-family:var(--ff-ui);font-size:13px;border:1px solid var(--line);background:var(--surface);
+  color:var(--ink3);border-radius:99px;padding:6px 12px;cursor:pointer}
+.mutebtn:hover{color:var(--ink2)}
+#kid .mission.done{opacity:1;border-color:color-mix(in srgb,var(--leaf) 45%,transparent);background:var(--leaf-wash)}
+#kid .mission.done .mn{color:var(--leaf)}
+</style>
+<style>
+/* ================= touch + narrow-screen pass (iPad is the target device) ================= */
+.scorewrap{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+
+/* the four summary children collided into three columns below 840px and laid out at negative x */
+@media (max-width:900px){
+  .dom > summary{grid-template-columns:22px minmax(0,1fr) auto;gap:10px 12px;padding:14px}
+  .dom > summary .rank{grid-area:1/1/2/2}
+  .dom > summary .dname{grid-area:1/2/2/3}
+  .dom > summary .scorewrap{grid-area:1/3/2/4}
+  .dom > summary .rulerwrap{grid-area:2/1/3/4;margin-top:2px}
+}
+
+/* every control a finger has to hit clears 44px */
+.switch button{min-height:44px;padding:10px 16px}
+.gate{min-height:44px;padding:10px 16px;font-size:14px}
+.mutebtn,.settings input,.counter button{min-height:44px}
+.btn{min-height:44px}
+.nbtn{min-height:52px}
+.speak{min-height:54px}
+.dom > summary{min-height:56px}
+.srcs a{padding-block:12px}
+.qcell{min-height:52px;font-size:15px}
+
+/* nothing a child reads drops below 14px */
+#kid .pill,#kid .mn,#kid .rw-goal,#kid .tapnote,#kid .counter small,#kid .gate,#kid .legend{font-size:14px}
+#kid .qnum{font-size:17px}
+.rw-goal{font-size:14px}
+
+/* iPad portrait: one option column is easier to hit than two narrow ones */
+@media (max-width:840px){
+  .opts{grid-template-columns:1fr}
+  .figopts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kwrap{padding-inline:16px}
+  .stage{padding:20px 16px 18px}
+}
+@media (max-width:520px){
+  .kidtop{gap:8px}
+  .kidtop .ktitle{font-size:17px;width:100%}
+  .navbar .spacer{display:none}
+  .navbar{justify-content:space-between}
+  .nbtn{flex:1 1 auto}
+  .topbar-in{padding:8px 14px;gap:10px}
+  .switch button{font-size:13px;padding:10px 12px}
+  .scorestrip{grid-template-columns:repeat(2,1fr)}
+}
+/* tables are the one thing allowed to scroll sideways, and they must say so */
+.twrap{position:relative}
+.twrap::after{content:"";position:absolute;top:0;right:0;bottom:0;width:26px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,var(--surface))}
+</style>
+<div class="topbar"><div class="topbar-in">
+  <div class="brand"><b>Grade 2 FAST Math Trainer</b><span>FLORIDA B.E.S.T. · PM1 → PM2</span></div>
+  <div class="switch" role="group" aria-label="Choose view">
+    <button id="tabParent" aria-pressed="true" onclick="setMode('parent')">Parent &amp; teacher</button>
+    <button id="tabKid" aria-pressed="false" onclick="setMode('kid')">Practice</button>
+    <button id="tabReview" aria-pressed="false" onclick="setMode('review')">Mock review</button>
+  </div>
+</div></div>
+<div id="parent">
+
+<!-- ============ HERO ============ -->
+<div class="hero graph"><div class="hero-in">
+  <div>
+    <div class="verdict">Florida B.E.S.T. · Grade 2 · Mathematics</div>
+    <h1>Turn a FAST domain report into <em>four days</em> of the right practice.</h1>
+    <p class="prose">FAST K&ndash;2 is an adaptive Star test. It gives you nine domain scores and <strong>no question-level detail at all</strong> &mdash; so the report tells you <em>where</em> a child is losing points but never <em>why</em>. This page closes that gap: enter the nine scores from your child&rsquo;s Individual Student Report, and it maps each one to the exact Florida B.E.S.T. benchmarks behind it, the specific misconception most likely costing the marks, and a four-day plan that attacks the widest gap first.</p>
+    <p class="prose" style="margin-top:14px">It ships with <strong>110 written practice items</strong>, <strong>procedural generators</strong> that produce unlimited fresh questions in every domain, an interactive 34-question mock built to the real test&rsquo;s rules, and a review tab that shows only what went wrong.</p>
+    <div class="btnrow" style="margin-top:22px">
+      <button class="btn" onclick="setMode('kid')">Open the practice app</button>
+      <button class="btn ghost" onclick="document.getElementById('scoreForm').scrollIntoView({behavior:'smooth'})">Enter your scores</button>
+    </div>
+  </div>
+  <div class="ladder">
+    <h4>The B.E.S.T. achievement scale</h4>
+    <svg viewBox="0 0 400 118" width="100%" role="img" aria-label="Level 2 ends at 171, Level 3 runs 171 to 185, Level 4 begins at 185.">
+      <text x="133" y="51" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="var(--ink3)">171</text>
+      <text x="244" y="51" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="var(--ink3)">185</text>
+      <rect x="30" y="55" width="103" height="31" fill="var(--amber-wash)" stroke="var(--line)" stroke-width="1"/>
+      <rect x="133" y="55" width="111" height="31" fill="var(--brass-wash)" stroke="var(--line)" stroke-width="1"/>
+      <rect x="244" y="55" width="126" height="31" fill="var(--leaf-wash)" stroke="var(--line)" stroke-width="1"/>
+      <text x="81" y="75" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9.5" font-weight="600" fill="var(--amber)">LEVEL 2</text>
+      <text x="188" y="75" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9.5" font-weight="600" fill="var(--brass)">LEVEL 3</text>
+      <text x="307" y="75" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9.5" font-weight="600" fill="var(--leaf)">LEVEL 4</text>
+      <text x="200" y="106" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="var(--ink3)">FAST EQUIVALENT SCORE</text>
+    </svg>
+  </div>
+</div></div>
+
+<div class="wrap">
+
+<!-- ============ READ THE REPORT STRAIGHT ============ -->
+
+
+<!-- ============ DOMAIN DIAGNOSTIC ============ -->
+<section class="blk" id="domains">
+  <div class="eyebrow">Diagnostic</div>
+  <h2 class="sec">Nine domains, ranked by how much room there is</h2>
+  <p class="prose" style="margin-bottom:8px">A domain score is not "what he got wrong." The state defines it as an estimate: a score of 53 means the student <em>"would be expected to correctly answer 53% of the grade-level items in that domain."</em> On a 34-item adaptive test spread over nine domains he may have seen only two or three perimeter items, so treat each number as a signal with real error bars — but a 24 next to an 81 is a signal worth acting on.</p>
+  <div class="note" style="margin:16px 0 20px">
+    <h4>The single most useful thing in this whole report</h4>
+    <p>The state's own description of the domain he scored 24 on is narrow enough to quote in full: <em>"Perimeter (Grade 2) assesses a student's understanding of perimeter by counting unit segments around the boundary of a polygon (without gaps or overlaps) and by using whole number side lengths."</em> Despite the heading reading "Perimeter, Area, and Volume," <b>there is no area and no volume on the grade 2 test.</b> It is one skill. That is why Day 1 is entirely perimeter.</p>
+  </div>
+  <div id="domlist"></div>
+  <p style="font-size:13px;color:var(--ink3);margin-top:14px;line-height:1.5">Tap any domain to see what the state says it measures, the exact B.E.S.T. benchmarks behind it, and the mistake most likely costing him points.</p>
+</section>
+
+<!-- ============ HOW TO RUN IT ============ -->
+<section class="blk" id="how">
+  <div class="eyebrow">Ground rules</div>
+  <h2 class="sec">Running this with a child who finds sitting still hard</h2>
+  <p class="prose" style="margin-bottom:18px">The math here is four days of work. The behavior is the actual project. Everything below is built around one idea: <strong>a child who refuses will fight you for control, so hand him control over everything that does not matter, and spend none on the thing that does.</strong> He never gets a choice about whether the block happens. He gets a choice inside every single one.</p>
+
+  <div class="stack g14">
+    <div class="card lift">
+      <h3 class="sub">How to get 2½ hours out of a 7-year-old</h3>
+      <p style="font-size:15px;color:var(--ink2);line-height:1.55;margin-bottom:12px">Not in one block. That is the only rule that matters here. Two and a half hours is achievable in four days, but only as <b>four separate sittings with real gaps between them</b> — breakfast, then mid-morning, then after lunch, then late afternoon. Inside each sitting, work in 8–10 minute bursts with a movement break between. A child with a short attention span can sustain a great deal of math across a day; what he cannot do is sustain it continuously.</p>
+      <p style="font-size:15px;color:var(--ink2);line-height:1.55;margin-bottom:14px">The second rule is that <b>most of it is not at a desk.</b> Each day is roughly <b>60 minutes on the screen and 85 minutes off it</b> — walking taped shapes on the floor, hunting perimeters with string, measuring the house twice, running a coin shop. That is real practice and he can do hours of it, because it does not feel like a test. If you try to make 2½ hours of seated multiple choice happen, you will get one good day and three fights.</p>
+      <div class="dont" style="margin-bottom:14px">
+        <div class="no"><h5>Don't</h5>2½ hours in one sitting, or two 75-minute halves. By minute 25 you are no longer teaching math, you are managing behavior, and everything after that is negative.</div>
+        <div class="yes"><h5>Do</h5>45 + 35 + 40 + 25, spread right across the day, with at least an hour of ordinary life between each. Same total, completely different child.</div>
+      </div>
+      <p style="font-size:15px;color:var(--ink2);line-height:1.55;margin-bottom:14px"><b>End every sitting while he is still winning</b>, even if that means stopping at 20 minutes. A sitting that ends on a high note is worth three that end in a meltdown, and you have four days — you cannot afford to lose an evening to a fight.</p>
+      <div class="dont">
+        <div class="no"><h5>Don't</h5>"Do you want to do your math now?" — that is a yes/no question, and he will say no, and now you have a fight about compliance instead of a lesson.</div>
+        <div class="yes"><h5>Do</h5>"Math is at 5. Do you want to start with perimeter or with the warm-up?" — the <i>when</i> is not negotiable, the <i>order</i> is his.</div>
+      </div>
+    </div>
+
+    <div class="card lift">
+      <h3 class="sub">Six rules that do the heavy lifting</h3>
+      <div class="stack g10" style="margin-top:10px">
+        <div class="benchrow"><b>AUTONOMY</b><span>Two acceptable options at every decision point — which domain first, pen or pencil, kitchen table or floor, three questions or four. Never a yes/no. Never an open "what do you want to do?"</span></div>
+        <div class="benchrow"><b>NO MID-FLOW</b><span>Do not correct him while he is working. Interrupting a hyperactive child mid-thought reads as an attack and costs you the next ten minutes. Let the app mark it; it never argues back, and that is the point of putting a screen between you and the correction.</span></div>
+        <div class="benchrow"><b>PRAISE EFFORT</b><span>"You went back and checked that one" beats "you're so smart." Praise the behavior you want repeated — checking, re-reading, tracing the shape with a finger — not the ability.</span></div>
+        <div class="benchrow"><b>MOVEMENT IS THE LESSON</b><span>Do not treat the breaks as time off. Walk the perimeter of the rug while counting sides out loud. Hop a number line taped on the floor. Movement breaks measurably improve focus and behavior in exactly this profile, and here the movement <i>is</i> the math.</span></div>
+        <div class="benchrow"><b>ONE WARNING</b><span>Decide the consequence before the session, state it once, calmly, and then follow through without a second warning. Repeated warnings teach a child who refuses that the boundary is negotiable.</span></div>
+        <div class="benchrow"><b>TOKEN ECONOMY</b><span>One star per correct answer, banked in the app. Agreed exchange rate set <i>before</i> Day 1 and never renegotiated mid-session — renegotiating is the reward he is actually testing for. Token systems have good evidence as an add-on to everything else you are already doing.</span></div>
+      </div>
+    </div>
+
+    <div class="note warn">
+      <h4>The one rule that matters most: never end the block on a refusal</h4>
+      <p>Evening-math refusal in a 7-year-old is almost always <b>escape-motivated</b> — the point of the behavior is to make math stop. So if refusing makes math stop, you have taught him, in about three goes, that refusing is the fastest way out. It will work for a week and then the refusals start at minute one. <b>When he refuses, the demand does not disappear. It shrinks.</b></p>
+    </div>
+
+    <div class="script">
+      <div class="who">When he refuses — say this, once, flat</div>
+      <p>"You're doing two of these. Two, and we're done for tonight. You pick which two."</p>
+    </div>
+    <p style="font-size:13.5px;color:var(--ink3);line-height:1.5;max-width:66ch">Two is a real win: he complied, the demand held, nobody fought. Tomorrow you ask for four. The only thing that ends a block early is <b>you</b> deciding it is over — announced before he refuses, or after he has finished something. Never straight after a refusal.</p>
+
+    <div class="note">
+      <h4>And give him a legal exit</h4>
+      <p>A break he asks for is <b>always granted, immediately, at no cost</b> — that is what the Pause button in the app is for, and it is why the movement breaks do not run the clock. A child who has a legitimate way to escape does not need to manufacture one. Asking for a break is a skill you want to reinforce, not a loss of face.</p>
+    </div>
+
+    <div class="note warn">
+      <h4>Before you pick a time, answer two questions</h4>
+      <p>Is he medicated, and when does the dose wear off? Late afternoon and early evening are when stimulant rebound usually lands, and <b>rebound looks exactly like defiance</b> — short fuse, tears, nothing is fair. If 5pm sits inside his rebound window you are not running a math session, you are running an experiment in frustration, and four evenings of it will change how you read your own child. Try a weekend morning or straight after school instead, and raise the timing with his prescriber before you conclude anything about his attitude. And feed him first: stimulants suppress appetite and he may have eaten very little all day.</p>
+    </div>
+
+    <div class="card lift">
+      <h3 class="sub">Five more things, and they are the ones parents skip</h3>
+      <div class="stack g10" style="margin-top:10px">
+        <div class="benchrow"><b>WAIT TEN</b><span>Give the instruction once, standing close, as a statement. Then count to ten in your head and <b>say nothing</b>. Processing takes longer than it looks. Repeating inside that window is how you teach him the first instruction did not count. The moment he starts, name it: "You sat straight down. Thank you."</span></div>
+        <div class="benchrow"><b>FOUR TO ONE</b><span>Count your own sentences for one session. If you corrected him more often than you caught him doing something right, the session was net punishing however calm you stayed. Aim at four positives per correction, and name the behavior — "you traced the whole edge with your finger", not "good job".</span></div>
+        <div class="benchrow"><b>IGNORE THE NOISE</b><span>Sighing, muttering, "this is stupid", sliding down the chair. <b>If the pencil is still moving, he is complying.</b> Say nothing about the noise, no eye contact, no "don't talk to me like that". Praise the math the instant he does the next one. Never ignored: anything unsafe, anything aimed at a person, anything broken.</span></div>
+        <div class="benchrow"><b>WHEN, NOT IF</b><span>"<b>When</b> the questions are done, <b>then</b> it's the tablet." Never "if". Same contingency, but "if" sounds like a bet he might lose and "when" sounds like a schedule.</span></div>
+        <div class="benchrow"><b>SMALL AND FAST</b><span>Decide the consequence in the afternoon, write it on a sticky note, and keep it small, immediate, related and over quickly — two minutes of the tablet, not a week. And <b>never take back stars he has already earned.</b> Confiscating banked rewards once teaches him nothing is safe and he will stop playing.</span></div>
+      </div>
+    </div>
+
+    <div class="note">
+      <h4>He is going to be right, and you have to say so</h4>
+      <p>He will say <em>"I already passed, this isn't fair."</em> He <b>is</b> right. He met the standard, he is in the top 11% in the country, and he is doing extra math in the evening. Do not argue with a true statement — you will lose, and with a child who digs in the argument then becomes about honesty instead of math, which is a far worse fight. Agree first, then hold the line anyway, in one breath, and stop talking.</p>
+    </div>
+
+    <div class="script">
+      <div class="who">The version that works</div>
+      <p>"You're right. You did pass, and you did well, and you still have to do this. Both of those are true. Perimeter or the warm-up?"</p>
+    </div>
+
+    <div class="note warn">
+      <h4>You are half of this</h4>
+      <p>When you notice your voice change, your jaw tighten, or that you are about to say something to win rather than to teach — you are done for the night, and that is a correct decision, not a failure. Have your own exit ready before you need it: <em>"I'm getting some water. Two minutes."</em> Never deliver a consequence while angry; you will over-deliver and then have to walk it back, which is worse than not delivering one. <b>Hard stop:</b> any session with two genuine blow-ups is over — "We're done, that's enough for tonight", no verdict attached, then something ordinary together for ten minutes. Missing a session costs almost nothing. Ending two days running on a fight costs you the whole plan.</p>
+    </div>
+
+    <div class="note warn">
+      <h4>Four days back to back — protect the schedule from one bad day</h4>
+      <p>Consecutive-day intensity is how one bad session contaminates the next, so build the slack in deliberately. <b>The first sitting of each day is the one that must happen</b>; the fourth is the one you drop without comment if the day has gone badly. Losing a boss round costs almost nothing. Ending two days running on a fight costs you the whole plan.</p>
+      <p style="margin-top:9px">And if the four days are driven by a school deadline you are still negotiating, remember what the report actually says: PM1 is informational, he already met the standard, and the attempt that counts is <b>PM2 from 30 November</b>. Four hard days now are worth doing — just do not let anyone tell him his September score was a failure.</p>
+    </div>
+
+    <div class="card lift">
+      <h3 class="sub">Set the reward rate now, before Day 1</h3>
+      <p style="font-size:14.5px;color:var(--ink2);line-height:1.55;margin-top:6px">He earns <b>1 star for every question he attempts</b> and <b>2 for every one he gets right</b>, so a bad session still pays — which is what stops the spiral. Agree these three now and do not renegotiate mid-session; renegotiating is the reward he is actually testing for. He sees the bar and the next prize on his own screen the whole time.</p>
+      <div class="settings" id="rewardEditor"></div>
+      <div class="btnrow" style="margin-top:14px;align-items:center">
+        <button class="btn" onclick="saveRewards()">Save rewards</button>
+        <span class="copied" id="rwSaved" hidden>saved</span>
+        <button class="mutebtn" id="muteBtn" onclick="toggleMute()">🔊 Sound on</button>
+        <button class="btn ghost danger" onclick="resetProgress()">Reset stars &amp; completed days</button>
+        <span style="font-size:13px;color:var(--ink3)" id="rwStars"></span>
+      </div>
+    </div>
+
+    <div class="card lift">
+      <h3 class="sub">Put these on the table before Day 1</h3>
+      <p style="font-size:14.5px;color:var(--ink2);line-height:1.6;margin-top:6px">Masking tape · graph paper · a ruler with inches and centimeters · unit cubes or square tiles · a coat hanger and clothes pegs · a handful of real coins (pennies, nickels, dimes, quarters) · a paper plate and a split pin for a clock · <b>scratch paper and a pencil for every session</b> · an index card with <b>unit segment</b> written on it, which he reads aloud once before the first question.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE 4-DAY PLAN ============ -->
+<section class="blk" id="plan">
+  <div class="eyebrow">The plan</div>
+  <h2 class="sec">Four days, hardest gap first</h2>
+  <p class="prose" style="margin-bottom:8px">Days are ordered by points available, not by what is easiest. Perimeter is day one because it is worth 76 points of headroom and is the narrowest skill on the whole test. Day 4 is the dress rehearsal.</p>
+  <p class="prose" style="margin-bottom:20px">Each day is <b>four sittings, about 2½ hours in total</b>, with a real gap between each one. The bar under each day shows the split: roughly an hour on the screen, the rest on the floor, round the house and in the kitchen. <b>The app's drills will not run out</b> — after the fixed 13 questions, <b>Endless practice</b> generates new shapes, rulers, clocks, coins and equations indefinitely, so a 35-minute drill never repeats itself.</p>
+  <div class="days" id="dayCards"></div>
+</section>
+
+<!-- ============ TEST DAY ============ -->
+<section class="blk" id="testday">
+  <div class="eyebrow">Test conditions</div>
+  <h2 class="sec">What the real test does, and how to rehearse it</h2>
+  <div class="twrap" style="margin-bottom:16px">
+    <table>
+      <thead><tr><th>Feature</th><th>On the real FAST K–2</th><th>Practice test</th><th>Real-rules test</th></tr></thead>
+      <tbody>
+        <tr><td>Format</td><td>Computer-adaptive (Renaissance Star) — harder when he is right, easier when he is wrong</td><td>Fixed balanced form</td><td>Adaptive, same as the real one</td></tr>
+        <tr><td>Length</td><td>34 items for grades 1–2, one session</td><td>34</td><td>34</td></tr>
+        <tr><td>Answer choices</td><td>Four, lettered A–D</td><td>Four, order reshuffled each sitting</td><td>Four, reshuffled</td></tr>
+        <tr><td>Going back</td><td><b>Not allowed.</b> Once submitted, an answer is final</td><td>Back, change, and <b>flag</b> for review</td><td><b>Not allowed</b> — matches the real test</td></tr>
+        <tr><td>Timing</td><td>Untimed overall; each item has its own limit</td><td>Per-item clock, warns at 90s, <b>pause any time</b></td><td>Same</td></tr>
+        <tr><td>Breaks</td><td>Nothing in the design forbids them; ask for supervised breaks on the 504</td><td>Enforced at Q12 and Q24, clock stopped</td><td>Same</td></tr>
+        <tr><td>Read-aloud</td><td>Ask the coordinator whether K–2 items are read to students</td><td><b>Always available, never a penalty</b></td><td>Same</td></tr>
+        <tr><td>Feedback</td><td>None during the test</td><td>None until the end</td><td>None until the end</td></tr>
+        <tr><td>Report</td><td>Domain scores 0–100, banded Beginning / Developing / Secure</td><td colspan="2">Raw correct-out-of-seen per domain, plus an exportable list of every miss</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="note">
+    <h4>Why there are two versions</h4>
+    <p>FAST grades 3–10 run on a platform with back, next and flag. FAST K–2 runs on Renaissance Star, which locks every answer as final. Going back and adaptive testing are incompatible, so the <b>practice test</b> uses a fixed balanced form and lets him review and change answers, which is far better for learning; the <b>real-rules test</b> is adaptive and locked, for rehearsing the actual conditions. Do the practice one first.</p>
+  </div>
+  <div class="note warn">
+    <h4>Rehearse the thing that will actually cost him points</h4>
+    <p>For a combined-type child the risk on this test is not knowledge, it is <b>speed</b>. The test cannot be skipped through and cannot be revisited, so a fast wrong answer is locked in forever, and the adaptive engine immediately hands him an easier question — which drags the estimate down twice. Practise one habit and only one: <b>finger on the screen, read it twice, then choose.</b> That is what the <b>Read it to me</b> button is for: if he cannot decode the question, the only two exits are a wild guess or a refusal, and both look like a math problem when they are not. Using it costs him nothing and is not a hint.</p>
+  </div>
+</section>
+
+<!-- ============ THE SCHOOL CONVERSATION ============ -->
+
+
+<!-- ============ SOURCES ============ -->
+<section class="blk" id="sources">
+  <div class="eyebrow">Sources</div>
+  <h2 class="sec">Everything above is from these</h2>
+  <p class="prose" style="margin-bottom:16px">Domain wording, benchmark text, band cut-offs, test format and window dates are quoted from primary documents, not paraphrased from memory. Sam's scores come from the PDF you sent.</p>
+  <div class="srcs">
+    <a href="https://flfast.org/content/contentresources/en/Understanding%20K-2%20Reports_For%20Families_2025-2026_FINAL_032526_508.pdf" target="_blank" rel="noopener"><b>Understanding FAST K–2 Student Reports for Families (March 2026)</b><span>flfast.org — domain definitions, the 0–100 domain score meaning, adaptive format, accommodations list</span></a>
+    <a href="https://cpalmsmediaprod.blob.core.windows.net/uploads/docs/standards/best/ma/mathbeststandardsfinal.pdf" target="_blank" rel="noopener"><b>Florida's B.E.S.T. Standards for Mathematics</b><span>cpalms — every MA.2 benchmark and clarification quoted on this page</span></a>
+    <a href="https://www.fldoe.org/file/5663/2627StatewideAssessmentSched.pdf" target="_blank" rel="noopener"><b>Florida Statewide Assessment Schedule 2026–2027</b><span>fldoe.org — the PM2 window, 30 November 2026 to 22 January 2027</span></a>
+    <a href="https://www.fldoe.org/file/20102/2627FASTK2FS.pdf" target="_blank" rel="noopener"><b>2026–27 FAST K–2 Fact Sheet</b><span>fldoe.org — administration windows and test design</span></a>
+    <a href="https://flfast.org/content/contentresources/en/2025-2026_Fa-Wi_FL_Accomm_Guide_Final_081325.pdf" target="_blank" rel="noopener"><b>2025–2026 Statewide Assessments Accommodations Guide</b><span>flfast.org — accommodations requiring IEP or Section 504 documentation</span></a>
+    <a href="https://www.fldoe.org/core/fileparse.php/7576/urlt/Grade-2.pdf" target="_blank" rel="noopener"><b>Grade 2 Mathematics — B.E.S.T. version description</b><span>fldoe.org — grade 2 instructional emphasis</span></a>
+  </div>
+  <p style="font-size:13px;color:var(--ink3);margin-top:18px;line-height:1.55;max-width:66ch">Two honest limits. <b>One:</b> item counts per domain are not published, so the mock's blueprint is my approximation from the standards' emphasis, not an official blueprint. <b>Two:</b> the practice score the mock reports is an estimate produced by this page for comparison against his PM1 domain scores. It is not a FAST score and carries no official standing.</p>
+</section>
+
+</div><!-- /wrap -->
+</div><!-- /parent -->
+
+<!-- ================= KID MODE ================= -->
+<div id="kid"><div class="kwrap">
+  <div class="kbar">
+    <div class="stars" title="Stars earned">
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.85 5.9 6.4.92-4.63 4.55 1.1 6.43L12 17.36 6.28 20.4l1.1-6.43L2.75 9.42l6.4-.92z" fill="var(--star-bright)" stroke="var(--star)" stroke-width="1.1" stroke-linejoin="round"/></svg>
+      <span id="starCount">0</span>
+    </div>
+    <div class="rw-mini" id="rwMini"><i id="rwMiniBar" style="width:0%"></i></div>
+    <span class="rw-goal" id="rwGoal"></span>
+    <div class="prog" id="progWrap" hidden><i id="progBar" style="width:0%"></i></div>
+  </div>
+  <div id="kidStage"></div>
+</div></div>
+
+<div id="review"><div class="wrap" style="padding-block:34px 72px"><div id="reviewStage"></div></div></div>
+<script>
+/* ==================================================================
+   DATA
+   ================================================================== */
+const DOMAINS=["Operations","Algebraic Thinking","Data Analysis","Geometric Concepts",
+"Perimeter, Area, and Volume","Measurement","Time and Money","Number Operations","Number Sense"];
+
+/* Nine domain scores, entered by the parent from their own ISR.
+   The defaults below are a worked example, not any real child. */
+const EXAMPLE=[78,49,76,81,24,45,60,80,74];
+let PM1=(function(){try{const v=JSON.parse(localStorage.getItem("fast_pm1"));
+  return (Array.isArray(v)&&v.length===9)?v:EXAMPLE.slice();}catch(e){return EXAMPLE.slice();}})();
+let USING_EXAMPLE=(function(){try{return !localStorage.getItem("fast_pm1");}catch(e){return true;}})();
+
+const band=s=>s>=80?["sec","Secure"]:s>=60?["dev","Developing"]:["beg","Beginning"];
+
+/* Official FAST domain descriptions (verbatim) + B.E.S.T. benchmarks + the likely error */
+const DMETA={
+0:{desc:"Operations assesses a student's understanding of addition and subtraction when solving problems that involve models and whole numbers.",
+   b:[["MA.2.NSO.2.3","Add two whole numbers with sums up to 100, and subtract, with procedural reliability."],
+      ["MA.2.NSO.2.4","Explore addition and subtraction within 1,000 using number lines, drawings and place value."],
+      ["MA.2.AR.1.1","Match a real-world story to the equation that represents it."]],
+   err:"Reading a model (number line jumps, base-ten blocks) and adding the digits instead of the place values. 41 + 23 becomes 44 because only the ones got jumped."},
+1:{desc:"Algebraic Thinking assesses a student's understanding of addition and subtraction and how these operations relate to one another in both mathematical and real-world problem-solving contexts.",
+   b:[["MA.2.AR.1.1","Solve one- and two-step addition and subtraction real-world problems."],
+      ["MA.2.AR.2.1","Determine and explain whether equations are true or false. Instruction focuses on understanding of the equal sign."],
+      ["MA.2.AR.2.2","Determine the unknown whole number with the unknown in any position."],
+      ["MA.2.AR.3.1","Represent even and odd numbers using two equal groups."],
+      ["MA.2.AR.3.2","Use repeated addition and rectangular arrays to find a total."]],
+   err:"The equal sign. Most 7-year-olds read = as 'the answer goes here', so 27 + 13 = 26 + 14 looks wrong to them and 45 + ▢ = 23 + 46 gets answered 69. The second error is stopping after step one of a two-step word problem — the answer to step one is always sitting right there in the choices."},
+2:{desc:"Data Analysis (Grade 2) assesses a student's understanding of collecting, sorting, and representing data using tally marks, tables, pictographs, or bar graphs. Students demonstrate the ability to use appropriate titles, labels, and units.",
+   b:[["MA.2.DP.1.1","Collect, categorize and represent data using tally marks, tables, pictographs or bar graphs. Scales are limited to ones, fives or tens."],
+      ["MA.2.DP.1.2","Interpret those displays, including solving addition and subtraction problems from them."]],
+   err:"Ignoring the key on a pictograph — counting 5 symbols and answering 5 when each symbol stands for 2. And reading 'how many more' as 'how many altogether'."},
+3:{desc:"Geometric Concepts assesses a student's ability to identify, compare, sort, compose, and decompose two- and three-dimensional shapes based on their defining attributes.",
+   b:[["MA.2.GR.1.1","Identify and draw triangles, rectangles, squares, pentagons, hexagons and octagons."],
+      ["MA.2.GR.1.2","Categorize figures by number and length of sides, number of vertices, open or closed, curved or straight."],
+      ["MA.2.GR.1.3","Identify line(s) of symmetry."],
+      ["MA.2.FR.1.1","Partition circles and rectangles into halves, thirds or fourths."]],
+   err:"This is his strongest domain at 81 — Secure. Leave it alone apart from keeping it warm. The only soft spot is hexagon-versus-octagon and assuming any line that halves a shape is a line of symmetry."},
+4:{desc:"Perimeter (Grade 2) assesses a student's understanding of perimeter by counting unit segments around the boundary of a polygon (without gaps or overlaps) and by using whole number side lengths.",
+   b:[["MA.2.GR.2.1","Explore perimeter by placing unit segments along the boundary without gaps or overlaps. Find perimeters of rectangles by counting unit segments."],
+      ["MA.2.GR.2.2","Find the perimeter of a polygon with whole-number side lengths, limited to triangles, rectangles, squares and pentagons. The expectation is NOT to use a formula. Perimeter cannot exceed 100 units and responses include the appropriate units."]],
+   err:"Two errors, and they are well documented. First, counting the squares INSIDE instead of the segments around the edge — that is area, and it is the single most common perimeter mistake there is. Second, on a grid, counting each corner square once instead of counting its two exposed edges, which lands you exactly 4 units short every time. A third, cheaper one: forgetting the unit. The benchmark says responses include the appropriate units."},
+5:{desc:"Measurement assesses a student's understanding of comparing (directly and indirectly), estimating, and measuring object lengths using appropriate tools. Students measure with nonstandard and standard units without gaps or overlaps.",
+   b:[["MA.2.M.1.1","Estimate and measure to the nearest inch, foot, yard, centimeter or meter, selecting an appropriate tool. Instruction includes seeing rulers as number lines, and that measuring in a larger unit needs FEWER of them."],
+      ["MA.2.M.1.2","Measure two objects in the same unit and find the difference."],
+      ["MA.2.M.1.3","Solve one- and two-step real-world length problems by adding and subtracting."]],
+   err:"The ruler that does not start at zero. An object running from 1 to 4 gets answered 4, because he reads the end number instead of counting the spaces. Underneath that is the real idea from the benchmark: a ruler IS a number line, so length is a subtraction. Second error: picking the wrong unit — measuring a classroom in inches."},
+6:{desc:"Time and Money (Grade 1 and 2) assesses a student's ability to tell time on analog and digital clocks, identify pennies, nickels, dimes, and quarters, understand their values, and solve real world and mathematical problems involving combinations of coins or bills (without decimals), using appropriate symbols.",
+   b:[["MA.2.M.2.1","Tell and write time to the nearest five minutes using a.m. and p.m. Express half an hour, half past, quarter of an hour, quarter after and quarter til."],
+      ["MA.2.M.2.2","Solve one- and two-step problems with dollar bills within $100 or coins within 100¢, using $ and ¢ correctly. No decimals."]],
+   err:"Reading the minute hand as a number instead of counting by fives — the hand on 3 becomes '3 minutes' rather than 15. And the 11:55 trap, where the hour hand is almost at 12 so the whole time gets read as 12:55. On money: counting the number of coins instead of their values, and mixing nickels with dimes."},
+7:{desc:"Number Operations assesses a student's understanding of addition and subtraction when solving problems that involve models and whole numbers.",
+   b:[["MA.2.NSO.2.1","Recall addition facts to 20 and related subtraction facts with automaticity."],
+      ["MA.2.NSO.2.3","Add and subtract within 100 with procedural reliability."],
+      ["MA.2.NSO.2.4","Explore addition and subtraction within 1,000."]],
+   err:"Secure at 80. The remaining points are regrouping: 48 + 27 answered as 65 because the carried ten gets dropped, and 91 − 46 answered as 55 because each column gets subtracted small-from-large."},
+8:{desc:"Number Sense assesses a student's understanding of number quantities, counting, place value, and composing and decomposing numbers.",
+   b:[["MA.2.NSO.1.1","Read and write numbers 0 to 1,000 in standard, expanded and word form."],
+      ["MA.2.NSO.1.2","Compose and decompose three-digit numbers in multiple ways."],
+      ["MA.2.NSO.1.3","Plot, order and compare whole numbers up to 1,000 using <, > and =."],
+      ["MA.2.NSO.1.4","Round whole numbers 0 to 100 to the nearest 10."]],
+   err:"Expanded form when there is a zero — 709 written as 700 + 0 + 9 or 70 + 9. And rounding the exact halfway case: 65 rounded down to 60 instead of up to 70."}
+};
+
+/* Which domains each day attacks, and how ~2.5 hours is actually spent.
+   A 7-year-old with distractibility cannot do 2-3 hours in one block. It works only
+   as four separate sittings with real gaps, and only if most of it is off
+   the screen. Seated drill is capped near 60 minutes a day. */
+const DAYS=[
+ {n:1,kidTitle:"The Walk Around the Outside",kidHook:"Count the steps all the way round a shape.",t:"Perimeter",dom:[4],
+  goal:"The walk around the *outside*. Not the squares inside. He should trace a shape with his finger and count segments out loud without being asked.",
+  win:"Says the unit out loud every time: 16 units, not 16.",
+  teach:"Masking-tape a rectangle on the kitchen floor, one shoe-length per unit. He walks it heel-to-toe counting aloud. Then draws the same rectangle on graph paper and counts the segments. Same number. It has to be walked before it is drawn.",
+  sessions:[
+   {tag:"BUILD",mins:45,app:false,title:"Walk it, then build it",
+    what:"Tape three rectangles on the floor in different shapes and walk each one heel-to-toe, counting out loud. Then cut drinking straws into unit lengths and build triangles, squares and pentagons on the table, counting the straws around each. Finish on graph paper: he draws a shape, you count it, then swap."},
+   {tag:"DRILL",mins:35,app:true,title:"Day 1 drill, then endless practice",
+    what:"Open Practice, Day 1. Do the 13-question drill, then switch to Endless practice and keep going until the 35 minutes are up. It generates new shapes every time, so it never repeats."},
+   {tag:"LIVE",mins:40,app:false,title:"Perimeter hunt round the house",
+    what:"Give him string and a ruler. Find the perimeter of a picture frame, a placemat, a book, a floor tile, his bed, a window. String around it first, then straighten the string and measure. Write each one in a notebook with the unit. Make the last three a race against a timer."},
+   {tag:"BOSS",mins:25,app:true,title:"Boss round",
+    what:"Back to the app, Endless practice on hard. Getting one in three is a good night, and say so out loud before he starts."}]},
+
+ {n:2,kidTitle:"Start at Zero",kidHook:"Rulers are number lines. Find out how long things really are.",t:"Measurement",dom:[5],
+  goal:"A ruler is a number line, so length is a subtraction. Start at zero, and when it does not start at zero, subtract.",
+  win:"When the object starts at 1, he says 4 minus 1 out loud instead of saying 4.",
+  teach:"Deliberately hand him a ruler with the first inch covered over, or start the object at the 2 mark. Let him get it wrong once, then lay unit cubes along it so he sees he is counting *spaces*, not the printed numbers.",
+  sessions:[
+   {tag:"BUILD",mins:45,app:false,title:"The broken ruler",
+    what:"Tape over the first two inches of a ruler. Measure ten small objects with it. Every single time he has to say the subtraction out loud before he says the answer. Then lay unit cubes along the ruler so he can see he is counting the gaps, not the numbers."},
+   {tag:"DRILL",mins:35,app:true,title:"Day 2 drill, then endless practice",
+    what:"Day 2 in the app, then Endless practice. The generator keeps moving where the object starts, so he cannot learn a position."},
+   {tag:"LIVE",mins:40,app:false,title:"Measure the house twice",
+    what:"Pick ten things and measure each one in inches, then again in feet. He writes both. Then ask which number came out bigger and why. That is the hardest idea in the whole domain and it lands much better from a tape measure than from a screen. If there is time, cook something and let him do the measuring cups."},
+   {tag:"BOSS",mins:25,app:true,title:"Two-step boss round",
+    what:"Endless practice on hard. These are the two-step length problems. Make him say what step one was before he picks."}]},
+
+ {n:3,kidTitle:"The Balance Game",kidHook:"Both sides have to weigh the same. Find the missing number.",t:"Algebraic Thinking",dom:[1],
+  goal:"The equal sign means the *same amount on both sides*, not the answer comes next. And finish both steps of a two-step problem.",
+  win:"On a two-step problem he says that is only step one before choosing.",
+  teach:"Use a coat hanger and clothes pegs as a balance. Hang 27 + 13 on the left and 26 + 14 on the right. It balances. Then hang 18 + 7 against 24 and let it tip. He has to see the equal sign as a balance point before the symbols mean anything.",
+  sessions:[
+   {tag:"BUILD",mins:45,app:false,title:"The coat-hanger balance",
+    what:"Build the balance and hang at least eight pairs on it, some true, some false. He predicts balance or tip before you let go. Then play cover-up: write 45 + 24 = 69, cover any one number with a coin, and he works out what is hidden. Move which number you cover."},
+   {tag:"DRILL",mins:35,app:true,title:"Day 3 drill, then endless practice",
+    what:"Day 3, then Endless practice. The generator moves the box to a different position every time, which is the whole point of the benchmark."},
+   {tag:"LIVE",mins:40,app:false,title:"He writes the problems",
+    what:"Use snacks or LEGO. You give him a two-step story and he acts it out with the objects. Then swap: he invents a two-step problem for you, and you deliberately get it wrong by stopping after step one so he has to catch you. Being the one who spots the mistake is worth more than ten correct answers."},
+   {tag:"BOSS",mins:25,app:true,title:"Boss round",
+    what:"Endless practice on hard. Two-step word problems and unknowns on the left of the equal sign."}]},
+
+ {n:4,kidTitle:"Clocks and Coins",kidHook:"Read any clock. Count any pile of money.",t:"Time, money and the dress rehearsal",dom:[6],
+  goal:"Count the minute hand by fives. Count coins from the biggest value down. Then sit the full mock while he is fresh.",
+  win:"Reads every question twice before he picks. The score is not the target.",
+  teach:"Real coins, not pictures. Sort into piles by value, say the value of each pile, then count on from the biggest. For the clock, write the 5-10-15 numbers in pencil on a paper-plate clock, then rub them out one at a time over the day.",
+  sessions:[
+   {tag:"BUILD",mins:40,app:false,title:"Paper-plate clock and a coin shop",
+    what:"Make the clock with a split pin and write the fives round the edge in pencil. Call out times, he sets the hands, and rub out one of the pencilled fives each time he gets one right. Then set up a shop with real coins and price tags under a dollar. He pays and works out the change."},
+   {tag:"DRILL",mins:30,app:true,title:"Day 4 drill",
+    what:"Day 4 in the app, then Endless practice until the 30 minutes are up."},
+   {tag:"MOCK",mins:45,app:true,title:"The full 34-question mock",
+    what:"Do this one <b>fresh</b>, ideally mid-morning, not after everything else. Use the Practice test first so he can flag and go back. Toilet first, water on the table, breaks at question 12 and 24 are built in. When he finishes, press Copy results."},
+   {tag:"REVIEW",mins:25,app:true,title:"Go through the misses together",
+    what:"Open the Mock review tab. It shows only what he got wrong, grouped by domain, with the re-teach for each. Do the fix-it session at the end, which drills only those. Stop while he is still winning."}]}
+];
+
+/* ===== VALIDATED ITEM BANK — every key independently recomputed ===== */
+/* ============================================================
+   FAST Grade 2 Mathematics — practice item bank
+   Domains named EXACTLY as they appear on the Individual
+   Student Report (ISR). bench = Florida B.E.S.T. benchmark.
+   d = difficulty 1..5 (adaptive ladder).
+   chk = independent recompute spec for the validator.
+   ============================================================ */
+
+const ITEMS = [
+
+/* ---------- 5. PERIMETER  (MA.2.GR.2.1 / .2)  score 24 ---------- */
+{id:"P1",dom:4,bench:"MA.2.GR.2.1",d:1,q:"Count the unit segments all the way around the outside. What is the perimeter?",
+ fig:{t:"gridRect",w:4,h:2},ch:["8 units","10 units","12 units","14 units"],a:"12 units",chk:["perimRect",4,2,"units"],
+ why:"Walk the outside: 4 across the top, 2 down, 4 back, 2 up. 4+2+4+2 = 12.",trap:"8 is the count of squares inside (that is area, not perimeter)."},
+{id:"P2",dom:4,bench:"MA.2.GR.2.1",d:1,q:"Count the unit segments around the outside of the square.",
+ fig:{t:"gridRect",w:3,h:3},ch:["9 units","12 units","6 units","16 units"],a:"12 units",chk:["perimRect",3,3,"units"],
+ why:"All four sides are 3. 3+3+3+3 = 12.",trap:"9 is the squares inside."},
+{id:"P3",dom:4,bench:"MA.2.GR.2.1",d:2,q:"What is the perimeter of this rectangle?",
+ fig:{t:"gridRect",w:5,h:3},ch:["15 units","16 units","8 units","18 units"],a:"16 units",chk:["perimRect",5,3,"units"],
+ why:"5+3+5+3 = 16.",trap:"8 is one long side plus one short side. You must go all the way around."},
+{id:"P4",dom:4,bench:"MA.2.GR.2.1",d:2,q:"What is the perimeter of this rectangle?",
+ fig:{t:"gridRect",w:6,h:2},ch:["12 units","14 units","16 units","20 units"],a:"16 units",chk:["perimRect",6,2,"units"],
+ why:"6+2+6+2 = 16.",trap:"12 is the number of squares inside."},
+{id:"P5",dom:4,bench:"MA.2.GR.2.2",d:2,q:"Find the perimeter of the triangle.",
+ fig:{t:"tri",s:[5,7,9]},ch:["19 cm","20 cm","21 cm","23 cm"],a:"21 cm",chk:["sum",[5,7,9],"cm"],
+ why:"Add every side: 5+7+9 = 21 cm.",trap:"Dropping one side gives 12, 14 or 16."},
+{id:"P6",dom:4,bench:"MA.2.GR.2.2",d:2,q:"Each side of this square is 8 inches. What is the perimeter?",
+ fig:{t:"sq",s:8,u:"in"},ch:["16 in","24 in","32 in","64 in"],a:"32 in",chk:["sum",[8,8,8,8],"in"],
+ why:"A square has 4 equal sides: 8+8+8+8 = 32 inches.",trap:"64 is 8 eights added up. That is the space inside, not the walk around the edge."},
+{id:"P7",dom:4,bench:"MA.2.GR.2.2",d:3,q:"Find the perimeter of the pentagon.",
+ fig:{t:"pent",s:[4,6,3,7,5]},ch:["22 cm","24 cm","25 cm","26 cm"],a:"25 cm",chk:["sum",[4,6,3,7,5],"cm"],
+ why:"A pentagon has 5 sides: 4+6+3+7+5 = 25 cm.",trap:"Forgetting the fifth side is the most common slip."},
+{id:"P8",dom:4,bench:"MA.2.GR.2.2",d:3,q:"Only two sides are labeled. Find the perimeter of the rectangle.",
+ fig:{t:"rectLbl",w:12,h:7,u:"ft"},ch:["19 ft","26 ft","38 ft","84 ft"],a:"38 ft",chk:["sum",[12,7,12,7],"ft"],
+ why:"The other two sides match: 12+7+12+7 = 38 feet.",trap:"19 means you only added the two labels you could see."},
+{id:"P9",dom:4,bench:"MA.2.GR.2.1",d:4,q:"Count the unit segments all the way around the outside.",
+ fig:{t:"gridRect",w:7,h:4},ch:["11 units","22 units","28 units","24 units"],a:"22 units",chk:["perimRect",7,4,"units"],
+ why:"7 + 4 + 7 + 4 = 22 units. Touch each dot as you count so you do not lose your place.",trap:"28 is how many squares are inside. That is the space in the middle, not the walk around the edge."},
+{id:"P10",dom:4,bench:"MA.2.GR.2.2",d:4,q:"A garden is shaped like a pentagon. Find the perimeter.",
+ fig:{t:"pent",s:[9,12,7,10,6]},ch:["34 m","42 m","44 m","46 m"],a:"44 m",chk:["sum",[9,12,7,10,6],"m"],
+ why:"Add all five sides: 9 + 12 = 21, + 7 = 28, + 10 = 38, + 6 = 44 m.",trap:"It is easy to lose one side. Touch each side as you add it."},
+{id:"P11",dom:4,bench:"MA.2.GR.2.2",d:4,q:"Which shape has the *larger* perimeter?",
+ fig:{t:"twoRect",a:[9,1],b:[4,4]},ch:["Shape A","Shape B","They are equal","You cannot compare them"],a:"Shape A",chk:["perimCmp",[9,1],[4,4]],
+ why:"Shape A: 9+1+9+1 = 20 units. Shape B: 4+4+4+4 = 16 units. 20 is more than 16, so skinny Shape A has the *larger* perimeter.",trap:"Shape B looks bigger because it holds more squares inside (16 vs 9). But perimeter is the walk *around* the edge, not the space inside. A long skinny shape can have a big perimeter and a small inside."},
+{id:"P12",dom:4,bench:"MA.2.GR.2.2",d:3,q:"A frame is 9 inches long and 6 inches wide. Ribbon goes all the way around it. How many inches of ribbon?",
+ fig:null,ch:["15 in","24 in","30 in","54 in"],a:"30 in",chk:["sum",[9,6,9,6],"in"],
+ why:"All the way around = 9+6+9+6 = 30 inches.",trap:"Ribbon goes *around* the edge, so you add the four sides. You never multiply here."},
+{id:"P13",dom:4,bench:"MA.2.GR.2.2",d:2,q:"A desktop is 8 feet long and 4 feet wide. What is its perimeter?",
+ fig:{t:"rectLbl",w:8,h:4,u:"ft"},ch:["12 ft","24 ft","32 ft","16 ft"],a:"24 ft",chk:["sum",[8,4,8,4],"ft"],
+ why:"8+4+8+4 = 24 feet. The answer needs the unit: feet.",trap:"32 is the space inside, not the walk around the edge."},
+{id:"P14",dom:4,bench:"MA.2.GR.2.2",d:5,q:"Find the perimeter of the pentagon.",
+ fig:{t:"pent",s:[23,18,31,14,9]},ch:["86 cm","95 cm","96 cm","105 cm"],a:"95 cm",chk:["sum",[23,18,31,14,9],"cm"],
+ why:"Add them one at a time and write each total down: 23 + 18 = 41, + 31 = 72, + 14 = 86, + 9 = 95 cm.",trap:"Five two-digit numbers is a lot to hold. Write each running total down."},
+
+/* ---------- 6. MEASUREMENT  (MA.2.M.1)  score 45 ---------- */
+{id:"M1",dom:5,bench:"MA.2.M.1.1",d:1,q:"How long is the pencil?",
+ fig:{t:"ruler",from:0,to:6,u:"in",obj:"pencil"},ch:["5 inches","6 inches","7 inches","0 inches"],a:"6 inches",chk:["diff",0,6,"inches"],
+ why:"It starts at 0 and ends at 6. 6 - 0 = 6 inches.",trap:"No trap here. This is the easy kind that starts at zero."},
+{id:"M2",dom:5,bench:"MA.2.M.1.1",d:2,q:"How long is the crayon?",
+ fig:{t:"ruler",from:1,to:4,u:"in",obj:"crayon"},ch:["3 inches","4 inches","5 inches","1 inch"],a:"3 inches",chk:["diff",1,4,"inches"],
+ why:"It does *not* start at 0. It goes from 1 to 4, so 4 - 1 = 3 inches.",trap:"4 is the number it ends on. Always subtract the start."},
+{id:"M3",dom:5,bench:"MA.2.M.1.1",d:2,q:"Which unit would you use to measure how long a classroom is?",
+ fig:null,ch:["Inches","Centimeters","Meters","Cups"],a:"Meters",chk:["val","Meters",""],
+ why:"A classroom is big, so use a big unit: meters (or feet/yards).",trap:"Inches and centimeters are for small things like a crayon."},
+{id:"M4",dom:5,bench:"MA.2.M.1.1",d:2,q:"About how long is a brand-new crayon?",
+ fig:null,ch:["4 inches","4 feet","4 yards","4 meters"],a:"4 inches",chk:["val","4 inches",""],
+ why:"A crayon fits in your hand, so the unit must be small: about 4 inches. Feet, yards and meters are all far too big.",trap:"The number is the same in every choice. The *unit* is the question."},
+{id:"M5",dom:5,bench:"MA.2.M.1.2",d:3,q:"Ribbon A is 9 inches long. Ribbon B is 4 inches long. How much longer is Ribbon A?",
+ fig:{t:"twoBars",a:9,b:4,u:"in"},ch:["4 inches","5 inches","13 inches","6 inches"],a:"5 inches",chk:["diff",4,9,"inches"],
+ why:"'How much longer' means subtract: 9 - 4 = 5 inches.",trap:"13 is what you get if you add instead of subtract."},
+{id:"M6",dom:5,bench:"MA.2.M.1.1",d:1,q:"Paper clips are lined up along the marker with no gaps. How long is the marker?",
+ fig:{t:"clips",n:5},ch:["4 paper clips","5 paper clips","6 paper clips","5 inches"],a:"5 paper clips",chk:["val","5 paper clips",""],
+ why:"Count the paper clips: 5. The unit is 'paper clips' because that is what you measured with.",trap:"'5 inches' uses the wrong unit."},
+{id:"M7",dom:5,bench:"MA.2.M.1.1",d:5,q:"Sam measures one desk two ways: in inches, then in feet. Which way gives the *bigger* number?",
+ fig:null,ch:["Inches","Feet","They give the same number","It depends on the desk"],a:"Inches",chk:["val","Inches",""],
+ why:"An inch is smaller than a foot, so it takes *more* inches to cover the desk. Smaller unit, bigger number.",trap:"Feet feels bigger, but a bigger unit needs *fewer* of them."},
+{id:"M8",dom:5,bench:"MA.2.M.1.3",d:4,q:"Max has a rope 48 inches long. Sam's rope is 9 inches shorter. How many inches of rope in all?",
+ fig:null,ch:["39 inches","57 inches","87 inches","96 inches"],a:"87 inches",chk:["val",87,"inches"],
+ why:"Step 1: Sam's rope is 48 - 9 = 39. Step 2: both ropes, 48 + 39 = 87 inches.",trap:"39 is only step 1. The question asks for *both* ropes."},
+{id:"M9",dom:5,bench:"MA.2.M.1.3",d:4,q:"A string is 24 cm long. Sam cuts off 8 cm. How long is the string now?",
+ fig:null,ch:["14 cm","16 cm","18 cm","32 cm"],a:"16 cm",chk:["val",16,"cm"],
+ why:"24 - 8 = 16 cm.",trap:"32 is adding instead of subtracting."},
+{id:"M10",dom:5,bench:"MA.2.M.1.3",d:5,q:"A table is 36 inches long. Sam makes it 15 inches longer. A door is 60 inches wide. How much *shorter* is the table than the door?",
+ fig:null,ch:["9 inches","11 inches","21 inches","51 inches"],a:"9 inches",chk:["val",9,"inches"],
+ why:"Step 1: 36 + 15 = 51 inches. Step 2: 60 - 51 = 9 inches.",trap:"51 is only step 1."},
+{id:"M11",dom:5,bench:"MA.2.M.1.1",d:1,q:"Which tool would you use to measure how long a book is?",
+ fig:null,ch:["A ruler","A clock","A cup","A paintbrush"],a:"A ruler",chk:["val","A ruler",""],
+ why:"A ruler measures how long something is. A clock measures time.",trap:"No trap here. This one is free."},
+{id:"M12",dom:5,bench:"MA.2.M.1.1",d:3,q:"How long is the eraser?",
+ fig:{t:"ruler",from:2,to:9,u:"cm",obj:"eraser"},ch:["7 cm","9 cm","11 cm","2 cm"],a:"7 cm",chk:["diff",2,9,"cm"],
+ why:"From 2 to 9 is 9 - 2 = 7 cm. Count the *spaces*, not the tick marks.",trap:"9 is the ending number. It did not start at 0."},
+
+/* ---------- 2. ALGEBRAIC THINKING  (MA.2.AR)  score 49 ---------- */
+{id:"A1",dom:1,bench:"MA.2.AR.2.1",d:2,q:"Is this number sentence *true* or *false*?    27 + 13 = 26 + 14",
+ fig:null,ch:["True","False","Cannot tell","Only if you add first"],a:"True",chk:["eqTF",27,13,26,14,"True"],
+ why:"Left side is 40. Right side is 40. Same, so *true*. (26 is one less than 27, and 14 is one more than 13.)",trap:"The equal sign does *not* mean 'the answer comes next'. It means 'same amount on both sides'."},
+{id:"A2",dom:1,bench:"MA.2.AR.2.1",d:2,q:"Is this number sentence *true* or *false*?    35 + 20 = 50 + 5",
+ fig:null,ch:["True","False","Cannot tell","Neither"],a:"True",chk:["eqTF",35,20,50,5,"True"],
+ why:"35 + 20 = 55 and 50 + 5 = 55. Both sides are 55, so *true*.",trap:"You have to work out *both* sides before you decide."},
+{id:"A3",dom:1,bench:"MA.2.AR.2.1",d:3,q:"Is this number sentence *true* or *false*?    40 - 15 = 20 + 5",
+ fig:null,ch:["True","False","Cannot tell","Only the left side is right"],a:"True",chk:["eqTF2",40,-15,20,5,"True"],
+ why:"40 - 15 = 25 and 20 + 5 = 25. Both sides are 25, so *true*.",trap:"One side subtracts and the other adds. That is allowed."},
+{id:"A4",dom:1,bench:"MA.2.AR.2.1",d:3,q:"Is this number sentence *true* or *false*?    18 + 7 = 24",
+ fig:null,ch:["True","False","Cannot tell","Almost"],a:"False",chk:["eqTF",18,7,24,0,"False"],
+ why:"18 + 7 = 25, not 24. *false*.",trap:"It is close, so it is tempting. Always compute it."},
+{id:"A5",dom:1,bench:"MA.2.AR.2.2",d:3,q:"What number goes in the box?    45 + ▢ = 23 + 46",
+ fig:null,ch:["22","23","24","69"],a:"24",chk:["unk",45,69,"24"],
+ why:"First do the side you *can*: 23 + 46 = 69. Now 45 + ▢ = 69, so ▢ = 69 - 45 = 24.",trap:"69 is the total, not the missing part."},
+{id:"A6",dom:1,bench:"MA.2.AR.2.2",d:2,q:"What number goes in the box?    ▢ + 30 = 70",
+ fig:null,ch:["30","40","50","100"],a:"40",chk:["unk",30,70,"40"],
+ why:"70 - 30 = 40.",trap:"100 is adding instead of subtracting."},
+{id:"A7",dom:1,bench:"MA.2.AR.2.2",d:3,q:"What number goes in the box?    56 = ▢ - 14",
+ fig:null,ch:["42","60","70","72"],a:"70",chk:["val",70,""],
+ why:"Something minus 14 leaves 56, so the something is 56 + 14 = 70.",trap:"42 is 56 - 14. Always check your answer by putting it back in: 70 - 14 = 56. It works."},
+{id:"A8",dom:1,bench:"MA.2.AR.2.2",d:4,q:"What number goes in the box?    25 + 18 = ▢ + 13",
+ fig:null,ch:["28","30","43","56"],a:"30",chk:["unk2",25,18,13,"30"],
+ why:"Left side: 25 + 18 = 43. Then ▢ + 13 = 43, so ▢ = 43 - 13 = 30.",trap:"43 is the total of the left side, not the missing box."},
+{id:"A9",dom:1,bench:"MA.2.AR.1.1",d:3,q:"Sam has 34 shells. He finds 28 more at the beach. How many shells does he have now?",
+ fig:null,ch:["52","61","62","6"],a:"62",chk:["val",62,""],
+ why:"34 + 28 = 62.",trap:"6 is the difference. \"Finds more\" means you add."},
+{id:"A10",dom:1,bench:"MA.2.AR.1.1",d:4,q:"Sam has 45 stickers. He gives away 12. Then he gets 20 more. How many now?",
+ fig:null,ch:["33","53","57","77"],a:"53",chk:["val",53,""],
+ why:"Step 1: 45 - 12 = 33. Step 2: 33 + 20 = 53.",trap:"33 is only step 1. Two-step problems need *both* steps."},
+{id:"A11",dom:1,bench:"MA.2.AR.1.1",d:4,q:"A jar has 28 red marbles and 17 blue marbles. Sam loses 9. How many are left?",
+ fig:null,ch:["36","45","54","11"],a:"36",chk:["val",36,""],
+ why:"Step 1: 28 + 17 = 45. Step 2: 45 - 9 = 36.",trap:"45 is only step 1."},
+{id:"A12",dom:1,bench:"MA.2.AR.3.1",d:3,q:"Is 14 an even number or an odd number?",
+ fig:null,ch:["Even, because 7 + 7 = 14","Odd, because 7 + 7 = 14","Even, because 14 is bigger than 10","Odd, because 14 has two digits"],a:"Even, because 7 + 7 = 14",chk:["val","Even, because 7 + 7 = 14",""],
+ why:"A number is even when it splits into two equal groups. 14 = 7 + 7, two equal groups of 7.",trap:"Size and number of digits tell you nothing about even or odd. Only the two equal groups do."},
+{id:"A13",dom:1,bench:"MA.2.AR.3.1",d:3,q:"Which number is *odd*?",
+ fig:null,ch:["16","12","15","20"],a:"15",chk:["odd",[16,12,15,20],"15"],
+ why:"15 makes two equal groups of 7 with *one* left over (7 + 7 + 1), so it is odd.",trap:"All the others split evenly in half."},
+{id:"A14",dom:1,bench:"MA.2.AR.3.2",d:3,q:"How many dots are there in all?",
+ fig:{t:"array",r:4,c:5},ch:["9","16","20","25"],a:"20",chk:["prod",4,5,""],
+ why:"4 rows of 5: 5 + 5 + 5 + 5 = 20.",trap:"9 is 4 + 5. Rows of dots means you add the same number again and again."},
+{id:"A15",dom:1,bench:"MA.2.AR.3.2",d:3,q:"There are 3 equal groups with 6 crayons in each group. How many crayons in all?",
+ fig:{t:"array",r:3,c:6},ch:["9","15","18","24"],a:"18",chk:["prod",3,6,""],
+ why:"6 + 6 + 6 = 18.",trap:"9 is 3 + 6."},
+{id:"A16",dom:1,bench:"MA.2.AR.1.1",d:5,q:"Class A has 38 books. Class B has 15 *more* than Class A. How many books in all?",
+ fig:null,ch:["53","76","91","23"],a:"91",chk:["val",91,""],
+ why:"Step 1: Class B = 38 + 15 = 53. Step 2: together = 38 + 53 = 91.",trap:"53 is only Class B. The question asks for *both* classes."},
+
+/* ---------- 7. TIME AND MONEY  (MA.2.M.2)  score 60 ---------- */
+{id:"T1",dom:6,bench:"MA.2.M.2.1",d:1,q:"What time does the clock show?",fig:{t:"clock",h:3,m:0},
+ ch:["3:00","12:03","3:30","9:00"],a:"3:00",chk:["clock",3,0],
+ why:"The short hand is on 3 and the long hand is on 12, so it is 3:00.",trap:"12:03 swaps the hands."},
+{id:"T2",dom:6,bench:"MA.2.M.2.1",d:2,q:"What time does the clock show?",fig:{t:"clock",h:7,m:30},
+ ch:["6:35","7:30","7:06","8:30"],a:"7:30",chk:["clock",7,30],
+ why:"The long hand is on 6, which is 30 minutes. The short hand is between 7 and 8, so the hour is 7.",trap:"6:35 reads the hands backwards."},
+{id:"T3",dom:6,bench:"MA.2.M.2.1",d:2,q:"What time does the clock show?",fig:{t:"clock",h:4,m:15},
+ ch:["3:20","4:03","4:15","4:30"],a:"4:15",chk:["clock",4,15],
+ why:"Long hand on 3. Count by fives: 5, 10, 15. So 15 minutes. This is also called quarter after 4.",trap:"4:03 reads the 3 as 3 minutes instead of 15."},
+{id:"T4",dom:6,bench:"MA.2.M.2.1",d:3,q:"What time does the clock show?",fig:{t:"clock",h:9,m:45},
+ ch:["9:09","9:45","10:45","10:09"],a:"9:45",chk:["clock",9,45],
+ why:"Long hand on 9. Count by fives to 45 minutes. The short hand is past 9 but not at 10 yet, so it is 9:45.",trap:"10:45 uses the hour it is heading toward instead of the one it has passed."},
+{id:"T5",dom:6,bench:"MA.2.M.2.1",d:3,q:"What time does the clock show?",fig:{t:"clock",h:2,m:20},
+ ch:["2:04","2:20","4:10","2:40"],a:"2:20",chk:["clock",2,20],
+ why:"Long hand on 4. Count by fives: 5, 10, 15, 20. So 20 minutes.",trap:"2:04 forgets to count by fives."},
+{id:"T6",dom:6,bench:"MA.2.M.2.1",d:4,q:"What time does the clock show?",fig:{t:"clock",h:11,m:55},
+ ch:["11:11","11:55","12:55","10:55"],a:"11:55",chk:["clock",11,55],
+ why:"Long hand on 11 = 55 minutes. The short hand is almost at 12, but it has not got there, so the hour is still 11.",trap:"12:55 is the classic 'almost the next hour' mistake."},
+{id:"T7",dom:6,bench:"MA.2.M.2.1",d:2,q:"Sam eats breakfast at 7:00. Is that a.m. or p.m.?",
+ fig:null,ch:["a.m.","p.m.","Both","Neither"],a:"a.m.",chk:["val","a.m.",""],
+ why:"a.m. is midnight to noon (morning). Breakfast is in the morning.",trap:"p.m. is noon to midnight. That would be dinner time."},
+{id:"T8",dom:6,bench:"MA.2.M.2.2",d:2,q:"How much money is this?",fig:{t:"coins",c:["q","q","d","p","p","p"]},
+ ch:["53¢","63¢","68¢","36¢"],a:"63¢",chk:["coins",["q","q","d","p","p","p"]],
+ why:"Start with the biggest: 25, 50, then 60, then 61, 62, 63. That is 63¢.",trap:"Counting the coins instead of their *values* gives 6."},
+{id:"T9",dom:6,bench:"MA.2.M.2.2",d:3,q:"How much money is this?",fig:{t:"coins",c:["d","d","d","n","n","p","p","p","p"]},
+ ch:["39¢","44¢","49¢","54¢"],a:"44¢",chk:["coins",["d","d","d","n","n","p","p","p","p"]],
+ why:"Dimes: 10, 20, 30. Nickels: 35, 40. Pennies: 41, 42, 43, 44. That is 44¢.",trap:"Mixing up nickels (5¢) and dimes (10¢) is the usual slip."},
+{id:"T10",dom:6,bench:"MA.2.M.2.2",d:2,q:"How much money is this?",fig:{t:"coins",c:["q","d","d","d","n"]},
+ ch:["50¢","55¢","60¢","65¢"],a:"60¢",chk:["coins",["q","d","d","d","n"]],
+ why:"Quarter 25, then dimes 35, 45, 55, then a nickel 60. That is 60¢.",trap:"Always start from the largest coin and count on."},
+{id:"T11",dom:6,bench:"MA.2.M.2.2",d:2,q:"Sam has 75¢. He buys a sticker for 40¢. How much money does he have left?",
+ fig:null,ch:["25¢","35¢","45¢","115¢"],a:"35¢",chk:["val","35¢",""],
+ why:"75 - 40 = 35¢.",trap:"115¢ is adding instead of subtracting."},
+{id:"T12",dom:6,bench:"MA.2.M.2.2",d:5,q:"Sam has $60. He spends $25, then $18. How much is left?",
+ fig:null,ch:["$7","$17","$35","$43"],a:"$17",chk:["val","$17",""],
+ why:"Step 1: 25 + 18 = $43 spent. Step 2: 60 - 43 = $17 left.",trap:"$43 is what he *spent*, not what is left."},
+{id:"T13",dom:6,bench:"MA.2.M.2.1",d:3,q:"Which clock shows *half* *past* 6?",fig:{t:"clockPick",opts:[[6,30],[6,0],[7,30],[12,30]]},
+ ch:["A","B","C","D"],a:"A",chk:["val","A",""],
+ why:"'Half past 6' means 30 minutes after 6, so 6:30. The long hand points at 6.",trap:"C is 7:30. That is half past *seven*."},
+{id:"T14",dom:6,bench:"MA.2.M.2.1",d:4,q:"What time is 'a quarter til 8'?",
+ fig:null,ch:["7:15","7:45","8:15","8:45"],a:"7:45",chk:["val","7:45",""],
+ why:"'Quarter til' means 15 minutes *before* the hour. 15 minutes before 8:00 is 7:45.",trap:"8:15 is 'quarter *after* 8'. 'Til' means before."},
+
+/* ---------- 9. NUMBER SENSE  (MA.2.NSO.1)  score 74 ---------- */
+{id:"N1",dom:8,bench:"MA.2.NSO.1.1",d:2,q:"Which shows 413 in expanded form?",
+ fig:null,ch:["4 + 1 + 3","400 + 10 + 3","400 + 100 + 3","40 + 10 + 3"],a:"400 + 10 + 3",chk:["val","400 + 10 + 3",""],
+ why:"4 hundreds + 1 ten + 3 ones = 400 + 10 + 3.",trap:"'4 + 1 + 3' ignores place value."},
+{id:"N2",dom:8,bench:"MA.2.NSO.1.1",d:3,q:"Which shows 709 in expanded form?",
+ fig:null,ch:["700 + 0 + 9","700 + 9","70 + 9","7 + 0 + 9"],a:"700 + 9",chk:["val","700 + 9",""],
+ why:"7 hundreds, 0 tens, 9 ones. Since there are no tens, you write 700 + 9.",trap:"The zero is the tricky part. There is nothing to add for the tens."},
+{id:"N3",dom:8,bench:"MA.2.NSO.1.1",d:2,q:"Write 'six hundred fifty-two' in standard form.",
+ fig:null,ch:["600502","652","625","6052"],a:"652",chk:["val","652",""],
+ why:"6 hundreds, 5 tens, 2 ones = 652.",trap:"625 swaps the tens and ones."},
+{id:"N4",dom:8,bench:"MA.2.NSO.1.2",d:4,q:"Which one is the *same* as 241?",
+ fig:null,ch:["24 tens and 1 one","2 tens and 41 ones","241 tens","4 hundreds and 2 tens and 1 one"],a:"24 tens and 1 one",chk:["val","24 tens and 1 one",""],
+ why:"24 tens = 240, plus 1 one = 241. You can trade hundreds for tens.",trap:"This one is hard because you have to think in tens, not just hundreds-tens-ones."},
+{id:"N5",dom:8,bench:"MA.2.NSO.1.3",d:3,q:"Compare:    424  ▢  475",
+ fig:null,ch:["<",">","=","+"],a:"<",chk:["cmp",424,475],
+ why:"Both have 4 hundreds. Compare tens: 2 tens vs 7 tens. 2 is less, so 424 < 475.",trap:"Check hundreds *first*, then tens, then ones."},
+{id:"N6",dom:8,bench:"MA.2.NSO.1.3",d:3,q:"Put these in order from *least* to *greatest*:   424,  178,  475",
+ fig:null,ch:["178, 424, 475","424, 475, 178","475, 424, 178","178, 475, 424"],a:"178, 424, 475",chk:["sortAsc",[424,178,475]],
+ why:"178 has only 1 hundred, so it is smallest. Then 424, then 475.",trap:"Reading left to right and not sorting at all."},
+{id:"N7",dom:8,bench:"MA.2.NSO.1.4",d:3,q:"Round 65 to the nearest 10.",
+ fig:{t:"numline",min:60,max:70,mark:65},ch:["60","65","70","100"],a:"70",chk:["round10",65],
+ why:"65 is exactly halfway between 60 and 70. The rule is to round *up*, so 70.",trap:"60 is what you get if you round the halfway case down."},
+{id:"N8",dom:8,bench:"MA.2.NSO.1.4",d:3,q:"Round 83 to the nearest 10.",
+ fig:{t:"numline",min:80,max:90,mark:83},ch:["80","83","90","100"],a:"80",chk:["round10",83],
+ why:"83 is closer to 80 than to 90, so it rounds to 80.",trap:"90 is rounding up out of habit. Check which one is *closer*."},
+{id:"N9",dom:8,bench:"MA.2.NSO.2.2",d:3,q:"What number is *ten* *more* than 347?",
+ fig:null,ch:["348","357","447","337"],a:"357",chk:["val",357,""],
+ why:"Ten more changes only the tens digit: 4 tens becomes 5 tens. 347 becomes 357.",trap:"348 adds one instead of ten."},
+{id:"N10",dom:8,bench:"MA.2.NSO.2.2",d:4,q:"What number is *one* *hundred* *less* than 512?",
+ fig:null,ch:["502","511","412","612"],a:"412",chk:["val",412,""],
+ why:"One hundred less changes only the hundreds digit: 5 hundreds becomes 4 hundreds. 512 becomes 412.",trap:"502 takes away ten, not one hundred."},
+{id:"N11",dom:8,bench:"MA.2.NSO.1.2",d:2,q:"What number do these base-ten blocks show?",fig:{t:"base10",h:2,t10:6,o:3},
+ ch:["263","236","2063","11"],a:"263",chk:["b10",2,6,3],
+ why:"2 hundreds + 6 tens + 3 ones = 200 + 60 + 3 = 263.",trap:"236 swaps the tens and ones."},
+{id:"N12",dom:8,bench:"MA.2.NSO.1.3",d:3,q:"Which number does the arrow point to?",fig:{t:"numline",min:400,max:500,mark:450},
+ ch:["405","440","450","490"],a:"450",chk:["val",450,""],
+ why:"The arrow is exactly halfway between 400 and 500, and halfway is 450.",trap:"405 misreads the place value of the halfway point."},
+
+/* ---------- 3. DATA ANALYSIS  (MA.2.DP.1)  score 76 ---------- */
+{id:"D1",dom:2,bench:"MA.2.DP.1.2",d:2,q:"Which fruit did the *most* students choose?",fig:{t:"bars",title:"Favorite Fruit",lbl:["Apple","Banana","Grape","Peach"],v:[6,9,4,7],step:1,u:"Students"},
+ ch:["Apple","Banana","Grape","Peach"],a:"Banana",chk:["maxCat",["Apple","Banana","Grape","Peach"],[6,9,4,7]],
+ why:"Banana's bar is the tallest at 9 students.",trap:"Read the numbers on the side, do not just eyeball the bars."},
+{id:"D2",dom:2,bench:"MA.2.DP.1.2",d:2,q:"How many students chose Peach?",fig:{t:"bars",title:"Favorite Fruit",lbl:["Apple","Banana","Grape","Peach"],v:[6,9,4,7],step:1,u:"Students"},
+ ch:["4","6","7","9"],a:"7",chk:["catVal",["Apple","Banana","Grape","Peach"],[6,9,4,7],"Peach"],
+ why:"Follow the Peach bar across to the number line: 7.",trap:"Slipping one row up or down on the scale."},
+{id:"D3",dom:2,bench:"MA.2.DP.1.2",d:3,q:"How many *more* students chose Banana than Grape?",fig:{t:"bars",title:"Favorite Fruit",lbl:["Apple","Banana","Grape","Peach"],v:[6,9,4,7],step:1,u:"Students"},
+ ch:["4","5","9","13"],a:"5",chk:["catDiff",["Apple","Banana","Grape","Peach"],[6,9,4,7],"Banana","Grape"],
+ why:"Banana 9, Grape 4. 'How many more' means subtract: 9 - 4 = 5.",trap:"13 is adding the two bars instead of subtracting."},
+{id:"D4",dom:2,bench:"MA.2.DP.1.2",d:3,q:"Each ◼ stands for 5 books. How many books did Maya read?",fig:{t:"picto",title:"Books Read",key:5,lbl:["Ben","Maya","Leo"],n:[3,5,2],sym:"◼"},
+ ch:["5","15","25","35"],a:"25",chk:["picto",5,5],
+ why:"Maya has 5 blocks and each block is 5 books. Count by fives: 5, 10, 15, 20, 25 books.",trap:"5 is counting the blocks instead of using the key. Always read the key first."},
+{id:"D5",dom:2,bench:"MA.2.DP.1.2",d:2,q:"How many students voted for Soccer?",fig:{t:"tally",lbl:["Soccer","Tag","Swings"],v:[12,7,9]},
+ ch:["3","7","10","12"],a:"12",chk:["catVal",["Soccer","Tag","Swings"],[12,7,9],"Soccer"],
+ why:"Each bundle with a slash is 5. Two bundles is 10, plus 2 more marks = 12.",trap:"Counting bundles instead of counting by fives."},
+{id:"D6",dom:2,bench:"MA.2.DP.1.2",d:3,q:"How many students chose Apple or Grape *in all*?",fig:{t:"bars",title:"Favorite Fruit",lbl:["Apple","Banana","Grape","Peach"],v:[6,9,4,7],step:1,u:"Students"},
+ ch:["2","10","13","26"],a:"10",chk:["catSum",["Apple","Banana","Grape","Peach"],[6,9,4,7],["Apple","Grape"]],
+ why:"Apple 6 + Grape 4 = 10.",trap:"2 is the difference. 'Altogether' means add."},
+{id:"D7",dom:2,bench:"MA.2.DP.1.2",d:4,q:"Each ◼ stands for 5 books. How many *more* books did Maya read than Leo?",fig:{t:"picto",title:"Books Read",key:5,lbl:["Ben","Maya","Leo"],n:[3,5,2],sym:"◼"},
+ ch:["3","10","15","25"],a:"15",chk:["pictoDiff",5,2,5],
+ why:"Maya: 5, 10, 15, 20, 25 books. Leo: 5, 10 books. Then 25 - 10 = 15 books.",trap:"3 is the difference in blocks, not in books. Use the key first, then subtract."},
+
+/* ---------- 4. GEOMETRIC CONCEPTS  (MA.2.GR.1 / FR.1)  score 81 ---------- */
+{id:"G1",dom:3,bench:"MA.2.GR.1.1",d:1,q:"Which shape is a *pentagon*?",fig:{t:"shapePick",opts:["tri","sq","pent","hex"]},
+ ch:["A","B","C","D"],a:"C",chk:["val","C",""],
+ why:"A pentagon has exactly 5 straight sides.",trap:"D is a hexagon. It has 6 sides."},
+{id:"G2",dom:3,bench:"MA.2.GR.1.2",d:2,q:"How many *vertices* (corners) does a hexagon have?",
+ fig:{t:"shapePick",opts:["hex"]},ch:["4","5","6","8"],a:"6",chk:["val","6",""],
+ why:"A hexagon has 6 sides, and it has 6 corners to match.",trap:"Sides and vertices always match in these shapes."},
+{id:"G3",dom:3,bench:"MA.2.GR.1.2",d:2,q:"A shape has 4 equal sides. It has 4 square corners. Which shape is it?",
+ fig:null,ch:["Rectangle","Square","Triangle","Pentagon"],a:"Square",chk:["val","Square",""],
+ why:"A square has 4 equal sides *and* 4 square corners.",trap:"A rectangle has 4 square corners, but its sides are not all equal."},
+{id:"G4",dom:3,bench:"MA.2.GR.1.3",d:3,q:"Is the dashed line a *line* *of* *symmetry*?",fig:{t:"symm",ok:true},
+ ch:["Yes, both halves match","No, the halves do not match","Only at the top","You cannot tell"],a:"Yes, both halves match",chk:["val","Yes, both halves match",""],
+ why:"If you folded on the dashed line, the two halves would land exactly on top of each other.",trap:"A line that cuts a shape in half by *area* is not always a line of symmetry."},
+{id:"G5",dom:3,bench:"MA.2.GR.1.2",d:2,q:"How many sides does an *octagon* have?",
+ fig:{t:"shapePick",opts:["oct"]},ch:["5","6","7","8"],a:"8",chk:["val","8",""],
+ why:"An octagon has 8 sides, like a stop sign.",trap:"Hexagon is 6, octagon is 8."},
+{id:"G6",dom:3,bench:"MA.2.GR.1.2",d:2,q:"Which shape is round all the way around, with no corners?",
+ fig:null,ch:["Triangle","Circle","Square","Pentagon"],a:"Circle",chk:["val","Circle",""],
+ why:"A circle has one curved edge and no corners at all.",trap:"Every other choice is made of straight sides."},
+{id:"G7",dom:3,bench:"MA.1.GR.1.1",d:2,q:"How many *faces* does a cube have?",fig:{t:"cube"},
+ ch:["4","6","8","12"],a:"6",chk:["val","6",""],
+ why:"A cube has 6 flat square faces, like a number cube.",trap:"8 is the number of corners, 12 is the number of edges."},
+{id:"G8",dom:3,bench:"MA.2.FR.1.1",d:3,q:"This rectangle is split into equal parts. What is each part called?",fig:{t:"parts",n:4},
+ ch:["Halves","Thirds","Fourths","Wholes"],a:"Fourths",chk:["parts",4],
+ why:"It is split into 4 equal parts, so each part is a fourth.",trap:"Count the *parts*, not the lines you see."},
+
+/* ---------- 1. OPERATIONS (models & representations)  score 78 ---------- */
+{id:"O1",dom:0,bench:"MA.2.NSO.2.3",d:2,q:"The number line shows 41 + 23. Where do you land?",fig:{t:"jumps",start:41,tens:2,ones:3},
+ ch:["44","61","64","67"],a:"64",chk:["val",64,""],
+ why:"Jump up 2 tens: 41 to 51 to 61. Then 3 ones: 62, 63, 64.",trap:"44 only jumps the ones."},
+{id:"O2",dom:0,bench:"MA.2.NSO.2.3",d:3,q:"Use place value: 87 - 25. What is the difference?",fig:{t:"split",a:87,b:25,op:"-"},
+ ch:["52","62","72","112"],a:"62",chk:["arith",87,25,"-"],
+ why:"Take the tens off first: 87 - 20 = 67. Then take the ones off: 67 - 5 = 62.",trap:"112 is adding instead of subtracting. Subtract in two steps, tens then ones."},
+{id:"O3",dom:0,bench:"MA.2.NSO.2.3",d:2,q:"What total do these base-ten blocks show when you add them?",fig:{t:"base10add",a:[3,4],b:[2,5]},
+ ch:["49","59","69","95"],a:"59",chk:["arith",34,25,"+"],
+ why:"34 + 25. Tens: 30 + 20 = 50. Ones: 4 + 5 = 9. Total 59.",trap:"Adding the digits without place value."},
+{id:"O4",dom:1,bench:"MA.2.AR.1.1",d:3,q:"Sam had 52 cards. He gave some away. Now he has 30. Which number sentence shows this?",
+ fig:null,ch:["52 + 30 = ▢","52 - ▢ = 30","▢ - 52 = 30","30 - 52 = ▢"],a:"52 - ▢ = 30",chk:["val","52 - ▢ = 30",""],
+ why:"He started with 52, took away an unknown amount, and 30 was left: 52 - ▢ = 30.",trap:"The unknown is the amount *given* *away*, not the total."},
+{id:"O5",dom:0,bench:"MA.2.NSO.2.3",d:3,q:"56 + 37 = ?",fig:null,ch:["83","93","813","19"],a:"93",chk:["arith",56,37,"+"],
+ why:"50 + 30 = 80, and 6 + 7 = 13. 80 + 13 = 93.",trap:"83 forgets to carry the extra ten from 6 + 7."},
+{id:"O6",dom:0,bench:"MA.2.NSO.2.3",d:3,q:"72 - 38 = ?",fig:null,ch:["34","44","46","110"],a:"34",chk:["arith",72,38,"-"],
+ why:"72 - 30 = 42, then 42 - 8 = 34.",trap:"46 subtracts the small digit from the big one in each column instead of regrouping."},
+{id:"O7",dom:0,bench:"MA.2.NSO.2.4",d:5,q:"612 - 17 = ?",fig:null,ch:["585","595","605","629"],a:"595",chk:["arith",612,17,"-"],
+ why:"612 - 12 = 600, then 600 - 5 = 595.",trap:"605 only subtracts the 7."},
+{id:"O8",dom:0,bench:"MA.2.NSO.2.4",d:5,q:"1,000 - 17 = ?",fig:null,ch:["983","987","993","1017"],a:"983",chk:["arith",1000,17,"-"],
+ why:"Jump back 10 from 1,000 to 990, then 7 more: 983.",trap:"993 only jumps back 7."},
+
+/* ---------- 8. NUMBER OPERATIONS (fluency)  score 80 ---------- */
+{id:"Q1",dom:7,bench:"MA.2.NSO.2.1",d:1,q:"8 + 7 = ?",fig:null,ch:["13","14","15","16"],a:"15",chk:["arith",8,7,"+"],
+ why:"8 + 2 = 10, then 5 more = 15.",trap:"This is a fact you should know without counting."},
+{id:"Q2",dom:7,bench:"MA.2.NSO.2.1",d:1,q:"16 - 9 = ?",fig:null,ch:["5","6","7","8"],a:"7",chk:["arith",16,9,"-"],
+ why:"9 + 7 = 16, so 16 - 9 = 7.",trap:"Off-by-one when counting back."},
+{id:"Q3",dom:7,bench:"MA.2.NSO.2.3",d:2,q:"45 + 30 = ?",fig:null,ch:["48","65","75","85"],a:"75",chk:["arith",45,30,"+"],
+ why:"Add tens to tens: 40 + 30 = 70, then the 5 ones: 75.",trap:"48 adds 3 instead of 30."},
+{id:"Q4",dom:7,bench:"MA.2.NSO.2.3",d:2,q:"63 - 20 = ?",fig:null,ch:["41","43","53","83"],a:"43",chk:["arith",63,20,"-"],
+ why:"Take away 2 tens: 63 - 20 = 43.",trap:"83 adds instead of subtracts."},
+{id:"Q5",dom:7,bench:"MA.2.NSO.2.3",d:3,q:"48 + 27 = ?",fig:null,ch:["65","74","75","615"],a:"75",chk:["arith",48,27,"+"],
+ why:"40 + 20 = 60, and 8 + 7 = 15. 60 + 15 = 75.",trap:"65 forgets the carried ten."},
+{id:"Q6",dom:7,bench:"MA.2.NSO.2.3",d:3,q:"91 - 46 = ?",fig:null,ch:["45","55","57","137"],a:"45",chk:["arith",91,46,"-"],
+ why:"91 - 40 = 51, then 51 - 6 = 45.",trap:"55 forgets to regroup the ones."},
+{id:"Q7",dom:7,bench:"MA.2.NSO.2.4",d:5,q:"236 + 145 = ?",fig:null,ch:["371","381","3711","391"],a:"381",chk:["arith",236,145,"+"],
+ why:"200 + 100 = 300. 30 + 40 = 70. 6 + 5 = 11. 300 + 70 + 11 = 381.",trap:"371 forgets the ten carried from 6 + 5."},
+{id:"Q8",dom:7,bench:"MA.2.NSO.2.4",d:5,q:"405 - 128 = ?",fig:null,ch:["277","287","323","333"],a:"277",chk:["arith",405,128,"-"],
+ why:"405 - 100 = 305. 305 - 20 = 285. 285 - 8 = 277.",trap:"323 subtracts the smaller digit from the bigger one in each column."}
+/* ===== items added to close verified coverage gaps (see audit) ===== */
+,{id:"F1",dom:3,bench:"MA.2.FR.1.2",d:3,q:"Both rectangles are the same size. Both are cut into 4 equal parts. Is each part the same amount?",
+ fig:{t:"parts2"},ch:["Yes, the parts are equal","No, the tall ones are bigger","No, the square ones are bigger","You cannot tell"],a:"Yes, the parts are equal",chk:["val","Yes, the parts are equal",""],
+ why:"Both wholes are the same, and both are cut into 4 equal parts. So every part is one fourth. Equal parts can be different shapes.",trap:"Different shape does not mean different amount. Check how many equal parts the whole was cut into."},
+{id:"F2",dom:3,bench:"MA.2.FR.1.1",d:2,q:"The circle is cut into equal parts. What is each part called?",
+ fig:{t:"parts",n:2,shape:"circle"},ch:["Halves","Thirds","Fourths","Wholes"],a:"Halves",chk:["parts",2],
+ why:"It is cut into 2 equal parts, so each part is a half. The whole circle is two halves.",trap:"Count the parts, not the lines."},
+{id:"G9",dom:3,bench:"MA.2.GR.1.3",d:3,q:"Is the dashed line a line of symmetry?",
+ fig:{t:"symm",ok:false},ch:["Yes, both halves match","No, the halves do not match","Only at the bottom","You cannot tell"],a:"No, the halves do not match",chk:["val","No, the halves do not match",""],
+ why:"If you folded on the dashed line, the two halves would not land on top of each other. So it is not a line of symmetry.",trap:"A line can split a shape into two pieces and still not be a line of symmetry. The pieces have to *match*."},
+{id:"D8",dom:2,bench:"MA.2.DP.1.1",d:3,q:"A graph needs a title, labels and units. This graph has bars and labels. What is missing?",
+ fig:{t:"bars",title:"",lbl:["Dogs","Cats","Fish"],v:[6,9,4],step:1,u:"Students"},ch:["A title","More bars","Bigger numbers","Nothing"],a:"A title",chk:["val","A title",""],
+ why:"There is no title at the top, so you cannot tell what the graph is about. Every graph needs one.",trap:"The bars and the side numbers are fine. It is the heading that is missing."},
+{id:"D9",dom:2,bench:"MA.2.DP.1.2",d:1,q:"How many students voted for Tag?",fig:{t:"tally",lbl:["Soccer","Tag","Swings"],v:[12,7,9]},
+ ch:["5","7","9","12"],a:"7",chk:["catVal",["Soccer","Tag","Swings"],[12,7,9],"Tag"],
+ why:"One bundle with a slash is 5. Then count on: 6, 7. That is 7.",trap:"Count the bundle as five, not as one."},
+{id:"T15",dom:6,bench:"MA.2.M.2.1",d:3,q:"A digital clock shows 3:45. Which clock face shows the same time?",
+ fig:{t:"clockPick",opts:[[3,45],[9,15],[3,9],[4,45]]},ch:["A","B","C","D"],a:"A",chk:["val","A",""],
+ why:"3:45 means the short hand is past 3 and the long hand is on 9, because 9 counted by fives is 45.",trap:"B has the hands swapped. Read the short hand for the hour first."},
+{id:"N13",dom:8,bench:"MA.2.NSO.1.1",d:3,q:"How do you write 380 in words?",
+ fig:null,ch:["three hundred eight","three hundred eighty","three hundred eighteen","thirty-eight"],a:"three hundred eighty",chk:["val","three hundred eighty",""],
+ why:"3 hundreds, 8 tens, 0 ones. 8 tens is eighty, so it is three hundred eighty.",trap:"\"Three hundred eight\" is 308. The 8 here is in the tens place, not the ones place."},
+{id:"N14",dom:8,bench:"MA.2.NSO.1.3",d:1,q:"Which number is greater, 47 or 74?",
+ fig:null,ch:["47","74","They are equal","You cannot tell"],a:"74",chk:["val","74",""],
+ why:"Look at the tens first. 74 has 7 tens and 47 has only 4 tens, so 74 is greater.",trap:"Same digits, different places. The tens place decides."},
+{id:"A17",dom:1,bench:"MA.2.AR.2.2",d:1,q:"What number goes in the box?    5 + ▢ = 8",
+ fig:null,ch:["2","3","4","13"],a:"3",chk:["unk",5,8,"3"],
+ why:"5 and how many more makes 8? 8 - 5 = 3.",trap:"13 is adding instead of subtracting."},
+{id:"O9",dom:0,bench:"MA.2.NSO.2.3",d:1,q:"The number line starts at 30 and jumps up one ten. Where do you land?",
+ fig:{t:"jumps",start:30,tens:1,ones:0},ch:["31","40","20","13"],a:"40",chk:["val",40,""],
+ why:"One jump of ten from 30 lands on 40.",trap:"31 is a jump of one, not a jump of ten."},
+{id:"Q9",dom:7,bench:"MA.2.NSO.2.1",d:1,q:"9 + 6 = ?",fig:null,ch:["14","15","16","13"],a:"15",chk:["arith",9,6,"+"],
+ why:"9 + 1 = 10, then 5 more makes 15.",trap:"This is a fact to know by heart, not to count on fingers."}
+
+];
+
+
+/* ==================================================================
+   FIGURE RENDERERS  — every figure is inline SVG, plain text only
+   (HTML inside an <svg><text> closes the svg; never do it)
+   ================================================================== */
+const IK="var(--ink)",A="var(--accent)",AW="var(--accent-wash)",GD="var(--grid)",I3="var(--ink3)",SF="var(--surface)";
+const MONO='font-family="IBM Plex Mono,monospace"', UI='font-family="Rubik,sans-serif"';
+const OUT=440;                       // every figure renders at one width
+const LADDER=[0.9,1.4,2.2,3.2,4.6];  // one stroke ladder for every drawing
+const SNAP=v=>LADDER.reduce((a,b)=>Math.abs(b-v)<Math.abs(a-v)?b:a);
+const svg=(w,h,body,lbl)=>{
+  const k=w/OUT;                     // viewBox units per output pixel
+  const norm=String(body)
+    .replace(/stroke-width="([\d.]+)"/g,(m,v)=>`stroke-width="${(SNAP(+v)*k).toFixed(3)}"`)
+    .replace(/font-size="([\d.]+)"/g,(m,v)=>`font-size="${(+v*k).toFixed(2)}"`);
+  return `<svg viewBox="0 0 ${w} ${h}" width="${OUT}" style="max-width:100%;height:auto" role="img" aria-label="${lbl||"figure"}">${norm}</svg>`;};
+const T=(x,y,s,o={})=>`<text x="${x}" y="${y}" text-anchor="${o.a||'middle'}" ${o.m?MONO:UI} font-size="${Math.max(12,o.s||13)}" font-weight="${o.w||600}" fill="${o.f||IK}">${s}</text>`;
+
+function fGridRect(w,h,cell=26,pad=20){
+  const W=w*cell,H=h*cell;let g="";
+  for(let i=0;i<=w;i++)g+=`<line x1="${pad+i*cell}" y1="${pad}" x2="${pad+i*cell}" y2="${pad+H}" stroke="${GD}" stroke-width="1"/>`;
+  for(let j=0;j<=h;j++)g+=`<line x1="${pad}" y1="${pad+j*cell}" x2="${pad+W}" y2="${pad+j*cell}" stroke="${GD}" stroke-width="1"/>`;
+  g+=`<rect x="${pad}" y="${pad}" width="${W}" height="${H}" fill="${AW}" fill-opacity="0.55" stroke="${A}" stroke-width="3.5"/>`;
+  // unit-segment ticks around the boundary — the thing the benchmark actually names
+  for(let i=0;i<w;i++){g+=`<circle cx="${pad+i*cell+cell/2}" cy="${pad}" r="3" fill="${A}"/><circle cx="${pad+i*cell+cell/2}" cy="${pad+H}" r="3" fill="${A}"/>`;}
+  for(let j=0;j<h;j++){g+=`<circle cx="${pad}" cy="${pad+j*cell+cell/2}" r="3" fill="${A}"/><circle cx="${pad+W}" cy="${pad+j*cell+cell/2}" r="3" fill="${A}"/>`;}
+  return svg(W+pad*2,H+pad*2,g,`a shape on grid paper with a dot on each unit segment around its edge`);
+}
+function polyFromSides(sides,scale){
+  // start from a regular polygon, then relax each edge toward its true length
+  const n=sides.length, mean=sides.reduce((a,b)=>a+b,0)/n;
+  const R0=mean*scale/(2*Math.sin(Math.PI/n));
+  const P=sides.map((_,i)=>{const a=i*2*Math.PI/n-Math.PI/2;return [R0*Math.cos(a),R0*Math.sin(a)];});
+  for(let it=0;it<600;it++){
+    for(let i=0;i<n;i++){const j=(i+1)%n;
+      const dx=P[j][0]-P[i][0], dy=P[j][1]-P[i][1];
+      const L=Math.hypot(dx,dy)||1e-6, T=sides[i]*scale, k=(T-L)/L*0.5;
+      P[i][0]-=dx*k*0.5; P[i][1]-=dy*k*0.5; P[j][0]+=dx*k*0.5; P[j][1]+=dy*k*0.5;}
+  }
+  const mny=Math.min(...P.map(p=>p[1]));
+  return P.map(p=>[p[0],p[1]-mny]);
+}
+function fPoly(pts,labels,u){ // pts in svg coords, labels per edge
+  const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);
+  const mnx=Math.min(...xs),mny=Math.min(...ys),mxx=Math.max(...xs),mxy=Math.max(...ys);
+  const pad=54, sh=pts.map(p=>`${p[0]-mnx+pad},${p[1]-mny+pad}`).join(" ");
+  let b=`<polygon points="${sh}" fill="${AW}" fill-opacity="0.6" stroke="${A}" stroke-width="3.5" stroke-linejoin="round"/>`;
+  const cx=(mxx-mnx)/2+pad, cy=(mxy-mny)/2+pad;
+  labels.forEach((L,i)=>{const p=pts[i],q=pts[(i+1)%pts.length];
+    let mx=(p[0]+q[0])/2-mnx+pad,my=(p[1]+q[1])/2-mny+pad;
+    const dx=mx-cx,dy=my-cy,len=Math.hypot(dx,dy)||1;
+    b+=T(mx+dx/len*18,my+dy/len*18+4,L+(u?" "+u:""),{s:13,m:1});});
+  return svg(mxx-mnx+pad*2,mxy-mny+pad*2,b,"a shape with a number written on each side");
+}
+function fRuler(from,to,u,obj){
+  const n=u==="cm"?14:12, step=27, pad=22, W=n*step;
+  const WD="var(--wood)", WI="var(--wood-ink)";
+  let b=`<rect x="${pad}" y="46" width="${W}" height="34" fill="${WD}" stroke="${WI}" stroke-width="1.5" rx="3"/>`;
+  for(let i=0;i<=n;i++){const x=pad+i*step;
+    b+=`<line x1="${x}" y1="46" x2="${x}" y2="63" stroke="${WI}" stroke-width="1.4"/>`;
+    if(i<n) b+=`<line x1="${x+step/2}" y1="46" x2="${x+step/2}" y2="55" stroke="${WI}" stroke-width="1" opacity="0.6"/>`;
+    const nx=i===0?x+5:i===n?x-5:x;                      // keep the end numerals on the wood
+    b+=T(nx,77,i,{s:12.5,m:1,f:WI,w:600});}
+  b+=T(pad+W/2,98,u==="cm"?"centimeters":"inches",{s:12.5,m:1,f:I3,w:600});
+  const x1=pad+from*step,x2=pad+to*step;
+  b+=`<rect x="${x1}" y="16" width="${x2-x1}" height="22" rx="8" fill="${A}" stroke="${IK}" stroke-width="1.5"/>`;
+  b+=T((x1+x2)/2,33,obj,{s:13.5,f:"var(--on-accent)"});
+  b+=`<line x1="${x1}" y1="16" x2="${x1}" y2="46" stroke="${A}" stroke-width="1.4" stroke-dasharray="3 3"/>`;
+  b+=`<line x1="${x2}" y1="16" x2="${x2}" y2="46" stroke="${A}" stroke-width="1.4" stroke-dasharray="3 3"/>`;
+  return svg(W+pad*2,106,b,`a ${obj} on a ruler from ${from} to ${to} ${u}`);
+}
+function fClockFace(cx,cy,r,h,m,sc=1){
+  let b=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${SF}" stroke="${IK}" stroke-width="${2.6*sc}"/>`;
+  for(let i=1;i<=12;i++){const a=i*30*Math.PI/180;
+    b+=T(cx+Math.sin(a)*(r-13*sc),cy-Math.cos(a)*(r-13*sc)+4.5*sc,i,{s:13*sc,m:1});}
+  for(let i=0;i<60;i++){const a=i*6*Math.PI/180,o=i%5===0?6:3;
+    b+=`<line x1="${cx+Math.sin(a)*(r-2)}" y1="${cy-Math.cos(a)*(r-2)}" x2="${cx+Math.sin(a)*(r-2-o*sc)}" y2="${cy-Math.cos(a)*(r-2-o*sc)}" stroke="${IK}" stroke-width="${(i%5===0?1.8:0.9)*sc}"/>`;}
+  const ha=((h%12)*30+m*0.5)*Math.PI/180, ma=m*6*Math.PI/180;
+  b+=`<line x1="${cx}" y1="${cy}" x2="${cx+Math.sin(ha)*r*0.5}" y2="${cy-Math.cos(ha)*r*0.5}" stroke="${IK}" stroke-width="${5.5*sc}" stroke-linecap="round"/>`;
+  b+=`<line x1="${cx}" y1="${cy}" x2="${cx+Math.sin(ma)*r*0.78}" y2="${cy-Math.cos(ma)*r*0.78}" stroke="${A}" stroke-width="${3.4*sc}" stroke-linecap="round"/>`;
+  b+=`<circle cx="${cx}" cy="${cy}" r="${4*sc}" fill="${IK}"/>`;return b;
+}
+const fClock=(h,m)=>svg(210,210,fClockFace(105,105,92,h,m),`a clock face`);
+function fClockPick(opts){let b="";opts.forEach((o,i)=>{const cx=58+ (i%2)*150, cy=58+Math.floor(i/2)*160;
+  b+=fClockFace(cx,cy,46,o[0],o[1],0.62)+T(cx,cy+68,"ABCD"[i],{s:15,m:1,f:I3});});
+  return svg(266,300,b,"four clocks labeled A to D");}
+const CN={p:["1¢","#B87333",17],n:["5¢","#B9BEC4",21],d:["10¢","#D3D8DD",16],q:["25¢","#9EA5AD",25]};
+function fCoins(list){const per=list.length<=6?Math.ceil(list.length/2):5,rows=Math.ceil(list.length/per);let b="";
+  // values are NOT printed: telling the coins apart by size and color is the skill
+  list.forEach((c,i)=>{const[,col,r]=CN[c],x=36+(i%per)*62,y=36+Math.floor(i/per)*66;
+    b+=`<circle cx="${x}" cy="${y}" r="${r+4}" fill="${col}" stroke="${IK}" stroke-width="1.8"/>`;
+    b+=`<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="${IK}" stroke-width="0.9" opacity="0.45"/>`;
+    b+=`<circle cx="${x}" cy="${y-2}" r="${r*0.42}" fill="${IK}" opacity="0.16"/>`;});
+  return svg(per*62+16,rows*66+16,b,`a group of ${list.length} coins of different sizes`);}
+function fArray(r,c){let b="";const s=30,pad=18;
+  for(let i=0;i<r;i++)for(let j=0;j<c;j++)b+=`<circle cx="${pad+j*s+s/2}" cy="${pad+i*s+s/2}" r="10" fill="${A}" stroke="${IK}" stroke-width="1.4"/>`;
+  b+=`<rect x="${pad-4}" y="${pad-4}" width="${c*s+8}" height="${r*s+8}" fill="none" stroke="${I3}" stroke-width="1.2" stroke-dasharray="4 4" rx="6"/>`;
+  return svg(c*s+pad*2,r*s+pad*2,b,`array of ${r} rows by ${c} columns of dots`);}
+function fNumline(min,max,mark){const pad=34,W=340,y=54;
+  let b=`<line x1="${pad}" y1="${y}" x2="${pad+W}" y2="${y}" stroke="${IK}" stroke-width="2.4"/>`;
+  b+=`<path d="M${pad+W} ${y} l-9 -5 v10 z" fill="${IK}"/><path d="M${pad} ${y} l9 -5 v10 z" fill="${IK}"/>`;
+  const n=10;for(let i=0;i<=n;i++){const x=pad+i*W/n,v=min+(max-min)*i/n,maj=i===0||i===n||i===n/2;
+    b+=`<line x1="${x}" y1="${y}" x2="${x}" y2="${y+(maj?11:6)}" stroke="${IK}" stroke-width="${maj?2:1}"/>`;
+    if(i===0||i===n)b+=T(x,y+29,v,{s:13,m:1});}
+  const mx=pad+(mark-min)/(max-min)*W;
+  b+=`<path d="M${mx} ${y-6} l-7 -13 h14 z" fill="${A}"/><line x1="${mx}" y1="${y-6}" x2="${mx}" y2="${y+13}" stroke="${A}" stroke-width="2.6"/>`;
+  return svg(W+pad*2,92,b,`number line from ${min} to ${max} with an arrow`);}
+function fBase10(h,t,o){let b="",x=18;
+  for(let i=0;i<h;i++){b+=`<rect x="${x}" y="18" width="52" height="52" fill="${AW}" stroke="${A}" stroke-width="2.2"/>`;
+    for(let k=1;k<5;k++){b+=`<line x1="${x+k*10.4}" y1="18" x2="${x+k*10.4}" y2="70" stroke="${A}" stroke-width=".8" opacity=".55"/><line x1="${x}" y1="${18+k*10.4}" x2="${x+52}" y2="${18+k*10.4}" stroke="${A}" stroke-width=".8" opacity=".55"/>`;}x+=60;}
+  x+=6;for(let i=0;i<t;i++){b+=`<rect x="${x}" y="18" width="11" height="52" fill="${AW}" stroke="${A}" stroke-width="1.8"/>`;
+    for(let k=1;k<5;k++)b+=`<line x1="${x}" y1="${18+k*10.4}" x2="${x+11}" y2="${18+k*10.4}" stroke="${A}" stroke-width=".8" opacity=".55"/>`;x+=16;}
+  x+=6;for(let i=0;i<o;i++){b+=`<rect x="${x+(i%3)*14}" y="${18+Math.floor(i/3)*14}" width="11" height="11" fill="${A}" stroke="${IK}" stroke-width="1.2"/>`;}
+  return svg(Math.max(x+52,200),92,b,`${h} hundred flats, ${t} ten rods and ${o} unit cubes`);}
+function fBars(cfg){const{lbl,v,title,u}=cfg,mx=Math.max(...v),W=64,pad=52,H=150;
+  let b=title?T(pad+lbl.length*W/2,18,title,{s:13.5,w:700}):"";
+  const step=mx<=10?1:(mx<=50?5:10), top=Math.ceil(mx/step)*step; // DP.1 limits scales to ones, fives or tens
+  for(let g=0;g<=top;g+=step){const y=34+H-(g/top)*H;
+    b+=`<line x1="${pad}" y1="${y}" x2="${pad+lbl.length*W}" y2="${y}" stroke="${GD}" stroke-width="1"/>`+T(pad-10,y+4,g,{s:11,m:1,a:"end",f:I3});}
+  v.forEach((n,i)=>{const h=(n/top)*H,x=pad+i*W+12;
+    b+=`<rect x="${x}" y="${34+H-h}" width="${W-24}" height="${h}" fill="${A}" stroke="${IK}" stroke-width="1.4" rx="2"/>`;
+    b+=T(x+(W-24)/2,34+H+19,lbl[i],{s:13.5});});
+  b+=`<line x1="${pad}" y1="${34+H}" x2="${pad+lbl.length*W}" y2="${34+H}" stroke="${IK}" stroke-width="2"/>`;
+  b+=T(6,22,u,{s:12,m:1,a:"start",f:I3,w:600});
+  return svg(pad+lbl.length*W+14,34+H+32,b,`bar graph titled ${title}`);}
+function fPicto(cfg){const{lbl,n,key,title,sym}=cfg;const CW=Math.max(...n)*26+140,CX=CW/2;
+  let b=T(CX,18,title,{s:13.5,w:700});
+  lbl.forEach((L,i)=>{const y=48+i*34;b+=T(62,y+5,L,{s:12.5,a:"end"});
+    for(let k=0;k<n[i];k++)b+=T(80+k*26,y+7,sym,{s:20,f:"var(--star-bright)"});});
+  const ky=48+lbl.length*34+16;
+  b+=T(CX-40,ky,"Key:",{s:12.5,m:1,f:I3,w:600,a:"end"});
+  b+=T(CX-24,ky+2,sym,{s:15,f:"var(--star-bright)"});
+  b+=T(CX-8,ky,"= "+key+" books",{s:12.5,m:1,f:I3,w:600,a:"start"});
+  return svg(CW,ky+18,b,`pictograph titled ${title}`);}
+function fTally(cfg){const{lbl,v}=cfg;let b="";
+  lbl.forEach((L,i)=>{const y=30+i*40;b+=T(70,y+6,L,{s:12.5,a:"end"});
+    let x=86;for(let g=0;g<Math.floor(v[i]/5);g++){for(let k=0;k<4;k++)b+=`<line x1="${x+k*7}" y1="${y-9}" x2="${x+k*7}" y2="${y+11}" stroke="${IK}" stroke-width="2.2"/>`;
+      b+=`<line x1="${x-3}" y1="${y+12}" x2="${x+25}" y2="${y-10}" stroke="${IK}" stroke-width="2.2"/>`;x+=44;}
+    for(let k=0;k<v[i]%5;k++){b+=`<line x1="${x+k*7}" y1="${y-9}" x2="${x+k*7}" y2="${y+11}" stroke="${IK}" stroke-width="2.2"/>`;}});
+  return svg(240,30+lbl.length*40,b,"tally chart");}
+const SHAPES={tri:[[0,44],[26,0],[52,44]],sq:[[0,0],[48,0],[48,48],[0,48]],
+ pent:[[24,0],[48,18],[39,46],[9,46],[0,18]],hex:[[14,0],[38,0],[52,24],[38,48],[14,48],[0,24]],
+ oct:[[16,0],[36,0],[52,16],[52,36],[36,52],[16,52],[0,36],[0,16]]};
+function fShapePick(opts){const one=opts.length===1;let b="";
+  opts.forEach((k,i)=>{const ox=one?40:30+(i%4)*78, oy=26;
+    b+=`<polygon points="${SHAPES[k].map(p=>`${p[0]+ox},${p[1]+oy}`).join(" ")}" fill="${AW}" stroke="${A}" stroke-width="3"/>`;
+    if(!one)b+=T(ox+26,oy+72,"ABCD"[i],{s:15,m:1,f:I3});});
+  return svg(one?132:330,one?104:112,b,"shapes");}
+function fSymm(ok){let b=`<polygon points="30,20 120,20 148,84 2,84" fill="${AW}" stroke="${A}" stroke-width="3"/>`;
+  const x=ok?75:112; // an off-centre line does not fold the halves onto each other
+  b+=`<line x1="${x}" y1="8" x2="${x}" y2="96" stroke="${IK}" stroke-width="2.4" stroke-dasharray="7 5"/>`;
+  return svg(160,108,b,"a four-sided shape with a dashed line drawn down it");}
+function fCube(){const o=26;let b=`<polygon points="20,${o+18} 80,${o+18} 80,${o+78} 20,${o+78}" fill="${AW}" stroke="${A}" stroke-width="2.6"/>`;
+  b+=`<polygon points="20,${o+18} 46,${o-6} 106,${o-6} 80,${o+18}" fill="${AW}" fill-opacity=".6" stroke="${A}" stroke-width="2.6"/>`;
+  b+=`<polygon points="80,${o+18} 106,${o-6} 106,${o+54} 80,${o+78}" fill="${AW}" fill-opacity=".35" stroke="${A}" stroke-width="2.6"/>`;
+  return svg(130,120,b,"a cube drawn in three dimensions");}
+function fParts(n,shape){
+  if(shape==="circle"){const cx=80,cy=80,r=62;
+    let b=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${AW}" stroke="${A}" stroke-width="2.8"/>`;
+    for(let i=0;i<n;i++){const a=i*2*Math.PI/n-Math.PI/2;
+      b+=`<line x1="${cx}" y1="${cy}" x2="${cx+r*Math.cos(a)}" y2="${cy+r*Math.sin(a)}" stroke="${A}" stroke-width="2.4"/>`;}
+    return svg(160,160,b,`a circle cut into ${n} equal parts`);}
+  let b=`<rect x="16" y="20" width="240" height="64" fill="${AW}" stroke="${A}" stroke-width="2.6"/>`;
+  for(let i=1;i<n;i++)b+=`<line x1="${16+i*240/n}" y1="20" x2="${16+i*240/n}" y2="84" stroke="${A}" stroke-width="2.2"/>`;
+  return svg(272,104,b,`a rectangle cut into ${n} equal parts`);}
+function fParts2(){
+  let b="";
+  [[16,"v"],[176,"q"]].forEach(([ox,mode])=>{
+    b+=`<rect x="${ox}" y="28" width="128" height="128" fill="${AW}" stroke="${A}" stroke-width="2.8"/>`;
+    if(mode==="v"){for(let i=1;i<4;i++)b+=`<line x1="${ox+i*32}" y1="28" x2="${ox+i*32}" y2="156" stroke="${A}" stroke-width="2.2"/>`;}
+    else{b+=`<line x1="${ox+64}" y1="28" x2="${ox+64}" y2="156" stroke="${A}" stroke-width="2.2"/>`;
+         b+=`<line x1="${ox}" y1="92" x2="${ox+128}" y2="92" stroke="${A}" stroke-width="2.2"/>`;}});
+  b+=T(80,178,"Cut 1",{s:12,f:I3,m:1})+T(240,178,"Cut 2",{s:12,f:I3,m:1});
+  return svg(320,192,b,"two squares of the same size, each cut into four equal parts a different way");}
+function fJumps(start,tens,ones){const pad=30,W=340,y=66;
+  let b=`<line x1="${pad}" y1="${y}" x2="${pad+W}" y2="${y}" stroke="${IK}" stroke-width="2.2"/>`;
+  b+=T(pad,y+24,start,{s:13,m:1})+T(pad+W,y+24,"?",{s:13,m:1});
+  const total=tens+ones;let x=pad;
+  for(let i=0;i<tens;i++){const nx=x+W*0.26;b+=`<path d="M${x} ${y} Q ${(x+nx)/2} ${y-38} ${nx} ${y}" fill="none" stroke="${A}" stroke-width="2.4"/>`+T((x+nx)/2,y-42,"+10",{s:12,m:1,f:A});x=nx;}
+  for(let i=0;i<ones;i++){const nx=x+W*0.14;b+=`<path d="M${x} ${y} Q ${(x+nx)/2} ${y-20} ${nx} ${y}" fill="none" stroke="${I3}" stroke-width="2"/>`+T((x+nx)/2,y-23,"+1",{s:10.5,m:1,f:I3});x=nx;}
+  return svg(W+pad*2,100,b,`number line starting at ${start} with ${tens} jumps of ten and ${ones} jumps of one`);}
+function fSplit(a,b_,op){const at=Math.floor(a/10)*10,ao=a%10,bt=Math.floor(b_/10)*10,bo=b_%10;
+  let b=T(150,24,`${a} ${op} ${b_}`,{s:19,m:1});
+  b+=`<line x1="60" y1="34" x2="150" y2="58" stroke="${I3}" stroke-width="1.6"/><line x1="240" y1="34" x2="150" y2="58" stroke="${I3}" stroke-width="1.6"/>`;
+  b+=T(66,76,`${at} ${op} ${bt}`,{s:16,m:1,f:A})+T(234,76,`${ao} ${op} ${bo}`,{s:16,m:1,f:A});
+  return svg(300,96,b,`place value split of ${a} ${op} ${b_}`);}
+function fTwoRect(a,b_){let g="";const cell=20;
+  [[a,14,"A"],[b_,14+a[0]*cell+56,"B"]].forEach(([d,ox,L])=>{
+    const W=d[0]*cell,H=d[1]*cell,oy=30;
+    for(let i=0;i<=d[0];i++)g+=`<line x1="${ox+i*cell}" y1="${oy}" x2="${ox+i*cell}" y2="${oy+H}" stroke="${GD}"/>`;
+    for(let j=0;j<=d[1];j++)g+=`<line x1="${ox}" y1="${oy+j*cell}" x2="${ox+W}" y2="${oy+j*cell}" stroke="${GD}"/>`;
+    g+=`<rect x="${ox}" y="${oy}" width="${W}" height="${H}" fill="${AW}" fill-opacity=".55" stroke="${A}" stroke-width="3"/>`;
+    g+=T(ox+W/2,20,"Shape "+L,{s:13,w:700});});
+  return svg(14+a[0]*cell+56+b_[0]*cell+16,30+Math.max(a[1],b_[1])*cell+16,g,"two grid shapes A and B");}
+function fTwoBars(a,b_,u){let g="";[["A",a],["B",b_]].forEach(([L,v],i)=>{const y=26+i*52;
+  g+=T(28,y+16,L,{s:14})+`<rect x="46" y="${y}" width="${v*26}" height="24" rx="5" fill="${A}" stroke="${IK}" stroke-width="1.5"/>`;
+  g+=T(46+v*26+30,y+17,v+" "+u,{s:12.5,m:1,f:I3});});
+  return svg(360,130,g,"two bars A and B compared");}
+function fClips(n){let g=`<rect x="20" y="20" width="${n*40}" height="26" rx="6" fill="${A}" stroke="${IK}" stroke-width="1.6"/>`+T(20+n*40/2,38,"marker",{s:12,f:"#fff"});
+  for(let i=0;i<n;i++){const x=20+i*40;g+=`<rect x="${x}" y="56" width="40" height="18" rx="9" fill="none" stroke="#8E949C" stroke-width="3"/><rect x="${x+6}" y="60" width="28" height="10" rx="5" fill="none" stroke="#8E949C" stroke-width="2"/>`;}
+  g+=T(20+n*40/2,94,"paper clips, no gaps",{s:10.5,m:1,f:I3,w:500});
+  return svg(n*40+40,106,g,`a marker measured against ${n} paper clips`);}
+function fBase10Add(a,b_){return `<div style="display:flex;flex-direction:column;gap:6px;align-items:center">${fBase10(0,a[0],a[1])}<div style="font:600 20px var(--ff-mono);color:var(--ink3)">+</div>${fBase10(0,b_[0],b_[1])}</div>`;}
+
+function renderFig(f){ if(!f) return "";
+ switch(f.t){
+  case "gridRect":return fGridRect(f.w,f.h);
+  case "tri":{const S=f.s;return fPoly(polyFromSides(S,13),S.map(String),"cm");}
+  case "sq":{const s=f.s==="?"?7:f.s,L=f.s==="?"?"?":String(f.s);return fPoly([[0,0],[s*15,0],[s*15,s*15],[0,s*15]],[L,L,L,L],f.u);}
+  case "pent":{const S=f.s,sc=Math.max(5,Math.min(13,150/Math.max(...S)));return fPoly(polyFromSides(S,sc),S.map(String),f.u||"cm");}
+  case "rectLbl":{const w=f.w,h=f.h==="?"?5:f.h,sc=13;
+    return fPoly([[0,0],[w*sc,0],[w*sc,h*sc],[0,h*sc]],[String(f.w),f.h==="?"?"?":String(f.h),"",""],f.u);}
+  case "lshape":{const c=26;return fPoly([[0,0],[5*c,0],[5*c,2*c],[3*c,2*c],[3*c,4*c],[0,4*c]],["5","2","2","2","3","4"],"");}
+  case "twoRect":return fTwoRect(f.a,f.b);
+  case "ruler":return fRuler(f.from,f.to,f.u,f.obj);
+  case "twoBars":return fTwoBars(f.a,f.b,f.u);
+  case "clips":return fClips(f.n);
+  case "array":return fArray(f.r,f.c);
+  case "clock":return fClock(f.h,f.m);
+  case "clockPick":return fClockPick(f.opts);
+  case "coins":return fCoins(f.c);
+  case "numline":return fNumline(f.min,f.max,f.mark);
+  case "base10":return fBase10(f.h,f.t10,f.o);
+  case "base10add":return fBase10Add(f.a,f.b);
+  case "bars":return fBars(f);
+  case "picto":return fPicto(f);
+  case "tally":return fTally(f);
+  case "shapePick":return fShapePick(f.opts);
+  case "symm":return fSymm(f.ok);
+  case "cube":return fCube();
+  case "parts":return fParts(f.n,f.shape);
+  case "parts2":return fParts2();
+  case "jumps":return fJumps(f.start,f.tens,f.ones);
+  case "split":return fSplit(f.a,f.b,f.op);
+  default:return "";
+ }}
+
+
+/* ==================================================================
+   PROCEDURAL ITEM GENERATORS
+   Four days at 2-3 hours needs far more practice than 110 authored
+   items. Every generated item computes its own key, and every
+   distractor encodes a documented misconception rather than a
+   random number. Benchmark limits are enforced in the generators.
+   ================================================================== */
+const RI=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const PICK=a=>a[Math.floor(Math.random()*a.length)];
+/* build a 4-choice item: correct plus three distinct plausible wrongs */
+function mkItem(o,wrongs,unit){
+  const seen=new Set([String(o.a)]), ch=[String(o.a)];
+  for(const w of wrongs){const s=String(w);
+    if(!seen.has(s)&&!/^-/.test(s)&&s!=="0 "+(unit||"")){seen.add(s);ch.push(s);} if(ch.length===4)break;}
+  let g=1; while(ch.length<4){const n=(typeof o.a==="string"&&/^\d/.test(o.a))?parseInt(o.a)+g:null;
+    const s=n!==null?n+(unit?" "+unit:""):"none of these"+("!".repeat(g));
+    if(!seen.has(s)){seen.add(s);ch.push(s);} g++; if(g>40)break;}
+  const out=ch.slice(0,4);
+  for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}
+  o.ch=out; o.gen=true; return o;}
+const U=(n,u)=>u?`${n} ${u}`:String(n);
+
+const GEN={
+/* ---- MA.2.GR.2  perimeter: <=100 units, no formula, units in the answer ---- */
+4(d){
+  if(d<=2){ const w=RI(2,d===1?5:7), h=RI(2,d===1?4:5);
+    const P=2*(w+h);
+    return mkItem({dom:4,bench:"MA.2.GR.2.1",d,q:"Count the unit segments all the way around the outside.",
+      fig:{t:"gridRect",w,h},a:U(P,"units"),
+      why:`${w} + ${h} + ${w} + ${h} = ${P} units. Touch each dot as you count.`,
+      trap:`${w*h} is how many squares are inside. That is the space in the middle, not the walk around the edge.`},
+      [U(w*h,"units"),U(w+h,"units"),U(P-4,"units"),U(P+2,"units")],"units");}
+  if(d===3){ const u=PICK(["in","ft","cm"]), w=RI(4,14), h=RI(3,12);
+    const P=2*(w+h);
+    return mkItem({dom:4,bench:"MA.2.GR.2.2",d,q:"Only two sides are labeled. Find the perimeter of the rectangle.",
+      fig:{t:"rectLbl",w,h,u},a:U(P,u),
+      why:`The other two sides match: ${w} + ${h} + ${w} + ${h} = ${P} ${u}.`,
+      trap:`${w+h} means you only added the two labels you could see.`},
+      [U(w+h,u),U(w*h,u),U(P-h,u),U(P+w,u)],u);}
+  if(d===4){ const s=[RI(3,12),RI(3,12),RI(3,12)]; const P=s[0]+s[1]+s[2];
+    if(s[0]+s[1]<=s[2]||s[0]+s[2]<=s[1]||s[1]+s[2]<=s[0]) return GEN[4](4);
+    return mkItem({dom:4,bench:"MA.2.GR.2.2",d,q:"Find the perimeter of the triangle.",
+      fig:{t:"tri",s},a:U(P,"cm"),
+      why:`Add every side: ${s[0]} + ${s[1]} + ${s[2]} = ${P} cm.`,
+      trap:"Dropping one side is the usual slip. Touch each side as you add it."},
+      [U(P-s[0],"cm"),U(P-s[2],"cm"),U(P+s[1],"cm")],"cm");}
+  const s=[RI(3,16),RI(3,16),RI(3,16),RI(3,16),RI(3,16)]; const P=s.reduce((a,b)=>a+b,0);
+  if(P>100) return GEN[4](5);
+  return mkItem({dom:4,bench:"MA.2.GR.2.2",d:5,q:"Find the perimeter of the pentagon.",
+    fig:{t:"pent",s},a:U(P,"cm"),
+    why:`All five sides: ${s.join(" + ")} = ${P} cm.`,
+    trap:"Five numbers is a lot to hold. Write each running total down."},
+    [U(P-s[4],"cm"),U(P-s[0],"cm"),U(P+s[2],"cm")],"cm");},
+
+/* ---- MA.2.M.1  measurement: inch/foot/yard/cm/m, rulers are number lines ---- */
+5(d){
+  if(d<=2){ const u=PICK(["in","cm"]), from=d===1?0:RI(1,3), len=RI(3,7), to=from+len;
+    const obj=PICK(["pencil","crayon","leaf","key","eraser"]), un=u==="cm"?"cm":"inches";
+    return mkItem({dom:5,bench:"MA.2.M.1.1",d,q:`How long is the ${obj}?`,
+      fig:{t:"ruler",from,to,u,obj},a:U(len,un),
+      why:from===0?`It starts at 0 and ends at ${to}. So it is ${len} ${un}.`
+                  :`It does not start at 0. From ${from} to ${to} is ${to} - ${from} = ${len} ${un}.`,
+      trap:from===0?"No trap here. This is the easy kind that starts at zero."
+                   :`${to} is the number it ends on. Always take away where it started.`},
+      [U(to,un),U(from,un),U(len+1,un),U(len-1,un)],un);}
+  if(d===3){ const u=PICK(["inches","cm"]), a=RI(6,18), b=RI(2,a-2);
+    return mkItem({dom:5,bench:"MA.2.M.1.2",d,q:`Ribbon A is ${a} ${u} long. Ribbon B is ${b} ${u} long. How much longer is Ribbon A?`,
+      fig:{t:"twoBars",a,b,u:u==="cm"?"cm":"in"},a:U(a-b,u),
+      why:`"How much longer" means take away: ${a} - ${b} = ${a-b} ${u}.`,
+      trap:`${a+b} is what you get if you add instead of subtract.`},
+      [U(a+b,u),U(a,u),U(b,u)],u);}
+  const u=PICK(["inches","cm"]), start=RI(20,55), less=RI(4,12), both=start+(start-less);
+  if(both>100) return GEN[5](4);
+  return mkItem({dom:5,bench:"MA.2.M.1.3",d,q:`Max has a rope ${start} ${u} long. Sam's rope is ${less} ${u} shorter. How many ${u} of rope in all?`,
+    fig:null,a:U(both,u),
+    why:`Step 1: Sam's rope is ${start} - ${less} = ${start-less}. Step 2: both ropes, ${start} + ${start-less} = ${both} ${u}.`,
+    trap:`${start-less} is only step 1. The question asks for *both* ropes.`},
+    [U(start-less,u),U(start+less,u),U(start*2,u)],u);},
+
+/* ---- MA.2.AR  the equal sign, unknowns in any position, two-step problems ---- */
+1(d){
+  const k=d<=2?PICK(["unk","tf"]):PICK(["unk","tf","two"]);
+  if(k==="tf"){ const a=RI(10,60), b=RI(5,40); const shift=PICK([1,2,3]);
+    const t=Math.random()<0.5;
+    const c=t?a-shift:a-shift, e=t?b+shift:b+shift+RI(1,4);
+    const L=a+b, R=c+e;
+    if(L>100||R>100) return GEN[1](d);   // MA.2.AR.2.1 limits sums to 100
+    return mkItem({dom:1,bench:"MA.2.AR.2.1",d,q:`Is this number sentence *true* or *false*?    ${a} + ${b} = ${c} + ${e}`,
+      fig:null,a:L===R?"True":"False",
+      why:`Left side is ${L}. Right side is ${R}. ${L===R?"Same, so it is true.":"Not the same, so it is false."}`,
+      trap:"The equal sign does not mean the answer comes next. It means the same amount on both sides."},
+      ["True","False","You cannot tell","Only if you add first"]);}
+  if(k==="unk"){ const tot=RI(20,95), part=RI(5,tot-5);
+    const form=PICK(["a","b","c"]);
+    if(form==="a") return mkItem({dom:1,bench:"MA.2.AR.2.2",d,q:`What number goes in the box?    ${part} + ▢ = ${tot}`,
+      fig:null,a:String(tot-part),why:`${tot} - ${part} = ${tot-part}.`,
+      trap:`${tot+part} is adding instead of subtracting.`},[String(tot+part),String(tot),String(tot-part+1)]);
+    if(form==="b") return mkItem({dom:1,bench:"MA.2.AR.2.2",d,q:`What number goes in the box?    ${tot} = ▢ - ${part}`,
+      fig:null,a:String(tot+part),why:`Something take away ${part} leaves ${tot}, so it is ${tot} + ${part} = ${tot+part}.`,
+      trap:`${tot-part} is ${tot} - ${part}. When the unknown is the big number you add. Check it: ${tot+part} - ${part} = ${tot}.`},
+      [String(tot-part),String(tot),String(part)]);
+    const r1=RI(5,45), r2=RI(5,50), rt=r1+r2; const l1=RI(5,rt-5);
+    return mkItem({dom:1,bench:"MA.2.AR.2.2",d,q:`What number goes in the box?    ${l1} + ▢ = ${r1} + ${r2}`,
+      fig:null,a:String(rt-l1),
+      why:`First do the side you can: ${r1} + ${r2} = ${rt}. Then ${l1} + ▢ = ${rt}, so ▢ = ${rt} - ${l1} = ${rt-l1}.`,
+      trap:`${rt} is the total, not the missing part.`},[String(rt),String(rt+l1),String(l1)]);}
+  const s=RI(20,60), give=RI(5,15), get=RI(5,25);
+  return mkItem({dom:1,bench:"MA.2.AR.1.1",d,q:`Sam has ${s} stickers. He gives away ${give}. Then he gets ${get} more. How many now?`,
+    fig:null,a:String(s-give+get),
+    why:`Step 1: ${s} - ${give} = ${s-give}. Step 2: ${s-give} + ${get} = ${s-give+get}.`,
+    trap:`${s-give} is only step 1. Two-step problems need both steps.`},
+    [String(s-give),String(s+get),String(s+get-give+1)]);},
+
+/* ---- MA.2.M.2  time to five minutes, coins within 100c ---- */
+6(d){
+  if(Math.random()<0.55){ const h=RI(1,12), m=PICK(d<=2?[0,30]:[0,5,10,15,20,25,30,35,40,45,50,55]);
+    const S=x=>String(x).padStart(2,"0");
+    const nh=h===12?1:h+1;
+    return mkItem({dom:6,bench:"MA.2.M.2.1",d,q:"What time does the clock show?",
+      fig:{t:"clock",h,m},a:`${h}:${S(m)}`,
+      why:`The long hand is on ${m/5===0?12:m/5}. Count by fives to ${m} minutes. The short hand has passed ${h}, so it is ${h}:${S(m)}.`,
+      trap:m>=35?`${nh}:${S(m)} uses the hour it is heading toward instead of the one it has passed.`
+                :"Read the short hand for the hour first, then count the long hand by fives."},
+      [`${nh}:${S(m)}`,`${h}:${S(m/5===0?12:m/5)}`,`${m/5===0?12:m/5}:${S(h*5)}`,`${h===1?12:h-1}:${S(m)}`]);}
+  const CV={p:1,n:5,d:10,q:25};
+  const c=[]; const nq=RI(0,3),nd=RI(0,4),nn=RI(0,3),np=RI(0,4);
+  for(let i=0;i<nq;i++)c.push("q"); for(let i=0;i<nd;i++)c.push("d");
+  for(let i=0;i<nn;i++)c.push("n"); for(let i=0;i<np;i++)c.push("p");
+  if(c.length<3||c.length>10) return GEN[6](d);
+  const tot=c.reduce((a,x)=>a+CV[x],0); if(tot>100) return GEN[6](d);
+  return mkItem({dom:6,bench:"MA.2.M.2.2",d,q:"How much money is this?",
+    fig:{t:"coins",c},a:tot+"¢",
+    why:`Start with the biggest coin and count on. Altogether that is ${tot}¢.`,
+    trap:`${c.length} is how many coins there are, not how much they are worth. Mixing up nickels and dimes is the other usual slip.`},
+    [c.length+"¢",(tot+5)+"¢",(tot-5)+"¢",(tot+nd*5-nn*5)+"¢"]);},
+
+/* ---- MA.2.NSO.1  place value, compare, round ---- */
+8(d){
+  const k=PICK(["exp","cmp","round","tenmore"]);
+  if(k==="exp"){ const hh=RI(1,9),tt=d>=3&&Math.random()<0.4?0:RI(0,9),oo=RI(0,9);
+    const n=hh*100+tt*10+oo;
+    const a=tt===0?`${hh*100} + ${oo}`:`${hh*100} + ${tt*10} + ${oo}`;
+    return mkItem({dom:8,bench:"MA.2.NSO.1.1",d,q:`Which shows ${n} in expanded form?`,fig:null,a,
+      why:`${hh} hundreds, ${tt} tens, ${oo} ones.${tt===0?" There are no tens, so you write nothing for them.":""}`,
+      trap:"Watch the zero. There is nothing to add for a place that is empty."},
+      [`${hh*100} + ${tt*10} + ${oo}`,`${hh} + ${tt} + ${oo}`,`${hh*100} + ${tt} + ${oo}`,`${hh*10} + ${tt*10} + ${oo}`]);}
+  if(k==="cmp"){ let a=RI(100,999),b=RI(100,999); if(a===b)b++;
+    return mkItem({dom:8,bench:"MA.2.NSO.1.3",d,q:`Compare:    ${a}  ▢  ${b}`,fig:null,a:a<b?"<":">",
+      why:`${a} is ${a<b?"less than":"greater than"} ${b}. Check the hundreds first, then the tens, then the ones.`,
+      trap:"Compare place by place, starting from the left."},["<",">","=","+"]);}
+  if(k==="round"){ const n=RI(11,99); const r=Math.round(n/10)*10;
+    return mkItem({dom:8,bench:"MA.2.NSO.1.4",d,q:`Round ${n} to the nearest 10.`,
+      fig:{t:"numline",min:Math.floor(n/10)*10,max:Math.floor(n/10)*10+10,mark:n},a:String(r),
+      why:n%10===5?`${n} is exactly halfway, and the rule is to round up, so ${r}.`:`${n} is closer to ${r}, so it rounds to ${r}.`,
+      trap:"Check which ten it is closer to. Halfway always rounds up."},
+      [String(Math.floor(n/10)*10),String(Math.ceil(n/10)*10),String(n)]);}
+  const n=RI(120,880), more=Math.random()<0.5;
+  const amt=PICK([10,100]); const a=more?n+amt:n-amt;
+  return mkItem({dom:8,bench:"MA.2.NSO.2.2",d,q:`What number is ${amt===10?"ten":"one hundred"} ${more?"more":"less"} than ${n}?`,
+    fig:null,a:String(a),
+    why:`${amt===10?"Ten":"One hundred"} ${more?"more":"less"} changes only the ${amt===10?"tens":"hundreds"} digit. ${n} becomes ${a}.`,
+    trap:`Changing the wrong place value gives ${more?n+(amt===10?1:10):n-(amt===10?1:10)}.`},
+    [String(more?n+(amt===10?1:10):n-(amt===10?1:10)),String(more?n-amt:n+amt),String(n)]);},
+
+/* ---- MA.2.NSO.2  fluency, for warm-ups ---- */
+7(d){
+  if(d<=1){const a=RI(4,9),b=RI(3,9);
+    return mkItem({dom:7,bench:"MA.2.NSO.2.1",d:1,q:`${a} + ${b} = ?`,fig:null,a:String(a+b),
+      why:`${a} + ${b} = ${a+b}.`,trap:"This is a fact to know by heart."},
+      [String(a+b+1),String(a+b-1),String(a+b+2)]);}
+  const a=RI(20,89),b=RI(11,Math.min(60,a-5)),plus=Math.random()<0.5;
+  if(plus&&a+b>100) return GEN[7](d);
+  return mkItem({dom:7,bench:"MA.2.NSO.2.3",d,q:`${a} ${plus?"+":"-"} ${b} = ?`,fig:null,
+    a:String(plus?a+b:a-b),
+    why:plus?`${a} + ${Math.floor(b/10)*10} = ${a+Math.floor(b/10)*10}, then + ${b%10} = ${a+b}.`
+            :`${a} - ${Math.floor(b/10)*10} = ${a-Math.floor(b/10)*10}, then - ${b%10} = ${a-b}.`,
+    trap:"Take the tens off first, then the ones."},
+    [String(plus?a+b-10:a-b+10),String(plus?a-b:a+b),String(plus?a+b+1:a-b-1)]);}
+};
+function genItem(dom,d){const f=GEN[dom]; if(!f)return null;
+  const it=f(Math.max(1,Math.min(5,d))); if(!it)return null;
+  it.id="G~"+dom+"~"+Math.random().toString(36).slice(2,8); return it;}
+
+/* ==================================================================
+   INTERACTIVE FIGURES
+   Tapping is diagnostic, not decorative: he counts the thing the
+   benchmark actually names, and the app tells him when he double-
+   counts a corner or strays inside the shape.
+   ================================================================== */
+const TAPPABLE={gridRect:"segments",coins:"coins",bars:"bars",clock:"fives"};
+function figIsPick(f){return f&&(f.t==="shapePick"&&f.opts.length>1||f.t==="clockPick");}
+
+function figOptions(f,view,opts){
+  // one clickable tile per shape/clock, so nothing has to be matched to a letter
+  const cells = f.t==="clockPick"
+    ? f.opts.map(o=>svg(150,150,fClockFace(75,75,62,o[0],o[1],0.78),"a clock face"))
+    : f.opts.map(k=>`<svg viewBox="0 0 72 72" width="104" role="img" aria-label="a shape">
+        <polygon points="${SHAPES[k].map(p=>`${p[0]+10},${p[1]+10}`).join(" ")}" fill="${AW}" stroke="${A}" stroke-width="3"/></svg>`);
+  return `<div class="figopts">${cells.map((c,i)=>{
+    const val="ABCD"[i]; let cls="figopt",mark="";
+    if(opts.marked){ if(val===opts.answer){cls+=" right";mark=" ✓";}
+      else if(val===opts.picked){cls+=" wrong";mark=" ✕";} else cls+=" dim"; }
+    else if(val===opts.picked)cls+=" picked";
+    return `<button class="${cls}" ${opts.disabled?"disabled":""} onclick="answerValue('${val}')">
+      ${c}<span class="lbl">${val}${mark}</span></button>`;}).join("")}</div>`;}
+
+function interactiveFig(it){
+  const f=it.fig, kind=TAPPABLE[f.t];
+  let html=renderFig(f), note="", counter="";
+  if(kind==="segments"){
+    html=html.replace(/<circle cx="([\d.]+)" cy="([\d.]+)" r="3" fill="var\(--accent\)"\/>/g,
+      (m,x,y)=>{
+        const vb=+(html.match(/viewBox="0 0 ([\d.]+)/)||[0,200])[1];
+        const rHit=Math.min(12.5,24/(Math.min(440,Math.max(vb,330))/vb));
+        return `<circle class="seg" data-x="${x}" data-y="${y}" cx="${x}" cy="${y}" r="${rHit.toFixed(1)}" fill="transparent"/>`+
+               `<circle class="seg" data-x="${x}" data-y="${y}" cx="${x}" cy="${y}" r="7" fill="none" stroke="var(--accent)" stroke-width="2.4"/>`;});
+    note=`<span class="tapnote">tap each dot as you count around the edge</span>`;
+    counter=`<span class="counter"><span id="tapN">0</span><small>segments counted</small>
+      <button onclick="resetTaps()">start again</button></span>`;
+  } else if(kind==="coins"){
+    const vals={p:1,n:5,d:10,q:25};
+    let i=0; html=html.replace(/<circle cx="([\d.]+)" cy="([\d.]+)" r="([\d.]+)" fill="(#[0-9A-Fa-f]{6})" stroke/g,
+      (m,x,y,r,col)=>{const v=vals[f.c[i++]];return `<circle class="coin" data-v="${v}" cx="${x}" cy="${y}" r="${r}" fill="${col}" stroke`;});
+    note=`<span class="tapnote">tap the coins one at a time, biggest first</span>`;
+    counter=`<span class="counter"><span id="tapN">0</span><small>¢ so far</small>
+      <button onclick="resetTaps()">start again</button></span>`;
+  } else if(kind==="bars"){
+    let i=0; html=html.replace(/<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" fill="var\(--accent\)"/g,
+      (m,x,y,w,h)=>`<rect class="bar" data-v="${f.v[i]}" data-l="${f.lbl[i++]}" x="${x}" y="${y}" width="${w}" height="${h}" fill="var(--accent)"`);
+    note=`<span class="tapnote">tap a bar to read its number</span>`;
+    counter=`<span class="counter" id="barOut"><small>tap a bar</small></span>`;
+  } else if(kind==="fives"){
+    let marks="";
+    for(let k=0;k<12;k++){const a=k*30*Math.PI/180;
+      marks+=`<circle class="fivemark" data-m="${k*5}" cx="${105+Math.sin(a)*74}" cy="${105-Math.cos(a)*74}" r="13" fill="transparent"/>`;}
+    html=html.replace("</svg>",marks+`<text class="readout" id="fiveOut" x="105" y="186" text-anchor="middle" ${MONO} font-size="13" font-weight="600" fill="var(--accent)"></text></svg>`);
+    note=`<span class="tapnote">tap round the edge to count the minutes by fives</span>`;
+  }
+  return `<div class="figwrap" id="figwrap">${html}${note}${counter}</div>`;}
+
+let tapState={n:0,set:new Set()};
+function resetTaps(){tapState={n:0,set:new Set()};
+  document.querySelectorAll("#figwrap .seg").forEach(e=>{if(e.getAttribute("fill")!=="transparent"){e.setAttribute("fill","none");e.setAttribute("r","7");}});
+  document.querySelectorAll("#figwrap .coin").forEach(e=>e.setAttribute("stroke-width","1.8"));
+  const t=$("tapN"); if(t)t.textContent="0";}
+function onFigTap(ev){
+  const el=ev.target.closest(".seg,.coin,.bar,.fivemark"); if(!el)return;
+  if(el.classList.contains("seg")){
+    const k=el.dataset.x+","+el.dataset.y;
+    const twins=[...document.querySelectorAll(`#figwrap .seg[data-x="${el.dataset.x}"][data-y="${el.dataset.y}"]`)]
+      .filter(e=>e.getAttribute("stroke"));
+    if(tapState.set.has(k)){ // double-counting a segment is the classic perimeter error
+      tapState.set.delete(k); tapState.n--;
+      twins.forEach(e=>{e.setAttribute("fill","none");e.setAttribute("r","7");});
+    } else { tapState.set.add(k); tapState.n++;
+      twins.forEach(e=>{e.setAttribute("fill","var(--accent)");e.setAttribute("r","10");}); }
+    $("tapN").textContent=tapState.n;
+  } else if(el.classList.contains("coin")){
+    const k=el.getAttribute("cx")+","+el.getAttribute("cy");
+    if(tapState.set.has(k)){tapState.set.delete(k);tapState.n-=+el.dataset.v;el.setAttribute("stroke-width","1.8");}
+    else{tapState.set.add(k);tapState.n+=+el.dataset.v;el.setAttribute("stroke-width","4");}
+    $("tapN").textContent=tapState.n;
+  } else if(el.classList.contains("bar")){
+    const o=$("barOut"); if(o)o.innerHTML=`${el.dataset.v}<small>${esc(el.dataset.l)}</small>`;
+  } else if(el.classList.contains("fivemark")){
+    const o=$("fiveOut"); if(o)o.textContent=el.dataset.m+" minutes";}
+}
+document.addEventListener("click",onFigTap);
+
+/* ==================================================================
+   APP
+   ================================================================== */
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+/* *word* is emphasis authored in the data; all-caps hurts early decoders */
+const fmt=t=>esc(t).replace(/\*([^*]+)\*/g,'<b>$1</b>');
+const plain=t=>String(t).replace(/\*/g,"");
+const $=id=>document.getElementById(id);
+const store={get(k,d){try{const v=localStorage.getItem("fastmath_"+k);return v===null?d:JSON.parse(v);}catch(e){return d;}},
+             set(k,v){try{localStorage.setItem("fastmath_"+k,JSON.stringify(v));}catch(e){}}};
+let stars=store.get("stars",0), doneDays=store.get("done",[]);
+const DEFAULT_REWARDS=[{n:15,w:"an extra story at bedtime"},{n:35,w:"30 minutes of screen time"},{n:60,w:"you pick dinner"}];
+let REWARDS=store.get("rewards",DEFAULT_REWARDS);
+function rewardStrip(){
+  const next=REWARDS.find(r=>stars<r.n), done=REWARDS.filter(r=>stars>=r.n);
+  if(!next) return `<div class="rewards"><div class="rw-txt"><b>All unlocked.</b> ${esc(REWARDS[REWARDS.length-1].w)} — go and collect.</div></div>`;
+  const prev=done.length?REWARDS[done.length-1].n:0;
+  const pct=Math.max(4,Math.min(100,Math.round(100*(stars-prev)/(next.n-prev))));
+  return `<div class="rewards">
+    <div class="rw-bar"><i style="width:${pct}%"></i></div>
+    <div class="rw-txt"><b>${stars} / ${next.n}</b> stars → ${esc(next.w)}${done.length?` &nbsp;·&nbsp; already earned: ${done.map(r=>esc(r.w)).join(", ")}`:""}</div></div>`;}
+
+function setMode(m){
+  document.body.classList.toggle("kidmode",m==="kid");
+  document.body.classList.toggle("reviewmode",m==="review");
+  $("tabParent").setAttribute("aria-pressed",m==="parent");
+  $("tabKid").setAttribute("aria-pressed",m==="kid");
+  $("tabReview").setAttribute("aria-pressed",m==="review");
+  window.scrollTo(0,0);
+  if(m==="kid"&&!state.run) kidHome();
+  if(m==="review") renderReview();
+}
+
+/* ---------- domain ruler: 0-100 with the 60 / 80 mastery thresholds as hard ticks ---------- */
+function rulerBar(score){const W=232,x=v=>4+v/100*W,col=score>=80?"var(--leaf)":score>=60?"var(--brass)":"var(--amber)";
+  let b=`<rect x="4" y="11" width="${W}" height="11" rx="3" fill="var(--sunk)" stroke="var(--line)"/>`;
+  for(let v=10;v<100;v+=10)b+=`<line x1="${x(v)}" y1="22" x2="${x(v)}" y2="26" stroke="var(--ink3)" stroke-width="1" opacity=".5"/>`;
+  b+=`<rect x="4" y="11" width="${Math.max(x(score)-4,2)}" height="11" rx="3" fill="${col}"/>`;
+  [60,80].forEach(t=>{b+=`<line x1="${x(t)}" y1="6" x2="${x(t)}" y2="27" stroke="var(--ink)" stroke-width="1.6"/>`;
+    b+=`<text x="${x(t)}" y="36" text-anchor="middle" ${MONO} font-size="8.5" fill="var(--ink3)">${t}</text>`;});
+  return `<svg viewBox="0 0 240 40" width="100%" style="display:block;max-width:240px" role="img" aria-label="score ${score} out of 100; thresholds at 60 and 80">${b}</svg>`;}
+
+/* ---------- parent: domain diagnostic ---------- */
+(function renderDomains(){
+  const order=[...PM1.keys()].sort((a,b)=>PM1[a]-PM1[b]);
+  $("domlist").innerHTML=order.map((d,i)=>{const s=PM1[d],[cls,lbl]=band(s),m=DMETA[d],
+    day=DAYS.find(x=>x.dom.includes(d));
+    return `<details class="dom${s<60?" focus":""}">
+      <summary>
+        <span class="rank">${i+1}</span>
+        <span class="dname">${esc(DOMAINS[d])}${day?`<small>Day ${day.n}</small>`:`<small>maintain</small>`}</span>
+        <span class="rulerwrap">${rulerBar(s)}</span>
+        <span class="scorewrap">
+          <span class="dscore" style="color:var(--${cls==="sec"?"leaf":cls==="dev"?"brass":"amber"})">${s}</span>
+          <span class="pill ${cls}">${lbl}</span></span>
+      </summary>
+      <div class="dom-body">
+        <div class="quote">${esc(m.desc)}<cite>Florida DOE — Understanding FAST K–2 Reports for Families</cite></div>
+        <div><div class="minihd">B.E.S.T. benchmarks behind this domain</div>
+          <div class="benchlist">${m.b.map(([c,t])=>`<div class="benchrow"><b>${esc(c)}</b><span>${esc(t)}</span></div>`).join("")}</div></div>
+        <div><div class="minihd">Most likely cause of the lost points</div>
+          <p style="font-size:14.5px;line-height:1.55;color:var(--ink2)">${esc(m.err)}</p></div>
+      </div></details>`;}).join("");
+})();
+
+/* ---------- parent: day cards ---------- */
+(function renderDays(){
+  const TAGC={BUILD:"brass",DRILL:"accent",LIVE:"leaf",BOSS:"amber",MOCK:"amber",REVIEW:"accent"};
+  $("dayCards").innerHTML=DAYS.map(d=>{
+    const sc=PM1[d.dom[0]], tot=d.sessions.reduce((a,x)=>a+x.mins,0);
+    const screen=d.sessions.filter(x=>x.app).reduce((a,x)=>a+x.mins,0);
+    return `<div class="day">
+      <div class="day-hd">
+        <div class="day-n">Day ${d.n} · ${Math.floor(tot/60)}h ${tot%60}m across four sittings</div>
+        <h3>${esc(d.t)}</h3>
+        <div class="day-goal"><b>Now ${sc}/100.</b> ${fmt(d.goal)}</div>
+        <div class="splitbar" title="${screen} minutes on screen, ${tot-screen} off">
+          <i style="width:${Math.round(100*screen/tot)}%"></i><b>${screen}m screen</b><b>${tot-screen}m off screen</b></div>
+      </div>
+      <div class="blocks">
+        ${d.sessions.map((x,i)=>`
+          <div class="sess">
+            <div class="sess-hd">
+              <span class="pill ${TAGC[x.tag]==="accent"?"dev":TAGC[x.tag]==="leaf"?"sec":"beg"}">${x.tag}</span>
+              <b>${esc(x.title)}</b>
+              <span class="mins">${x.mins} min</span>
+            </div>
+            <div class="bdesc">${x.what}</div>
+          </div>
+          ${i<d.sessions.length-1?`<div class="gap">↓ real gap here — go and do something else</div>`:""}`).join("")}
+        <div class="block" style="border-top:1px solid var(--line);padding-top:12px;margin-top:10px"><div class="btime">✓</div>
+          <div><div class="btitle">Today counts if…</div><div class="bdesc">${fmt(d.win)}</div></div></div>
+      </div></div>`;}).join("");
+})();
+
+/* ==================================================================
+   KID MODE
+   ================================================================== */
+const BLUEPRINT=[4,5,3,3,4,4,4,4,3]; // 34 items across the nine ISR domains
+let state={run:null};
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+let AC=null, MUTED=store.get("muted",false);
+function toneSeq(notes){
+  if(MUTED)return;
+  try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==="suspended")AC.resume();
+    notes.forEach(([f,at,dur,vol])=>{
+      const o=AC.createOscillator(),g=AC.createGain();
+      o.type="sine"; o.frequency.value=f;
+      g.gain.setValueAtTime(0,AC.currentTime+at);
+      g.gain.linearRampToValueAtTime(vol,AC.currentTime+at+0.015);
+      g.gain.exponentialRampToValueAtTime(0.0001,AC.currentTime+at+dur);
+      o.connect(g); g.connect(AC.destination);
+      o.start(AC.currentTime+at); o.stop(AC.currentTime+at+dur+0.02);});
+  }catch(e){}}
+const dingOK =()=>toneSeq([[660,0,.13,.16],[880,.08,.18,.14]]);      // rising, brief
+const tockNo =()=>toneSeq([[300,0,.10,.09]]);                        // flat, soft, never descending
+function toggleMute(){MUTED=!MUTED;store.set("muted",MUTED);renderRewardEditor();
+  const b=document.getElementById("muteBtn"); if(b)b.textContent=MUTED?"🔇 Sound off":"🔊 Sound on";}
+
+/* a star flies from the answer he tapped to the counter, so the reward is causally his */
+function flyStar(fromEl){
+  try{
+    if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+    const chip=document.querySelector(".stars"); if(!chip||!fromEl)return;
+    const a=fromEl.getBoundingClientRect(), b=chip.getBoundingClientRect();
+    const el=document.createElement("div"); el.className="flyStar";
+    el.innerHTML=`<svg viewBox="0 0 24 24" width="30" height="30"><path d="M12 2.6l2.85 5.9 6.4.92-4.63 4.55 1.1 6.43L12 17.36 6.28 20.4l1.1-6.43L2.75 9.42l6.4-.92z" fill="#E8A33D" stroke="#C97F14" stroke-width="1.1" stroke-linejoin="round"/></svg>`;
+    el.style.left=(a.left+a.width/2-15)+"px"; el.style.top=(a.top+a.height/2-15)+"px";
+    document.body.appendChild(el);
+    requestAnimationFrame(()=>{
+      el.style.transform=`translate(${b.left+b.width/2-(a.left+a.width/2)}px,${b.top+b.height/2-(a.top+a.height/2)}px) scale(.55)`;
+      el.style.opacity="0.25";});
+    setTimeout(()=>{el.remove(); chip.classList.add("pop"); setTimeout(()=>chip.classList.remove("pop"),190);},500);
+  }catch(e){}}
+function setStars(n){stars=Math.max(0,n);store.set("stars",stars);
+  const e=$("starCount");if(e)e.textContent=stars;
+  const next=REWARDS.find(r=>stars<r.n), done=REWARDS.filter(r=>stars>=r.n);
+  const bar=$("rwMiniBar"), goal=$("rwGoal");
+  if(bar&&goal){
+    if(!next){bar.style.width="100%";goal.textContent="all unlocked";}
+    else{const prev=done.length?REWARDS[done.length-1].n:0;
+      bar.style.width=Math.max(4,Math.min(100,Math.round(100*(stars-prev)/(next.n-prev))))+"%";
+      goal.textContent=(next.n-stars)+" more → "+next.w;}}}
+
+/* read-aloud: an access support, never a hint, never a cost.
+   Voices load asynchronously, so probe once and remember the result. */
+let TTS={ok:null,voice:null};
+function ttsProbe(){
+  if(TTS.ok!==null)return TTS.ok;
+  try{
+    if(typeof speechSynthesis==="undefined"||typeof SpeechSynthesisUtterance==="undefined"){TTS.ok=false;return false;}
+    const vs=speechSynthesis.getVoices();
+    if(vs&&vs.length)TTS.voice=vs.find(v=>/^en/i.test(v.lang))||vs[0];
+    TTS.ok=true; return true;
+  }catch(e){TTS.ok=false;return false;}}
+try{if(typeof speechSynthesis!=="undefined")
+  speechSynthesis.onvoiceschanged=()=>{TTS.ok=null;ttsProbe();};}catch(e){}
+function speak(t){
+  if(!ttsProbe()){ttsFallback();return;}
+  try{speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(plain(t));
+    u.rate=.82;u.pitch=1.05; if(TTS.voice)u.voice=TTS.voice;
+    u.onerror=()=>ttsFallback();
+    speechSynthesis.speak(u);
+    setTimeout(()=>{try{if(!speechSynthesis.speaking&&!speechSynthesis.pending)ttsFallback();}catch(e){}},1200);
+  }catch(e){ttsFallback();}}
+function ttsFallback(){
+  const b=document.querySelector(".speak"); if(b){b.textContent="🔇 Ask a grown-up to read it";
+    b.classList.add("ttsoff"); b.disabled=true;}
+  const n=$("ttsNote"); if(n)n.hidden=false;}
+function speakItem(){const r=state.run;if(!r||!r.cur)return;
+  speak(plain(r.cur.q)+". "+r.cur.ch.map((c,i)=>`${"ABCD"[i]}. ${plain(c)}`).join(". "));}
+
+/* parent gate: press and hold, so a 7-year-old cannot tap into his own behavior plan */
+let holdT=null;
+function gateDown(){const b=$("gateBtn");if(!b)return;b.dataset.hold="1";b.textContent="keep holding…";
+  holdT=setTimeout(()=>{b.dataset.hold="";stopAll();setMode("parent");},2000);}
+function gateUp(){const b=$("gateBtn");clearTimeout(holdT);if(b){b.dataset.hold="";b.textContent="for grown-ups";}}
+
+function kidHome(){
+  stopAll(); state={run:null};
+  $("progWrap").hidden=true;
+  $("kidStage").innerHTML=`
+   <div class="kidtop"><div class="ktitle">Math Missions</div>
+     <button class="gate" id="gateBtn" onmousedown="gateDown()" onmouseup="gateUp()" onmouseleave="gateUp()"
+       ontouchstart="gateDown()" ontouchend="gateUp()">for grown-ups</button></div>
+   <p style="font-size:16.5px;color:var(--ink2);max-width:52ch;margin-bottom:20px;line-height:1.5">Thirteen questions each. You get a star for every one you <b>try</b>, and another for every one you get right. You pick which mission.</p>
+   <div class="missions">
+     ${DAYS.map(d=>{const done=doneDays.includes(d.n);
+       return `<button class="mission${done?" done":""}" onclick="startDrill(${d.n})">
+         <div class="mn">Day ${d.n}${done?" · done":""}</div><h3>${esc(d.kidTitle)}</h3>
+         <p>${esc(d.kidHook)}</p>
+         <div class="mmeta"><span class="pill dev">13 questions</span>
+           <span class="pill sec" onclick="event.stopPropagation();startEndless(${d.n},false)" style="cursor:pointer">endless ▸</span>
+           <span class="pill beg" onclick="event.stopPropagation();startEndless(${d.n},true)" style="cursor:pointer">hard ▸</span></div></button>`;}).join("")}
+     <button class="mission test" onclick="mockIntro('practice')">
+       <div class="mn">Practice test</div><h3>34 questions, with review</h3>
+       <p>You can go back, change an answer, and flag ones to come back to. Pause any time.</p>
+       <div class="mmeta"><span class="pill dev">back · next · flag</span><span class="pill dev">pause</span></div></button>
+     <button class="mission test" onclick="mockIntro('exam')">
+       <div class="mn">Real test rules</div><h3>34 questions, no going back</h3>
+       <p>Exactly like the real FAST. Once you pick, it is locked. It gets harder when you are right.</p>
+       <div class="mmeta"><span class="pill beg">locked answers</span><span class="pill beg">adaptive</span></div></button>
+   </div>`;
+}
+
+/* ---------- item selection ---------- */
+function pickAdaptive(pool,theta,used){
+  const c=pool.filter(i=>!used.has(i.id)); if(!c.length)return null;
+  let best=c[0],bd=1e9;
+  for(const it of c){const dd=Math.abs(it.d-theta)+Math.random()*0.35; if(dd<bd){bd=dd;best=it;}}
+  return best;}
+function mockSlots(){
+  const slots=[]; BLUEPRINT.forEach((n,d)=>{for(let k=0;k<n;k++)slots.push(d);});
+  return shuffle(slots);}
+/* fixed balanced form for practice mode: going back is incompatible with an adaptive ladder */
+function buildForm(){
+  const used=new Set(),out=[];
+  mockSlots().forEach(d=>{const pool=ITEMS.filter(x=>x.dom===d&&!used.has(x.id));
+    if(!pool.length)return; const it=pool[(Math.random()*pool.length)|0]; used.add(it.id); out.push(it);});
+  return out;}
+/* drills: 3 warm-up items from his SECURE domains, then his target domain easy -> hard,
+   covering every benchmark in that domain rather than only the difficulty ladder */
+function buildDrill(dayN){
+  const day=DAYS.find(x=>x.n===dayN);
+  const strong=ITEMS.filter(i=>PM1[i.dom]>=78&&i.d<=2);
+  const warm=shuffle(strong).slice(0,3);
+  const pool=ITEMS.filter(i=>day.dom.includes(i.dom));
+  const benches=[...new Set(pool.map(i=>i.bench))];
+  const used=new Set(),out=[];
+  benches.forEach(b=>{const c=shuffle(pool.filter(i=>i.bench===b&&i.d<=3));
+    if(c.length){used.add(c[0].id);out.push(c[0]);}});          // every benchmark represented
+  [1,2,2,3,3,4,4,5].forEach(t=>{                                 // then the ladder
+    const c=pool.filter(i=>!used.has(i.id)); if(!c.length)return;
+    let best=c[0],bd=9; for(const i of shuffle(c)){const dd=Math.abs(i.d-t);if(dd<bd){bd=dd;best=i;}}
+    used.add(best.id); out.push(best);});
+  return warm.concat(out.sort((a,b)=>a.d-b.d)).slice(0,13);}
+
+function startEndless(n,hard,mins){
+  const day=DAYS.find(x=>x.n===n);
+  state={run:{mode:"drill",endless:true,hard:!!hard,day:n,dom:day.dom[0],items:[],i:0,ans:[],meta:[],view:[],
+    broke:{},flags:new Set(),theta:hard?4.3:2.6,earned:0,t0:Date.now(),
+    sessionEnd:Date.now()+(mins||(hard?25:35))*60000}};
+  $("progWrap").hidden=true; showQ();}
+function startDrill(n){
+  state={run:{mode:"drill",day:n,items:buildDrill(n),i:0,ans:[],meta:[],view:[],broke:{},flags:new Set(),theta:3,earned:0,t0:Date.now()}};
+  $("progWrap").hidden=false; showQ();}
+
+function mockIntro(variant){
+  const real=variant==="exam";
+  $("progWrap").hidden=true;
+  $("kidStage").innerHTML=`<div class="kidtop"><div class="ktitle">${real?"Real test rules":"Practice test"}</div>
+     <button class="gate" id="gateBtn" onmousedown="gateDown()" onmouseup="gateUp()" onmouseleave="gateUp()"
+       ontouchstart="gateDown()" ontouchend="gateUp()">for grown-ups</button></div>
+   <div class="stage">
+    <div class="testnote" style="margin-bottom:16px">
+      · 34 questions, four answers each: A, B, C or D.<br>
+      ${real?"· <b>You cannot go back.</b> Once you pick, it is locked. That is how the real FAST works.<br>· It gets harder when you are right and easier when you are wrong. That is normal."
+            :"· You <b>can</b> go back, change an answer, and <b>flag</b> any question to come back to.<br>· At the end you get a map of everything you flagged or left empty."}<br>
+      · Press <b>Pause</b> whenever you need to. The clock stops.<br>
+      · Press <b>🔊 Read it to me</b> any time. It never costs you anything.<br>
+      · There is a break at question 12 and question 24.<br>
+      · No one tells you if you are right until the end.
+    </div>
+    ${real?`<div class="note warn" style="margin-bottom:16px"><p style="font-size:14px">This one matches the real test. The practice version with <b>back</b> and <b>flag</b> is better for learning, so do that one first.</p></div>`:""}
+    <div class="btnrow"><button class="btn big" onclick="startMock('${variant}')">Start</button>
+      <button class="btn ghost" onclick="kidHome()">Not yet</button></div></div>`;}
+
+function startMock(variant){
+  const exam=variant==="exam";
+  state={run:{mode:"mock",exam,i:0,ans:[],meta:[],view:[],broke:{},theta:3,used:new Set(),earned:0,t0:Date.now(),
+    slots:exam?mockSlots():null, form:exam?[]:buildForm(), flags:new Set(), paused:false, elapsed:0}};
+  $("progWrap").hidden=false; showQ();}
+
+/* ---------- timing ---------- */
+let tick=null;
+function stopAll(){clearInterval(tick);tick=null;try{speechSynthesis.cancel();}catch(e){}}
+function startClock(){
+  clearInterval(tick); const r=state.run; r.left=360;
+  if(r.mode!=="mock"){                       // drills are untimed; track silently for the parent report
+    tick=setInterval(()=>{if(state.run&&!state.run.paused){r.left--;r.elapsed=(r.elapsed||0)+1;}},1000);
+    return;}
+  tick=setInterval(()=>{
+    if(!state.run||state.run.paused)return;
+    r.left--; r.elapsed++;
+    const c=$("clk"); if(!c){clearInterval(tick);return;}
+    if(r.left<=90){c.className="clockchip warn";c.textContent="⏱ "+Math.max(0,r.left)+"s";}
+    else{c.className="clockchip";c.textContent="⏱ "+Math.floor(r.left/60)+":"+String(r.left%60).padStart(2,"0");}
+    if(r.left<=0){clearInterval(tick);timeUp();}
+  },1000);}
+function timeUp(){ // never silently score it wrong: offer a break or a guess
+  const f=$("fb"); if(!f)return;
+  f.className="fb show no";
+  f.innerHTML=`<h4>Still thinking?</h4><p>Take a break, or have a go. A guess is better than nothing.</p>`;}
+function togglePause(){
+  const r=state.run; if(!r)return; r.paused=!r.paused;
+  if(r.paused){try{speechSynthesis.cancel();}catch(e){}
+    $("kidStage").innerHTML=`<div class="paused"><div class="big">Paused</div>
+      <p>Nothing is running. Take as long as you need.</p>
+      <div class="btnrow" style="justify-content:center">
+        <button class="btn big" onclick="togglePause()">Carry on</button>
+        <button class="btn ghost" onclick="quitToHome()">Stop for now — keep my stars</button></div></div>`;}
+  else showQ();}
+
+/* ---------- the stage ---------- */
+function curItem(){
+  const r=state.run;
+  if(r.endless){
+    if(!r.items[r.i]){
+      const d=Math.round(Math.max(r.hard?3:1,Math.min(5,r.theta)));
+      r.items[r.i]=genItem(r.dom,d)||ITEMS.filter(x=>x.dom===r.dom)[0];}
+    return r.items[r.i];}
+  if(r.mode==="drill")return r.items[r.i];
+  if(!r.exam)return r.form[r.i];
+  if(r.form[r.i])return r.form[r.i];                    // already served (exam never revisits, but be safe)
+  const it=pickAdaptive(ITEMS.filter(x=>x.dom===r.slots[r.i]),r.theta,r.used);
+  if(it){r.used.add(it.id);r.form[r.i]=it;}
+  return it;}
+function total(){const r=state.run;return r.endless?Infinity:(r.mode==="drill"?r.items.length:34);}
+
+function showQ(){
+  const r=state.run; if(!r)return;
+  if(r.i>=total())return r.mode==="mock"&&!r.exam?showMap(true):showResults();
+  if(r.mode==="mock"&&(r.i===12||r.i===24)&&!r.broke[r.i]){r.broke[r.i]=1;return showBreak();}
+  if(r.endless&&r.sessionEnd&&Date.now()>r.sessionEnd&&!r.overran){r.overran=1;return sessionDone();}
+  if(r.endless&&r.i>0&&r.i%8===0&&!r.broke[r.i]){r.broke[r.i]=1;return showBreak();}
+  if(r.mode==="drill"&&!r.endless&&r.i===5&&!r.broke[5]){r.broke[5]=1;return showBreak();}
+  const it=curItem(); r.cur=it;
+  if(!it){r.i=total();return showQ();}
+  if(!r.view[r.i]){                                     // choice order randomized per sitting,
+    const positional=it.ch.every((c,k)=>c==="ABCD"[k]);  // except where a choice names a figure
+    r.view[r.i]=positional?it.ch.slice():shuffle(it.ch);}
+  const view=r.view[r.i], prev=r.ans[r.i];
+  $("progBar").style.width=(r.i/total()*100)+"%";
+  const locked=r.mode==="mock"&&r.exam&&prev!==undefined;
+  const answered=prev!==undefined;
+  const showMark=r.mode==="drill"&&answered;
+  $("kidStage").innerHTML=`
+   <div class="kidtop"><div class="ktitle">${r.mode==="drill"?(r.day?((DAYS.find(x=>x.n===r.day)||{}).kidTitle||"Day "+r.day):"Fix-it round"):(r.exam?"Real rules":"Practice")}</div>
+     <button class="nbtn quiet" onclick="quitToHome()">Stop for now</button>
+     ${r.mode==="mock"?`<span class="clockchip" id="clk"></span>`:""}
+     <button class="gate" id="gateBtn" onmousedown="gateDown()" onmouseup="gateUp()" onmouseleave="gateUp()"
+       ontouchstart="gateDown()" ontouchend="gateUp()">for grown-ups</button></div>
+   <div class="stage">
+    <div class="qhead"><span class="qnum">${r.endless?`Question ${r.i+1} · ${r.meta.filter(m=>m&&m.ok).length} right${r.sessionEnd?` · ${Math.max(0,Math.ceil((r.sessionEnd-Date.now())/60000))} min left`:""}`:`Question ${r.i+1} of ${total()}`}</span>
+      </div>
+    <div class="qtext">${fmt(it.q)}</div>
+    <button class="speak" onclick="speakItem()">🔊 Read it to me</button>
+    <div id="ttsNote" hidden class="testnote" style="margin:10px 0 0">This device will not read out loud. Ask a grown-up to read the question to you. That is allowed and it is not cheating.</div>
+    ${it.fig&&!figIsPick(it.fig)?`<div class="figbox">${interactiveFig(it)}</div>`:""}
+    ${figIsPick(it.fig)
+      ? figOptions(it.fig,view,{picked:prev,answer:it.a,marked:showMark,disabled:locked||showMark})
+      : `<div class="opts">${view.map((c,k)=>{
+          let cls="opt",mark="";
+          if(showMark){ if(c===it.a){cls+=" right";mark='<span class="tick">✓</span>';}
+            else if(c===prev){cls+=" wrong";mark='<span class="tick">✕</span>';} else cls+=" dim"; }
+          else if(c===prev){cls+=" picked";mark='<span class="tick">●</span>';}
+          return `<button class="${cls}" ${locked||showMark?"disabled":""} onclick="answer(${k})">
+            <span class="ltr">${"ABCD"[k]}</span><span>${fmt(c)}</span>${mark}</button>`;}).join("")}</div>`}
+    <div class="fb" id="fb"></div>
+    <div class="navbar">
+      ${r.mode==="mock"&&!r.exam?`<button class="nbtn" onclick="go(-1)" ${r.i===0?"disabled":""}>← Back</button>`:""}
+      <button class="nbtn" onclick="togglePause()">⏸ Pause</button>
+      ${r.mode==="mock"?`<button class="nbtn ${r.flags.has(r.i)?"flagged":""}" onclick="toggleFlag()">⚑ ${r.flags.has(r.i)?"Flagged":"Flag"}</button>`:""}
+      <span class="spacer"></span>
+      ${r.mode==="mock"&&!r.exam?`<button class="nbtn" onclick="showMap(false)">Review all</button>`:""}
+      ${r.endless?`<button class="nbtn" onclick="endEndless()">Stop &amp; see how I did</button>`:""}
+      <button class="nbtn primary" id="nextBtn" onclick="go(1)" ${r.mode==="drill"&&!answered?"disabled":""}>${r.endless?"Next →":(r.i===total()-1?"Finish":"Next →")}</button>
+    </div>
+   </div>`;
+  startClock(); tapState={n:0,set:new Set()};
+  try{window.scrollTo({top:0,behavior:"smooth"});}catch(e){window.scrollTo(0,0);}
+}
+function quitToHome(){ stopAll(); state={run:null}; kidHome(); }
+function toggleFlag(){const r=state.run;r.flags.has(r.i)?r.flags.delete(r.i):r.flags.add(r.i);showQ();}
+function go(step){const r=state.run;r.i=Math.max(0,r.i+step);showQ();}
+
+function answerValue(v){const r=state.run;answer(r.view[r.i].indexOf(v));}
+function answer(k){
+  if(k<0||state.locking)return;                       // an impulsive child double-taps by default
+  state.locking=true; setTimeout(()=>{state.locking=false;},450);
+  if(!state.run||!state.run.view[state.run.i])return;
+  const r=state.run, it=r.cur, view=r.view[r.i], chosen=view[k], ok=chosen===it.a;
+  const first=r.ans[r.i]===undefined;
+  r.ans[r.i]=chosen;
+  r.meta[r.i]={id:it.id,dom:it.dom,d:it.d,bench:it.bench,ok,chose:chosen,answer:it.a,
+    gen:!!it.gen,flag:r.flags.has(r.i)};
+  if(first){ r.earned+=1; if(ok)r.earned+=1; setStars(stars+(ok?2:1));
+    const tapped=document.querySelectorAll(".opt,.figopt")[k];
+    if(ok){dingOK(); flyStar(tapped);} else tockNo(); }   // a star for trying, another for right
+  if(r.mode==="drill"){
+    r.theta=Math.min(5,Math.max(1,r.theta+(ok?0.55:-0.7)));
+    showQ();
+    const fb=$("fb"); fb.className="fb show "+(ok?"ok":"no");
+    fb.innerHTML=`<h4>${ok?"Yes. Two stars.":"Not this time. One star for trying."}</h4>
+      <p>${fmt(it.why)}</p><p class="trap"><b>Watch out</b><br>${fmt(it.trap)}</p>`;
+  } else {
+    if(r.exam){ r.theta=Math.min(5,Math.max(1,r.theta+(ok?0.55:-0.7))); r.i++; setTimeout(showQ,600); }
+    else showQ();
+  }
+}
+
+function showBreak(){
+  stopAll();
+  $("kidStage").innerHTML=`<div class="brk">
+    <div class="big">Move break</div>
+    <div class="timer" id="tmr">2:00</div>
+    <p>Get up. Ten star jumps, or run to the door and back. The clock is stopped, so this costs you nothing.</p>
+    <div class="btnrow" style="justify-content:center">
+      <button class="btn big" id="backBtn" onclick="showQ()">I'm back</button>
+      <button class="btn ghost" onclick="quitToHome()">Stop for now</button></div></div>`;
+  let left=120; tick=setInterval(()=>{left--;const e=$("tmr"),b=$("backBtn");if(!e){clearInterval(tick);return;}
+    e.textContent=Math.floor(left/60)+":"+String(left%60).padStart(2,"0");
+    if(left<=0){clearInterval(tick);e.textContent="0:00";if(b)b.textContent="I'm back — keep going";}},1000);}
+
+/* ---------- practice-mode review map (flagged / unanswered), like the real 3-10 platform ---------- */
+function showMap(final){
+  stopAll(); const r=state.run;
+  const empty=[],flagged=[];
+  for(let i=0;i<34;i++){if(r.ans[i]===undefined)empty.push(i);if(r.flags.has(i))flagged.push(i);}
+  $("kidStage").innerHTML=`<div class="kidtop"><div class="ktitle">Review</div>
+     <button class="gate" id="gateBtn" onmousedown="gateDown()" onmouseup="gateUp()" onmouseleave="gateUp()"
+       ontouchstart="gateDown()" ontouchend="gateUp()">for grown-ups</button></div>
+   <div class="stage">
+    <h3 class="sub">${final?"That is all 34. Anything you want to check?":"Tap any number to go back to it"}</h3>
+    <div class="qmap">${Array.from({length:34},(_,i)=>{
+      const cls=r.flags.has(i)?"flag":(r.ans[i]!==undefined?"done":"empty");
+      return `<button class="qcell ${cls}" onclick="jump(${i})">${i+1}</button>`;}).join("")}</div>
+    <div class="legend">
+      <span><i style="background:var(--accent-wash);border-color:var(--accent)"></i> answered</span>
+      <span><i style="background:var(--brass-wash);border-color:var(--brass)"></i> flagged (${flagged.length})</span>
+      <span><i style="border-style:dashed"></i> empty (${empty.length})</span></div>
+    ${empty.length?`<div class="note warn" style="margin-top:16px"><p>${empty.length} question${empty.length>1?"s are":" is"} still empty. A guess scores better than a blank.</p></div>`:""}
+    <div class="btnrow" style="margin-top:20px">
+      <button class="btn big" onclick="finishMock()">I&#39;m finished</button>
+      ${empty.length?`<button class="btn ghost" onclick="jump(${empty[0]})">Go to first empty</button>`:""}
+      ${flagged.length?`<button class="btn ghost" onclick="jump(${flagged[0]})">Go to first flagged</button>`:""}
+    </div></div>`;}
+function jump(i){state.run.i=i;showQ();}
+function finishMock(){state.run.i=34;showResults();}
+function endEndless(){state.run.endless=false;showResults();}
+function moreTime(){state.run.sessionEnd=Date.now()+10*60000;state.run.overran=0;showQ();}
+function sessionDone(){
+  stopAll(); const r=state.run, right=r.meta.filter(m=>m&&m.ok).length;
+  $("kidStage").innerHTML=`<div class="brk">
+    <div class="big">Time is up</div>
+    <p>You did <b>${r.i}</b> questions and got <b>${right}</b> right. That is the whole sitting done.</p>
+    ${rewardStrip()}
+    <div class="btnrow" style="justify-content:center;margin-top:18px">
+      <button class="btn big" onclick="endEndless()">See how I did</button>
+      <button class="btn ghost" onclick="moreTime()">10 more minutes</button></div></div>`;}
+
+/* ---------- results ---------- */
+/* a running record across the four days, so Day 1 can be compared with Day 4 */
+function logAttempt(r,meta){
+  const h=store.get("history",[]);
+  const per={}; meta.forEach(m=>{const d=per[m.dom]=per[m.dom]||[0,0];d[1]++;if(m.ok)d[0]++;});
+  h.push({when:Date.now(),
+    kind:r.mode==="mock"?(r.exam?"mock-exam":"mock-practice"):(r.endless?"endless":"drill"),
+    day:r.day||0, n:meta.length, ok:meta.filter(m=>m.ok).length, per});
+  store.set("history",h.slice(-60));}
+function domScore(rows){const w=rows.reduce((a,x)=>a+x.d,0); if(!w)return null;
+  return Math.round(100*rows.reduce((a,x)=>a+(x.ok?x.d:0),0)/w);}
+const mmss=s=>Math.floor(s/60)+"m "+String(s%60).padStart(2,"0")+"s";
+
+function buildExport(r){
+  const wrong=r.meta.filter(Boolean).filter(m=>!m.ok);
+  const L=[];
+  L.push("=== FAST GRADE 2 MATH · MOCK RESULT ===");
+  L.push(`when: ${new Date().toISOString().slice(0,16).replace("T"," ")}   mode: ${r.exam?"exam (no going back)":"practice (back/flag)"}`);
+  L.push(`score: ${r.meta.filter(m=>m&&m.ok).length} of ${r.meta.filter(Boolean).length}   time: ${mmss(r.elapsed||Math.round((Date.now()-r.t0)/1000))}`);
+  L.push("");
+  L.push(`GOT WRONG (${wrong.length}) — id | domain | benchmark | difficulty | he chose -> correct | flagged`);
+  wrong.forEach(m=>{
+    L.push(`  ${m.id} | ${DOMAINS[m.dom]} | ${m.bench} | d${m.d} | "${plain(m.chose)}" -> "${plain(m.answer)}"${m.flag?" | FLAGGED":""}`);});
+  L.push("");
+  L.push("BY DOMAIN (correct / seen)");
+  DOMAINS.forEach((n,d)=>{const rows=r.meta.filter(Boolean).filter(m=>m.dom===d);
+    if(rows.length)L.push(`  ${n}: ${rows.filter(m=>m.ok).length}/${rows.length}   (PM1 was ${PM1[d]})`);});
+  const fl=r.meta.filter(Boolean).filter(m=>m.flag&&m.ok).map(m=>m.id);
+  if(fl.length){L.push("");L.push("FLAGGED BUT CORRECT (unsure, worth re-checking): "+fl.join(", "));}
+  L.push("");
+  L.push("DATA:"+JSON.stringify({v:1,exam:!!r.exam,t:r.elapsed||0,
+    a:r.meta.filter(Boolean).map(m=>[m.id,m.ok?1:0,m.flag?1:0,plain(m.chose)])}));
+  return L.join("\n");}
+
+function showResults(){
+  stopAll(); const r=state.run;
+  const meta=r.meta.filter(Boolean), n=meta.length, got=meta.filter(m=>m.ok).length;
+  $("progBar").style.width="100%";
+  if(r.mode==="drill"){
+    const pass=got>=Math.ceil(n*0.55);
+    if(pass&&!r.endless&&r.day&&!doneDays.includes(r.day)){doneDays.push(r.day);store.set("done",doneDays);}
+    logAttempt(r,meta);
+  } else {
+    store.set("lastMock",{when:Date.now(),exam:!!r.exam,elapsed:r.elapsed,
+      a:meta.map(m=>({id:m.id,ok:m.ok,flag:m.flag,chose:m.chose,answer:m.answer,dom:m.dom,bench:m.bench,gen:m.gen}))});
+    logAttempt(r,meta);
+  }
+  const wrong=meta.filter(m=>!m.ok);
+  const lookup=id=>ITEMS.find(x=>x.id===id)||(r.items||[]).find(x=>x&&x.id===id);
+  const rev=wrong.length?`<h3 class="sub" style="margin:26px 0 10px">${wrong.length} to have another look at</h3>`+
+    wrong.map(m=>{const it=lookup(m.id); if(!it)return "";
+      return `<details class="rev"><summary><span class="mark no">✕</span>
+        <span><b>${esc(DOMAINS[it.dom])}</b> — ${esc(plain(it.q).slice(0,66))}${it.q.length>66?"…":""}</span></summary>
+        <div class="rev-body">
+          <div>${fmt(it.q)}</div>
+          ${it.fig?`<div class="figbox" style="padding:8px 0">${renderFig(it.fig)}</div>`:""}
+          <div><b style="color:var(--amber)">You chose:</b> ${fmt(m.chose)} &nbsp;·&nbsp; <b style="color:var(--leaf)">Answer:</b> ${fmt(it.a)}</div>
+          <div>${fmt(it.why)}</div>
+        </div></details>`;}).join("")
+    :`<div class="note" style="margin-top:24px"><h4>Nothing wrong. Every single one.</h4><p>Go and tell someone.</p></div>`;
+
+  const exportTxt = r.mode==="mock" ? buildExport(r) : "";
+  $("kidStage").innerHTML=`<div class="kidtop"><div class="ktitle">Done</div>
+     <button class="gate" id="gateBtn" onmousedown="gateDown()" onmouseup="gateUp()" onmouseleave="gateUp()"
+       ontouchstart="gateDown()" ontouchend="gateUp()">for grown-ups</button></div>
+   <div class="stage">
+    <div class="res-hd">
+      <div class="big">+${r.earned} <span style="color:var(--star);font-weight:700">stars</span></div>
+      <p>${r.mode==="mock"?"All 34 finished. That is the hard part done."
+          :got===n?"Every single one right.":`You got <b>${got}</b> of ${n}, and you finished the whole thing.`}</p></div>
+    ${rewardStrip()}
+    ${rev}
+    ${r.mode==="mock"?`
+      <textarea id="exportTxt" readonly style="position:absolute;left:-9999px" aria-hidden="true">${esc(exportTxt)}</textarea>
+      <div class="btnrow" style="margin-top:22px;justify-content:center;align-items:center">
+        <button class="btn ghost" onclick="copyExport()">Send my score to Dad</button>
+        <span class="copied" id="copiedMsg" hidden>sent</span></div>`:""}
+    <div class="btnrow" style="justify-content:center;margin-top:26px">
+      <button class="btn big" onclick="kidHome()">Back to missions</button></div></div>`;
+  window.scrollTo(0,0);
+}
+function copyExport(){const t=$("exportTxt");t.select();
+  const done=()=>{const m=$("copiedMsg");m.hidden=false;setTimeout(()=>{m.hidden=true;},2200);};
+  try{navigator.clipboard.writeText(t.value).then(done,()=>{document.execCommand("copy");done();});}
+  catch(e){try{document.execCommand("copy");done();}catch(_){}}}
+
+/* ==================================================================
+   MOCK REVIEW  — parent-facing: only what went wrong, and what to do next
+   ================================================================== */
+function parseExport(txt){
+  const m=txt.match(/DATA:(\{[\s\S]*\})/);
+  if(m){try{const d=JSON.parse(m[1]);
+    return {exam:d.exam,elapsed:d.t,a:d.a.map(([id,ok,flag,chose])=>({id,ok:!!ok,flag:!!flag,chose}))};}catch(e){}}
+  return null;}
+
+/* recommendation weighs PM1 as well as this attempt: 3-5 items cannot
+   overturn a Beginning-band domain, however well he happened to do */
+function rec(miss,seen,pm1){
+  if(miss>=Math.ceil(seen/2)) return "<b>priority</b> — re-teach before drilling";
+  if(pm1<60) return miss===0
+    ? `<b>keep drilling</b> — ${seen} right is good, but ${seen} questions cannot clear a PM1 of ${pm1}`
+    : "<b>priority</b> — still Beginning on PM1";
+  if(miss===0) return pm1<80 ? "holding — light review only" : "nothing — leave it alone";
+  return "quick review";}
+function renderReview(txt){
+  const pasted=txt?parseExport(txt):null;
+  const last=pasted||store.get("lastMock",null);
+  const box=`<div class="card lift" style="margin-top:18px">
+      <h3 class="sub">Paste a result from another device</h3>
+      <p style="font-size:14.5px;color:var(--ink2);margin:6px 0 10px;line-height:1.5">If Sam did the mock somewhere else, paste what he copied and this page will rebuild the review.</p>
+      <textarea class="exportbox" id="pasteBox" placeholder="Paste the copied result here…"></textarea>
+      <div class="btnrow" style="margin-top:10px">
+        <button class="btn" onclick="renderReview($('pasteBox').value)">Load it</button></div></div>`;
+
+  if(!last||!last.a||!last.a.length){
+    $("reviewStage").innerHTML=`<div class="eyebrow">Mock review</div>
+      <h2 class="sec">No attempt yet</h2>
+      <p class="prose" style="margin-top:10px">Once Sam finishes a practice test, this tab fills with only the questions he got wrong, grouped by domain, with the re-teach for each one and a button to drill exactly those.</p>${box}`;
+    return;}
+
+  const rows=last.a.map(x=>{
+    const it=ITEMS.find(i=>i.id===x.id)
+      ||(x.answer?{id:x.id,dom:x.dom,bench:x.bench||"generated",a:x.answer,q:x.q||"(generated question)",
+                   why:"",trap:"",fig:null}:null);
+    return {...x,it};}).filter(x=>x.it);
+  const wrong=rows.filter(x=>!x.ok), unsure=rows.filter(x=>x.ok&&x.flag);
+  const byDom={}; wrong.forEach(x=>{(byDom[x.it.dom]=byDom[x.it.dom]||[]).push(x);});
+  const order=Object.keys(byDom).map(Number).sort((a,b)=>byDom[b].length-byDom[a].length);
+  const seen={}; rows.forEach(x=>{const d=x.it.dom;seen[d]=seen[d]||[0,0];seen[d][1]++;if(x.ok)seen[d][0]++;});
+
+  $("reviewStage").innerHTML=`
+    <div class="eyebrow">Mock review · ${last.exam?"exam rules":"practice mode"}${last.when?" · "+new Date(last.when).toLocaleDateString():""}</div>
+    <h2 class="sec">${wrong.length} wrong out of ${rows.length}</h2>
+    <p class="prose" style="margin-top:10px;margin-bottom:18px">Only the misses are below, heaviest domain first. Each one shows what he picked, why it is wrong, and the specific misconception behind it. ${unsure.length?`He also flagged <b>${unsure.length}</b> that he got right — worth checking he was not guessing.`:""}</p>
+
+    <div class="twrap" style="margin-bottom:22px"><table>
+      <thead><tr><th>Domain</th><th>This attempt</th><th>PM1</th><th>Where to spend the next session</th></tr></thead>
+      <tbody>${DOMAINS.map((n,d)=>{if(!seen[d])return "";
+        const [c,t]=seen[d], miss=t-c;
+        return `<tr><td><b>${esc(n)}</b></td><td class="num">${c} / ${t}</td><td class="num">${PM1[d]}</td>
+          <td>${rec(miss,t,PM1[d])}</td></tr>`;}).join("")}
+      </tbody></table></div>
+    <p style="font-size:13px;color:var(--ink3);margin:-12px 0 22px;line-height:1.5;max-width:66ch">Counts, not scores. Three to five questions per domain is far too few to produce a reliable 0–100 estimate, so this table deliberately shows raw correct-out-of-seen instead of a number that looks comparable to his PM1 domain score.</p>
+
+    ${historyBlock()}
+
+    ${order.map(d=>`<div class="rgroup">
+      <div class="rgroup-hd"><b>${esc(DOMAINS[d])}</b>
+        <span class="pill ${band(PM1[d])[0]}">PM1 ${PM1[d]}</span>
+        <span class="cnt">${byDom[d].length} missed</span></div>
+      ${byDom[d].map(x=>`<div class="rq">
+        <div class="stem">${fmt(x.it.q)}</div>
+        ${x.it.fig?`<div class="figbox" style="padding:4px 0 12px">${renderFig(x.it.fig)}</div>`:""}
+        <div class="ab"><span class="chose">chose: ${esc(plain(x.chose))}</span><span class="right">answer: ${esc(plain(x.it.a))}</span>
+          ${x.flag?`<span style="background:var(--brass-wash);color:var(--brass)">⚑ flagged</span>`:""}</div>
+        <div class="teach"><b>Re-teach:</b> ${fmt(x.it.why)}</div>
+        <div class="teach" style="margin-top:6px;color:var(--ink3)"><b>The misconception:</b> ${fmt(x.it.trap)}</div>
+        <div class="bench" style="margin-top:7px">${esc(x.it.bench)}</div>
+      </div>`).join("")}
+    </div>`).join("")}
+
+    <div class="card lift" style="margin-top:20px">
+      <h3 class="sub">Drill exactly these</h3>
+      <p style="font-size:14.5px;color:var(--ink2);margin:6px 0 12px;line-height:1.5">Builds a session from only the ${wrong.length} he missed, easiest first, with the explanation after every one.</p>
+      <button class="btn" onclick="drillMisses(${JSON.stringify(wrong.map(x=>x.id)).replace(/"/g,'&quot;')})">Start a fix-it session</button>
+    </div>
+    ${box}`;
+}
+function historyBlock(){
+  const h=store.get("history",[]);
+  if(h.length<2)return `<p style="font-size:13.5px;color:var(--ink3);margin:-6px 0 20px;line-height:1.5">Once he has done more than one session, a running record of every domain will appear here so you can compare Day 1 with Day 4.</p>`;
+  const per={}; h.forEach(a=>Object.keys(a.per).forEach(d=>{(per[d]=per[d]||[]).push({when:a.when,kind:a.kind,day:a.day,ok:a.per[d][0],n:a.per[d][1]});}));
+  const doms=Object.keys(per).map(Number).sort((a,b)=>PM1[a]-PM1[b]);
+  const spark=rows=>{
+    const W=112,H=30,n=rows.length;
+    const pts=rows.map((r,i)=>[6+(n<2?W/2:i*(W-12)/(n-1)),H-4-(r.n?(r.ok/r.n):0)*(H-10)]);
+    const path=pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+    const last=pts[pts.length-1];
+    return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="${n} sessions, latest ${rows[n-1].ok} of ${rows[n-1].n}">
+      <line x1="6" y1="${H-4}" x2="${W-6}" y2="${H-4}" stroke="var(--line)" stroke-width="1"/>
+      <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.4" fill="var(--accent)"/></svg>`;};
+  return `<div class="card lift" style="margin-bottom:22px">
+    <h3 class="sub">Every session so far</h3>
+    <p style="font-size:13.5px;color:var(--ink2);margin:5px 0 12px;line-height:1.5">${h.length} sessions logged. The line is the share he got right in that domain, oldest to newest. Look for the shape of the line, not any single point.</p>
+    <div class="twrap"><table><thead><tr><th>Domain</th><th>PM1</th><th>Trend</th><th>First</th><th>Latest</th><th>Total</th></tr></thead><tbody>
+    ${doms.map(d=>{const rows=per[d],f=rows[0],l=rows[rows.length-1];
+      const tot=rows.reduce((a,r)=>[a[0]+r.ok,a[1]+r.n],[0,0]);
+      return `<tr><td><b>${esc(DOMAINS[d])}</b></td>
+        <td class="num"><span class="pill ${band(PM1[d])[0]}">${PM1[d]}</span></td>
+        <td>${rows.length>1?spark(rows):'<span style="color:var(--ink3);font-size:12px">one session</span>'}</td>
+        <td class="num">${f.ok}/${f.n}</td><td class="num">${l.ok}/${l.n}</td>
+        <td class="num">${tot[0]}/${tot[1]}</td></tr>`;}).join("")}
+    </tbody></table></div></div>`;}
+
+function drillMisses(ids){
+  const items=ids.map(i=>ITEMS.find(x=>x.id===i)).filter(Boolean).sort((a,b)=>a.d-b.d);
+  if(!items.length)return;
+  setMode("kid");
+  state={run:{mode:"drill",day:0,items,i:0,ans:[],meta:[],view:[],broke:{},flags:new Set(),theta:3,earned:0,t0:Date.now()}};
+  $("progWrap").hidden=false; showQ();}
+
+
+/* ---------- parent-side settings ---------- */
+function renderRewardEditor(){
+  const e=$("rewardEditor"); if(!e)return;
+  e.innerHTML=REWARDS.map((r,i)=>`<div>
+    <label>Tier ${i+1}</label>
+    <div class="setrow"><input type="number" id="rwN${i}" value="${r.n}" min="1" max="999" aria-label="stars needed">
+    <input type="text" id="rwW${i}" value="${esc(r.w)}" aria-label="reward"></div></div>`).join("");
+  const st=$("rwStars"); if(st)st.textContent=`Sam has ${stars} stars and has finished ${doneDays.length} of 4 days.`;
+  const mb=$("muteBtn"); if(mb)mb.textContent=MUTED?"🔇 Sound off":"🔊 Sound on";}
+function saveRewards(){
+  const out=REWARDS.map((_,i)=>({n:Math.max(1,parseInt($("rwN"+i).value)||1),w:$("rwW"+i).value.trim()||"a treat"}))
+    .sort((a,b)=>a.n-b.n);
+  REWARDS=out; store.set("rewards",out); renderRewardEditor();
+  const m=$("rwSaved"); if(m){m.hidden=false;setTimeout(()=>{m.hidden=true;},2000);}}
+function resetProgress(){
+  if(!confirm("Reset Sam's stars and completed days? This cannot be undone."))return;
+  setStars(0); doneDays=[]; store.set("done",[]); store.set("lastMock",null); store.set("history",[]);
+  renderRewardEditor(); if(document.body.classList.contains("kidmode"))kidHome();}
+renderRewardEditor();
+
+setStars(stars);
+kidHome();
+
+</script>
