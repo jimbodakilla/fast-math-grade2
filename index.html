@@ -742,6 +742,40 @@ body.kidmode{background:#F1F4EF}
   color-mix(in srgb,var(--leaf) 45%,transparent) 0 5px,transparent 5px 10px);
   border-top:2px solid var(--leaf);border-bottom:2px solid var(--leaf);z-index:2;pointer-events:none}
 </style>
+<style>
+.bigscore{border-radius:var(--r-lg);padding:24px 26px 22px;margin:0 0 22px;
+  border:2.5px solid var(--leaf);background:var(--leaf-wash)}
+.bigscore.lv3{border-color:var(--brass);background:var(--brass-wash)}
+.bigscore.lv1,.bigscore.lv2{border-color:var(--amber);background:var(--amber-wash)}
+.bigscore.none{border-color:var(--line);background:var(--sunk);border-style:dashed}
+.bs-cap{font-family:var(--ff-ui);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink3);font-weight:700}
+.bs-num{font-size:clamp(52px,11vw,80px);font-weight:800;letter-spacing:-.045em;line-height:1;
+  color:var(--leaf);font-variant-numeric:tabular-nums;margin:10px 0 12px}
+.bigscore.lv3 .bs-num{color:var(--brass)}
+.bigscore.lv1 .bs-num,.bigscore.lv2 .bs-num{color:var(--amber)}
+.bs-num i{font-style:normal;font-size:.34em;font-weight:600;color:var(--ink3);margin:0 .18em;
+  vertical-align:.28em;letter-spacing:0}
+.bs-badge{display:inline-block;background:var(--leaf);color:#fff;border-radius:999px;
+  padding:8px 18px;font-size:19px;font-weight:800;letter-spacing:-.01em}
+.bigscore.lv3 .bs-badge{background:var(--brass)}
+.bigscore.lv1 .bs-badge,.bigscore.lv2 .bs-badge{background:var(--amber)}
+.bs-badge span{font-weight:600;opacity:.92;font-size:.86em;margin-left:4px}
+.bs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;
+  margin:18px 0 0;padding-top:16px;border-top:1px solid var(--line)}
+.bs-grid b{display:block;font-size:24px;font-weight:800;color:var(--ink);
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.bs-grid span{display:block;font-size:12.5px;color:var(--ink2);line-height:1.45;margin-top:3px}
+.bs-sub{font-size:14px;color:var(--ink2);line-height:1.55;margin:14px 0 0;max-width:70ch}
+.bs-sub b{color:var(--ink)}
+.bs-ask{font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.02em;margin-top:8px}
+.bs-inline{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+.bs-inline input{width:140px;min-height:48px;font-family:var(--ff-ui);font-size:18px;font-weight:700;
+  padding:8px 12px;border-radius:10px;border:2px solid var(--line);background:var(--surface);color:var(--ink)}
+.bs-inline input:focus{outline:none;border-color:var(--leaf)}
+@media (max-width:460px){.bs-badge{font-size:16px;padding:7px 14px}
+  .bs-badge span{display:block;margin:2px 0 0}.bs-grid b{font-size:20px}}
+</style>
 <div class="topbar"><div class="topbar-in">
   <div class="brand"><b>Grade 2 FAST Math Trainer</b><span>FLORIDA B.E.S.T. · PM1 → PM2</span></div>
   <div class="switch" role="group" aria-label="Choose view">
@@ -2967,6 +3001,7 @@ function renderReview(txt){
   $("reviewStage").innerHTML=`
     <div class="eyebrow">Mock review · ${last.form?esc(last.form)+" · ":""}${last.exam?"exam rules":"practice mode"}${last.when?" · "+new Date(last.when).toLocaleDateString():""}</div>
     <h2 class="sec">${wrong.length} wrong out of ${rows.length}</h2>
+    ${scoreHeadline(last)}
     <p class="prose" style="margin-top:10px;margin-bottom:18px">Only the misses are below, heaviest domain first. Each one shows what he picked, why it is wrong, and the specific misconception behind it. ${unsure.length?`He also flagged <b>${unsure.length}</b> that he got right — worth checking he was not guessing.`:""}</p>
 
     <div class="twrap" style="margin-bottom:22px"><table>
@@ -3104,6 +3139,49 @@ function copyResult(){
    mastery to the 38-369 scale needs Cambium's table; we have one
    anchor point and no slope, so any number here would be invented.
    ================================================================== */
+function scoreHeadline(last){
+  const rows=last.a.map(x=>{const it=ITEMS.find(i=>i.id===x.id);
+    return {...x,dom:x.dom!=null?x.dom:(it&&it.dom)};}).filter(x=>x.dom!=null);
+  const seen={}; rows.forEach(x=>{const d=seen[x.dom]=seen[x.dom]||[0,0];d[1]++;if(x.ok)d[0]++;});
+  const got=rows.filter(x=>x.ok).length, n=rows.length;
+  if(!n) return "";
+  const mastery=Math.round(1000*got/n)/10;
+  let pw=0,pn=0; Object.keys(seen).forEach(d=>{pw+=seen[d][1]*PM1[d];pn+=seen[d][1];});
+  const predicted=pn?Math.round(10*pw/pn)/10:0;
+  const anchor=parentScore();
+  const proj=projectScore(mastery,predicted,anchor);
+  const LVN={1:"Well Below Grade Level",2:"Below Grade Level",3:"On Grade Level",4:"Proficient",5:"Exemplary"};
+  const lvl=v=>v>=201?5:v>=185?4:v>=171?3:v>=158?2:1;
+  const when=last.when?new Date(last.when).toLocaleDateString():"";
+  const src=`${esc(last.form||"the last mock")}${when?" · "+when:""} · ${got} of ${n} correct`;
+  if(!proj) return `<div class="bigscore none">
+      <div class="bs-cap">Estimated FAST Equivalent Score · ${src}</div>
+      <div class="bs-ask">One number is missing</div>
+      <p class="bs-sub" style="margin:8px 0 0">This page turns the mock into a <b>38–369 score and a Level 1–5</b> the same way the state report does, but it has to know where he started. Type the <b>FAST Equivalent Score</b> from his Individual Student Report — the large number in the yellow box — and the score and level appear right here.<br><br>For a sharper estimate, also put the <b>nine domain scores</b> from that report into <b>Parent &amp; teacher → settings</b> — they set the baseline this mock is measured against.</p>
+      <div class="bs-inline">
+        <input type="number" id="hdScore" min="38" max="369" placeholder="e.g. 180" inputmode="numeric"
+          onkeydown="if(event.key==='Enter')headlineScore()">
+        <button class="btn" onclick="headlineScore()">Show his score</button>
+      </div></div>`;
+  const bad=proj.loLvl<=2;
+  return `<div class="bigscore lv${proj.loLvl}">
+      <div class="bs-cap">Estimated FAST Equivalent Score · ${src}</div>
+      <div class="bs-num">${proj.lo}<i>to</i>${proj.hi}</div>
+      <div class="bs-badge">Level ${proj.loLvl}${proj.hiLvl!==proj.loLvl?"–"+proj.hiLvl:""} <span>${esc(LVN[proj.loLvl])}</span></div>
+      <div class="bs-grid">
+        <div><b>${anchor}</b><span>Measured in September<br>Level ${lvl(anchor)} · ${esc(LVN[lvl(anchor)])}</span></div>
+        <div><b>${proj.lo>anchor?"+":""}${proj.lo-anchor} to ${proj.hi>anchor?"+":""}${proj.hi-anchor}</b><span>Change since September</span></div>
+        <div><b>185</b><span>Where Level 4 Proficient begins</span></div>
+      </div>
+      <p class="bs-sub">${bad?"":`On this mock he lands <b>${proj.lo>=185?"at or above":"short of"}</b> the Level 4 line. `}This is <b>this page's estimate from ${n} questions, not a FAST score</b> — only PM2 produces the real one.</p>
+    </div>`;}
+function headlineScore(){
+  const e=$("hdScore"), v=parseInt((e&&e.value)||"",10);
+  if(!(v>=38&&v<=369)){ if(e){e.focus();e.select();} return; }
+  store.set("fastScore",v);
+  const f=$("fScore"); if(f)f.value=v;
+  renderReview();
+  setTimeout(()=>{const b=document.querySelector(".bigscore"); if(b)b.scrollIntoView({behavior:"smooth",block:"center"});},60);}
 function isrReport(last){
   const rows=last.a.map(x=>{const it=ITEMS.find(i=>i.id===x.id);
     return {...x,dom:x.dom!=null?x.dom:(it&&it.dom)};}).filter(x=>x.dom!=null);
@@ -3258,7 +3336,9 @@ function projectScore(nowM,predM,anchor){
   const L=Math.round(clamp(Math.min(lo,hi))), H=Math.round(clamp(Math.max(lo,hi)));
   const lvl=v=>v>=201?5:v>=185?4:v>=171?3:v>=158?2:1;
   return {lo:L,hi:H,loLvl:lvl(L),hiLvl:lvl(H),uLo:fastToUnified(L),uHi:fastToUnified(H)};}
-function parentScore(){const v=store.get("fastScore",null);return (typeof v==="number"&&v>=38&&v<=369)?v:null;}
+const ISR_SCORE=null; /* his measured PM1 FAST Equivalent, from the Individual Student Report */
+function parentScore(){const v=store.get("fastScore",null);
+  return (typeof v==="number"&&v>=38&&v<=369)?v:ISR_SCORE;}
 function ladderSVG(score,opts){
   opts=opts||{};
   if(score==null)score=parentScore();
