@@ -3240,8 +3240,8 @@ function wilson(k,n,z){z=z||1.96; if(!n)return[0,0];
    score reads as "you are here", which is how this panel got misread. */
 /* ---------- projecting the mock onto the FAST Equivalent scale ----------
    The FAST Equivalent Score is a linear rescale of the Star Unified Scale:
-   FAST = 38 + (Unified-600)/800 * 331. Checked against this report — Unified 931
-   predicts 174.95 against a printed 175. That fixes the scale.
+   FAST = 38 + (Unified-600)/800 * 331. Verified against a real report: the formula reproduced the printed FAST
+   Equivalent to within a tenth of a point. That fixes the scale.
    The remaining unknown is what score equals 100% mastery of GRADE-2 content.
    38-369 spans K through 10, so 369 is a tenth-grader, not a perfect second
    grader. The plausible anchors sit at the top of grade-2 expectation, i.e.
