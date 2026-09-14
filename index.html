@@ -453,6 +453,23 @@ body.reviewmode #review{display:block}
   background:var(--surface);color:var(--ink2);border-radius:12px;padding:14px 20px;cursor:pointer;
   min-height:48px;width:100%}
 .holdbtn[data-hold="1"]{border-style:solid;border-color:var(--accent);color:var(--accent-ink)}
+/* the worked example shown before a day's first question */
+.wordcard{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;padding:14px 18px;
+  border-radius:var(--r-lg);background:var(--accent-wash);
+  border:2px solid color-mix(in srgb,var(--accent) 40%,transparent);margin-bottom:16px}
+.wc-term{font-size:21px;font-weight:800;color:var(--accent-ink);letter-spacing:-.01em}
+.wc-def{font-size:15.5px;color:var(--ink2);line-height:1.4}
+.model-lead{font-size:16px;color:var(--ink2);margin:0 0 16px;line-height:1.5}
+.modelsteps{margin:18px 0 0;padding-left:0;list-style:none;counter-reset:ms}
+.modelsteps li{counter-increment:ms;position:relative;padding:11px 0 11px 44px;font-size:17px;
+  line-height:1.5;color:var(--ink);border-top:1px solid var(--line)}
+.modelsteps li:first-child{border-top:0}
+.modelsteps li::before{content:counter(ms);position:absolute;left:0;top:10px;width:28px;height:28px;
+  border-radius:50%;background:var(--accent);color:#fff;font-family:var(--ff-mono);font-size:14px;
+  font-weight:700;display:flex;align-items:center;justify-content:center}
+.modelans{margin-top:16px;padding:12px 16px;border-radius:12px;background:var(--leaf-wash);
+  border:2px solid var(--leaf);font-size:18px;color:var(--ink)}
+@media (max-width:460px){.modelsteps li{font-size:16px;padding-left:40px}.wc-term{font-size:19px}}
 svg .seg,svg .coin,svg .bar,svg .fivemark{cursor:pointer}
 svg .seg{transition:r .1s}
 svg .seg[fill="transparent"]{pointer-events:all}
@@ -1147,6 +1164,51 @@ const DMETA={
    A 7-year-old with distractibility cannot do 2-3 hours in one block. It works only
    as four separate sittings with real gaps, and only if most of it is off
    the screen. Seated drill is capped near 60 minutes a day. */
+/* Shown before the first question of a day: the word he needs, then one
+   problem solved in front of him. He is asked nothing here. A drill that opens
+   with a question on his weakest skill invites a refusal before he has seen
+   how the thing is done. */
+const MODEL={
+ 1:{term:"Perimeter",def:"the whole way around the outside of a shape",
+    q:"What is the perimeter of this rectangle?",
+    fig:{t:"gridRect",w:4,h:2},
+    steps:["Put your finger on a corner. That is where you start and where you finish.",
+           "Walk along the top: 1, 2, 3, 4. That side is 4 units.",
+           "Down the side: 1, 2. That side is 2 units.",
+           "Keep going all the way round: 4 and 2 and 4 and 2.",
+           "4 + 2 + 4 + 2 = 12. Say the unit: <b>12 units</b>."],
+    a:"12 units",
+    watch:"The squares <i>inside</i> are not the perimeter. Only the steps around the edge count."},
+ 2:{term:"Start at zero",def:"a ruler measures from 0, not from the end of the ruler",
+    q:"How long is the pencil?",
+    fig:{t:"ruler",from:0,to:6,u:"in",obj:"pencil"},
+    steps:["Find where the pencil <i>starts</i>. It starts at 0.",
+           "Find where it <i>ends</i>. It ends at 6.",
+           "Count the spaces between, not the marks: 1, 2, 3, 4, 5, 6.",
+           "It is <b>6 inches</b> long."],
+    a:"6 inches",
+    watch:"If the object starts at 1 instead of 0, take the start away from the end: 7 − 1 = 6."},
+ 3:{term:"The equal sign",def:"a balance: whatever is on one side must be worth the same as the other",
+    q:"What number goes in the box?    25 + ▢ = 40",
+    fig:null,
+    steps:["The two sides have to balance.",
+           "The left side is 25 and something. The right side is 40.",
+           "Ask: 25 and how many more makes 40?",
+           "Count up: 25 to 30 is 5, and 30 to 40 is 10. That is 15.",
+           "<b>15</b> goes in the box, because 25 + 15 = 40."],
+    a:"15",
+    watch:"The box is not always at the end. 25 + ▢ = 40 and ▢ + 15 = 40 are the same puzzle."},
+ 4:{term:"Counting on",def:"start with the biggest coin and count up from there",
+    q:"How much money is this?",
+    fig:{t:"coins",c:["q","d","d","n"]},
+    steps:["Sort them biggest first: quarter, dime, dime, nickel.",
+           "Start at the quarter: 25.",
+           "Count on a dime: 35. Another dime: 45.",
+           "Count on the nickel: 50.",
+           "Altogether that is <b>50¢</b>."],
+    a:"50¢",
+    watch:"Four coins does not mean 4¢. Count what they are <i>worth</i>, not how many there are."}
+};
 const DAYS=[
  {n:1,kidTitle:"The Walk Around the Outside",kidHook:"Count the steps all the way round a shape.",t:"Perimeter",dom:[4],
   goal:"The walk around the *outside*. Not the squares inside. He should trace a shape with his finger and count segments out loud without being asked.",
@@ -2760,10 +2822,13 @@ function kidHome(){
    <p style="font-size:16.5px;color:var(--ink2);max-width:52ch;margin-bottom:20px;line-height:1.5">Thirteen questions each. You get a star for every one you <b>try</b>, and another for every one you get right. You pick which mission.</p>
    <div class="missions">
      ${DAYS.map(d=>{const done=doneDays.includes(d.n);
-       return `<button class="mission${done?" done":""}" onclick="startDrill(${d.n})">
-         <div class="mn">Day ${d.n}${done?" · done":""}</div><h3>${esc(d.kidTitle)}</h3>
+       const sure=store.get("secureDays",[]).includes(d.n);
+       return `<button class="mission${sure?" done":""}" onclick="startDrill(${d.n})">
+         <div class="mn">Day ${d.n}${sure?" · got it":done?" · done once":""}</div><h3>${esc(d.kidTitle)}</h3>
          <p>${esc(d.kidHook)}</p>
          <div class="mmeta"><span class="pill dev">13 questions</span>
+           ${MODEL[d.n]&&store.get("modelSeen",[]).includes(d.n)
+             ? `<span class="pill" onclick="event.stopPropagation();showModel(${d.n})" style="cursor:pointer">show me again ▸</span>`:""}
            <span class="pill sec" onclick="event.stopPropagation();startEndless(${d.n},false)" style="cursor:pointer">endless ▸</span>
            <span class="pill beg" onclick="event.stopPropagation();startEndless(${d.n},true)" style="cursor:pointer">hard ▸</span></div></button>`;}).join("")}
      ${FLAGGED.length?`<button class="mission" style="border-color:var(--brass);background:var(--brass-wash)" onclick="startFlagged()">
@@ -2874,7 +2939,21 @@ function buildDrill(dayN){
   const rank=[...PM1.keys()].sort((a,b)=>PM1[b]-PM1[a]).slice(0,3);
   const FREE=practiceItems();
   const strong=FREE.filter(i=>rank.includes(i.dom)&&i.d<=2);
-  const warm=shuffle(strong).slice(0,3);
+  /* Two easy ones from his best domains to get him started, then a question
+     from a day he has already done. Four days of blocked practice means the
+     first skill is cold by Thursday; a couple of minutes of retrieval is what
+     keeps it. */
+  const warmPool=shuffle(strong);          // one shuffle, so the slices cannot overlap
+  const warm=warmPool.slice(0,2);
+  const earlier=DAYS.filter(x=>x.n<dayN&&doneDays.includes(x.n));
+  let recall=[];
+  if(earlier.length){
+    const pick=earlier[Math.floor(Math.random()*earlier.length)];
+    const benches=[...new Set(ITEMS.filter(i=>pick.dom.includes(i.dom)).map(i=>i.bench))];
+    recall=parallelFor(shuffle(benches).slice(0,1),1,[],[]);
+    if(recall.length)recall[0]=Object.assign({},recall[0],{recall:pick.n});
+  }
+  if(!recall.length)recall=warmPool.slice(2,3);
   const pool=FREE.filter(i=>day.dom.includes(i.dom));
   const benches=[...new Set(pool.map(i=>i.bench))];
   const used=new Set(),out=[];
@@ -2893,16 +2972,16 @@ function buildDrill(dayN){
       const g=genItem(day.dom[tries%day.dom.length],1+(tries%5));
       if(g&&g.bench===b&&!used.has(g.id)){used.add(g.id);out.push(g);return;}}});
   let guard=0;
-  while(warm.length+out.length<13&&guard++<200){
+  while(warm.length+recall.length+out.length<13&&guard++<200){
     const g=genItem(day.dom[Math.floor(Math.random()*day.dom.length)],1+(out.length%5));
     if(g&&!used.has(g.id)){used.add(g.id);out.push(g);}}
   /* trimming to 13 must not drop a benchmark that nothing else covers */
-  if(warm.length+out.length>13){
+  if(warm.length+recall.length+out.length>13){
     const keep=new Set(), trimmed=[];
     out.forEach(i=>{if(!keep.has(i.bench)){keep.add(i.bench);trimmed.push(i);}});
     out.forEach(i=>{if(!trimmed.includes(i))trimmed.push(i);});
-    out.length=0; out.push(...trimmed.slice(0,13-warm.length));}
-  return warm.concat(out.sort((a,b)=>a.d-b.d)).slice(0,13);}
+    out.length=0; out.push(...trimmed.slice(0,13-warm.length-recall.length));}
+  return warm.concat(recall).concat(out.sort((a,b)=>a.d-b.d)).slice(0,13);}
 
 /* The three mock forms are the measuring instrument. If practice serves the
    same questions, a mock stops measuring what he knows and starts measuring
@@ -2926,7 +3005,41 @@ function startFlagged(){
   state={run:{mode:"drill",review:true,day:0,items,i:0,ans:[],meta:[],view:[],broke:{},
     flags:new Set(),theta:3,earned:0,t0:Date.now()}};
   $("progWrap").hidden=false; showQ();}
-function startDrill(n){
+/* "I do" before "you do". He answers nothing on this screen. */
+function showModel(n){
+  const m=MODEL[n]; if(!m)return startDrill(n,true);
+  stopAll();
+  state={run:null};                 // this screen is between rounds, not inside one
+  $("progWrap").hidden=true;
+  $("kidStage").innerHTML=`
+   <div class="kidtop"><div class="ktitle">Watch first</div>
+     <button class="nbtn quiet" onclick="quitToHome()">Stop for now</button>
+     <button class="gate" id="gateBtn" onmousedown="gateDown()" onmouseup="gateUp()" onmouseleave="gateUp()"
+       ontouchstart="gateDown()" ontouchend="gateUp()">for grown-ups</button></div>
+   <div class="stage">
+     <div class="wordcard"><span class="wc-term">${esc(m.term)}</span>
+       <span class="wc-def">${esc(m.def)}</span></div>
+     <p class="model-lead">Here is one done for you. Nothing to answer — just watch how it goes.</p>
+     <div class="qtext">${fmt(m.q)}</div>
+     ${m.fig?`<div class="figbox">${renderFig(m.fig)}</div>`:""}
+     <ol class="modelsteps">${m.steps.map(x=>`<li>${x}</li>`).join("")}</ol>
+     <div class="modelans">Answer: <b>${esc(m.a)}</b></div>
+     <div class="note" style="margin-top:16px"><h4>The bit people get wrong</h4><p>${m.watch}</p></div>
+     <div class="btnrow" style="margin-top:22px">
+       <button class="btn big" onclick="markModelSeen(${n});startDrill(${n},true)">My turn</button>
+       <button class="btn ghost" onclick="speakModel(${n})">🔊 Read it to me</button>
+     </div>
+   </div>`;
+  window.scrollTo(0,0);}
+function markModelSeen(n){const a=store.get("modelSeen",[]);
+  if(!a.includes(n)){a.push(n);store.set("modelSeen",a);}}
+function speakModel(n){const m=MODEL[n]; if(!m)return;
+  speak([m.term+". "+m.def+".",plain(m.q),...m.steps.map(x=>plain(String(x).replace(/<[^>]*>/g,""))),
+         "The answer is "+m.a+"."].join(" "));}
+
+function startDrill(n,skipModel){
+  const seen=store.get("modelSeen",[]);
+  if(!skipModel&&MODEL[n]&&!seen.includes(n))return showModel(n);
   state={run:{mode:"drill",day:n,items:buildDrill(n),i:0,ans:[],meta:[],view:[],broke:{},flags:new Set(),theta:3,earned:0,t0:Date.now()}};
   $("progWrap").hidden=false; showQ();}
 
@@ -3335,8 +3448,17 @@ function showResults(){
   const meta=r.meta.filter(Boolean), n=meta.length, got=meta.filter(m=>m.ok).length;
   $("progBar").style.width="100%";
   if(r.mode==="drill"){
+    /* Two bars, because they answer different questions. Finishing is his
+       effort and always counts — that matters for a child who walks away when
+       work feels unwinnable. Secure is the 80% the rest of this page uses for
+       every other domain, and only that marks the skill as held. */
     const pass=got>=Math.ceil(n*0.55);
-    if(pass&&!r.endless&&r.day&&!doneDays.includes(r.day)){doneDays.push(r.day);store.set("done",doneDays);}
+    const secure=n>0&&(got/n)>=0.8;
+    if(!r.endless&&r.day){
+      if(!doneDays.includes(r.day)){doneDays.push(r.day);store.set("done",doneDays);}
+      const sd=store.get("secureDays",[]);
+      if(secure&&!sd.includes(r.day)){sd.push(r.day);store.set("secureDays",sd);}
+    }
     logAttempt(r,meta);
   } else {
     if(r.formIdx!=null){const df=store.get("formsDone",[]);
@@ -3371,7 +3493,20 @@ function showResults(){
     <div class="res-hd">
       <div class="big">+${r.earned} <span style="color:var(--star);font-weight:700">stars</span></div>
       <p>${r.mode==="mock"?"All 34 finished. That is the hard part done."
-          :got===n?"Every single one right.":`You got <b>${got}</b> of ${n}, and you finished the whole thing.`}</p></div>
+          :got===n?"Every single one right."
+          :(got/n)>=0.8?`You got <b>${got}</b> of ${n}. That is solid — this one is yours now.`
+          :`You got <b>${got}</b> of ${n}, and you finished the whole thing.`}</p></div>
+    ${r.mode==="drill"&&!r.endless&&(got/n)<0.8&&wrong.length?(()=>{
+      const bs=[...new Set(wrong.map(m=>m.bench).filter(Boolean))];
+      return `<div class="note" style="margin-top:18px">
+        <h4>One more short round?</h4>
+        <p>Reading why it was wrong is not the same as being able to do it. Five fresh
+        questions on just the ${bs.length===1?"one thing":bs.length+" things"} that tripped you up —
+        <b>new questions, not the same ones again</b>.</p>
+        <div class="btnrow" style="margin-top:12px">
+          <button class="btn" onclick="secondChance(${JSON.stringify(bs).replace(/"/g,"&quot;")},${r.day||0},${
+            JSON.stringify((r.items||[]).filter(Boolean).map(x=>plain(x.q)+"|"+JSON.stringify(x.fig||null)+"|"+x.a)).replace(/"/g,"&quot;")})">Five more, just those</button>
+        </div></div>`;})():""}
     ${rewardStrip()}
     ${rev}
     ${r.mode==="mock"?grownUpReport():""}
@@ -3572,7 +3707,7 @@ function renderReview(txt){
     <div class="card lift" style="margin-top:20px">
       <h3 class="sub">Drill exactly these</h3>
       <p style="font-size:14.5px;color:var(--ink2);margin:6px 0 12px;line-height:1.5">Builds a session from only the ${wrong.length} he missed, easiest first, with the explanation after every one.</p>
-      <button class="btn" onclick="drillMisses(${JSON.stringify(wrong.map(x=>x.id)).replace(/"/g,'&quot;')})">Start a fix-it session</button>
+      <button class="btn" onclick="drillMisses(${JSON.stringify(wrong.map(x=>x.id)).replace(/"/g,'&quot;')},${JSON.stringify([...new Set(wrong.map(x=>x.it&&x.it.bench).filter(Boolean))]).replace(/"/g,'&quot;')})">Start a fix-it session</button>
     </div>
     ${box}`;
 }
@@ -4029,8 +4164,43 @@ function historyBlock(){
         <td class="num">${tot[0]}/${tot[1]}</td></tr>`;}).join("")}
     </tbody></table></div></div>`;}
 
-function drillMisses(ids){
-  const items=ids.map(i=>ITEMS.find(x=>x.id===i)).filter(Boolean).sort((a,b)=>a.d-b.d);
+/* Re-serving the very question he just got wrong tests whether he remembers
+   that question. Parallel items on the same benchmark test the skill, which is
+   the thing we actually want to move. */
+function parallelFor(benches,want,avoidIds,avoidSigs){
+  const out=[], seen=new Set(avoidIds||[]);
+  const sig=x=>plain(x.q)+"|"+JSON.stringify(x.fig||null)+"|"+x.a;
+  const taken=new Set(avoidSigs||[]);   // never hand back a question he just saw
+  for(const b of benches){
+    const dom=(ITEMS.find(i=>i.bench===b)||{}).dom;
+    let got=0;
+    for(let tries=0;tries<300&&got<Math.max(1,Math.ceil(want/benches.length));tries++){
+      if(dom==null)break;
+      const g=genItem(dom,1+(tries%4));
+      if(g&&g.bench===b&&!taken.has(sig(g))){taken.add(sig(g));out.push(g);got++;}
+    }
+    if(!got){                                  // no generator for it: an unseen authored item
+      const pool=ITEMS.filter(i=>i.bench===b&&!seen.has(i.id)&&!taken.has(sig(i)));
+      if(pool.length){const p=pool[Math.floor(Math.random()*pool.length)];taken.add(sig(p));out.push(p);}
+    }}
+  return shuffle(out).slice(0,want);}
+
+function secondChance(benches,day,seenSigs){
+  const items=parallelFor(benches,5,[],seenSigs||[]);
+  if(!items.length)return kidHome();
+  setMode("kid");
+  state={run:{mode:"drill",day:day||0,retry:true,items:items.sort((a,b)=>a.d-b.d),
+    i:0,ans:[],meta:[],view:[],broke:{},flags:new Set(),theta:3,earned:0,t0:Date.now()}};
+  $("progWrap").hidden=false; showQ();}
+
+function drillMisses(ids,benches){
+  let items=ids.map(i=>ITEMS.find(x=>x.id===i)).filter(Boolean);
+  /* a generated miss is not in ITEMS, and repeating an authored one only tests
+     recall of that question, so top up with fresh items on the same benchmarks */
+  const bs=(benches&&benches.length?benches:[...new Set(items.map(i=>i.bench))]).filter(Boolean);
+  if(bs.length){const extra=parallelFor(bs,Math.max(3,ids.length-items.length+2),ids);
+    items=items.concat(extra);}
+  items=items.sort((a,b)=>a.d-b.d);
   if(!items.length)return;
   setMode("kid");
   state={run:{mode:"drill",day:0,items,i:0,ans:[],meta:[],view:[],broke:{},flags:new Set(),theta:3,earned:0,t0:Date.now()}};
@@ -4045,7 +4215,7 @@ function renderRewardEditor(){
     <div class="setrow"><input type="number" id="rwN${i}" value="${r.n}" min="1" max="999" aria-label="stars needed">
     <input type="text" id="rwW${i}" value="${esc(r.w)}" aria-label="reward"></div></div>`).join("");
   const st=$("rwStars"); if(st){const df=store.get("formsDone",[]);
-    st.textContent=`Sam has ${stars} stars, has finished ${doneDays.length} of 4 days, has sat ${df.length} of 3 mock forms${df.length?" ("+df.map(i=>FORM_NAMES[i]).join(", ")+")":""}, and has ${FLAGGED.length} question${FLAGGED.length===1?"":"s"} flagged as unsure.`;}
+    st.textContent=`Sam has ${stars} stars, has finished ${doneDays.length} of 4 days (secure on ${store.get("secureDays",[]).length}), has sat ${df.length} of 3 mock forms${df.length?" ("+df.map(i=>FORM_NAMES[i]).join(", ")+")":""}, and has ${FLAGGED.length} question${FLAGGED.length===1?"":"s"} flagged as unsure.`;}
   const mb=$("muteBtn"); if(mb)mb.textContent=MUTED?"🔇 Sound off":"🔊 Sound on";
   const pe=$("pEmail"); if(pe&&!pe.value)pe.value=parentEmail();
   const fs=$("fScore"); if(fs&&!fs.value&&parentScore()!=null)fs.value=parentScore();
