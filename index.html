@@ -429,6 +429,30 @@ body.reviewmode #review{display:block}
 /* the "do it yourself" state of the counter: present, but not a readout */
 .counter.quiet{border-style:dashed;border-color:var(--line);color:var(--ink2);font-size:14px}
 .counter.quiet small{font-size:13px;color:var(--ink2);max-width:34ch;line-height:1.4}
+/* the FAST-scale score and level, written the way the state report writes them */
+.fastb{display:inline-flex;flex-direction:column;gap:2px;padding:7px 14px;border-radius:10px;
+  border:2px solid var(--leaf);background:var(--leaf-wash);line-height:1.15}
+.fastb b{font-family:var(--ff-mono);font-size:19px;font-weight:700;color:var(--ink);
+  font-variant-numeric:tabular-nums}
+.fastb i{font-style:normal;font-size:11.5px;font-weight:600;color:var(--ink2)}
+.fastb.lv3{border-color:var(--brass);background:var(--brass-wash)}
+.fastb.lv1,.fastb.lv2{border-color:var(--amber);background:var(--amber-wash)}
+.fastb.none{border-color:var(--line);background:var(--sunk);border-style:dashed;
+  font-size:12px;color:var(--ink3);padding:9px 14px}
+.fastb.big{padding:14px 22px}
+.fastb.big b{font-size:34px;letter-spacing:-.02em}
+.fastb.big i{font-size:14px}
+/* the grown-up panel on the results screen */
+.gupwrap{margin-top:26px;border-top:1px solid var(--line);padding-top:20px}
+.gup{border:2px solid var(--line);border-radius:var(--r-lg);padding:20px;background:var(--surface)}
+.gup h4{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin:0 0 12px}
+.gup .row{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.gup .delta{font-family:var(--ff-mono);font-size:15px;font-weight:700}
+.gup p{font-size:13.5px;color:var(--ink2);line-height:1.55;margin:14px 0 0;max-width:64ch}
+.holdbtn{font-family:var(--ff-ui);font-size:15px;font-weight:600;border:1.5px dashed var(--line);
+  background:var(--surface);color:var(--ink2);border-radius:12px;padding:14px 20px;cursor:pointer;
+  min-height:48px;width:100%}
+.holdbtn[data-hold="1"]{border-style:solid;border-color:var(--accent);color:var(--accent-ink)}
 svg .seg,svg .coin,svg .bar,svg .fivemark{cursor:pointer}
 svg .seg{transition:r .1s}
 svg .seg[fill="transparent"]{pointer-events:all}
@@ -3251,6 +3275,25 @@ function sessionDone(){
 
 /* ---------- results ---------- */
 /* a running record across the four days, so Day 1 can be compared with Day 4 */
+const LVL_NAME={1:"Well Below Grade Level",2:"Below Grade Level",3:"On Grade Level",
+                4:"Proficient",5:"Exemplary"};
+const levelOf=v=>v>=201?5:v>=185?4:v>=171?3:v>=158?2:1;
+/* Every attempt carries its per-domain counts, so the same projection the
+   report uses can be recomputed for any sitting, past or present. */
+function attemptScore(per){
+  if(!per)return null;
+  let got=0,n=0,pw=0;
+  Object.keys(per).forEach(d=>{const [c,t]=per[d];got+=c;n+=t;pw+=t*(PM1[d]||0);});
+  if(!n)return null;
+  const mastery=Math.round(1000*got/n)/10, predicted=Math.round(10*pw/n)/10;
+  return {got,n,mastery,predicted,proj:projectScore(mastery,predicted,parentScore())};}
+/* the score and level exactly as the state report writes them */
+function fastBadge(proj,size){
+  if(!proj)return `<span class="fastb none">score not set</span>`;
+  const lv=proj.loLvl===proj.hiLvl?`Level ${proj.loLvl}`:`Level ${proj.loLvl}–${proj.hiLvl}`;
+  return `<span class="fastb lv${proj.loLvl}${size?" "+size:""}">
+    <b>${proj.lo}–${proj.hi}</b><i>${lv} · ${esc(LVL_NAME[proj.loLvl])}</i></span>`;}
+
 function logAttempt(r,meta){
   const h=store.get("history",[]);
   const per={}; meta.forEach(m=>{const d=per[m.dom]=per[m.dom]||[0,0];d[1]++;if(m.ok)d[0]++;});
@@ -3331,6 +3374,7 @@ function showResults(){
           :got===n?"Every single one right.":`You got <b>${got}</b> of ${n}, and you finished the whole thing.`}</p></div>
     ${rewardStrip()}
     ${rev}
+    ${r.mode==="mock"?grownUpReport():""}
     ${r.mode==="mock"?`
       <div class="testnote" style="margin-top:22px;text-align:center">
         <b>Your score is saved.</b> ${parentEmail()
@@ -3341,6 +3385,76 @@ function showResults(){
       <button class="btn big" onclick="kidHome()">Back to missions</button></div></div>`;
   window.scrollTo(0,0);
 }
+/* The child is deliberately not shown a score — he sees stars. This is the
+   same number in the state report's own units, for whoever is sitting next to
+   him, behind the same press-and-hold as the rest of the parent material. */
+function grownUpReport(){
+  const h=store.get("history",[]).filter(a=>/^mock/.test(a.kind));
+  if(!h.length)return "";
+  const now=attemptScore(h[h.length-1].per);
+  if(!now)return "";
+  const prevRow=[...h].slice(0,-1).reverse().find(a=>attemptScore(a.per));
+  const prev=prevRow?attemptScore(prevRow.per):null;
+  const mid=p=>p&&p.proj?Math.round((p.proj.lo+p.proj.hi)/2):null;
+  const dn=mid(now), dp=mid(prev);
+  const move=(dn!=null&&dp!=null)?dn-dp:null;
+  return `<div class="gupwrap">
+    <button class="holdbtn" id="gupBtn"
+      onmousedown="holdReport()" onmouseup="holdCancel()" onmouseleave="holdCancel()"
+      ontouchstart="holdReport()" ontouchend="holdCancel()">
+      For a grown-up — press and hold to see the score and level</button>
+    <div class="gup" id="gupBox" hidden>
+      <h4>Estimated FAST Equivalent Score · ${esc(h[h.length-1].form||"this paper")} · ${now.got} of ${now.n} correct</h4>
+      <div class="row">
+        ${fastBadge(now.proj,"big")}
+        ${prev?`<div>
+          <div style="font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:700;margin-bottom:6px">Previous · ${esc(prevRow.form||"mock")}</div>
+          ${fastBadge(prev.proj)}</div>`:""}
+        ${move!=null?`<div class="delta ${move>0?"up":move<0?"dn":"same"}" style="font-size:22px">
+          ${move>0?"▲ +":move<0?"▼ ":"= "}${move===0?"no change":Math.abs(move)+" points"}</div>`:""}
+      </div>
+      ${scaleStrip(now.proj,parentScore())}
+      ${now.proj?`<p style="margin-top:4px;font-size:12.5px;color:var(--ink3)">Star Unified Scale equivalent <b>${now.proj.uLo}–${now.proj.uHi}</b>.</p>`:""}
+      <p>${now.proj
+        ? `Level 4 Proficient begins at <b>185</b>. This is <b>this page's estimate from ${now.n} questions, not a FAST score</b> — only PM2 produces the real one, and a ${now.n}-question paper cannot pin it tighter than the range shown.`
+        : `Put the <b>FAST Equivalent Score</b> from his report into Parent &amp; teacher → settings and this panel will show the score and level for every paper he sits.`}</p>
+      <p style="margin-top:10px"><b>${now.got} of ${now.n}</b> · mastery ${now.mastery}%${prev?` · was ${prev.got} of ${prev.n}, mastery ${prev.mastery}%`:""}. The full breakdown is on the <b>Mock review</b> page.</p>
+    </div></div>`;}
+/* The same 38-369 scale and the same five levels as the state report, drawn
+   flat so it fits under a result on a tablet. Never put markup inside an SVG
+   <text>: it closes the svg and everything after it lands outside. */
+function scaleStrip(proj,anchor){
+  const W=520,H=112,L=34,R=16,y=40,h=20;
+  const LO=38,HI=369, x=v=>L+(Math.max(LO,Math.min(HI,v))-LO)/(HI-LO)*(W-L-R);
+  const BANDS=[[38,158,"var(--amber)"],[158,171,"var(--amber)"],[171,185,"var(--brass)"],
+               [185,201,"var(--leaf)"],[201,369,"var(--leaf)"]];
+  let b="";
+  BANDS.forEach(([a,z,c],i)=>{
+    b+=`<rect x="${x(a).toFixed(1)}" y="${y}" width="${(x(z)-x(a)).toFixed(1)}" height="${h}" fill="${c}" opacity="${i<2?0.18+i*0.08:0.2+i*0.1}"/>`;});
+  [158,171,185,201].forEach(v=>{
+    b+=`<line x1="${x(v).toFixed(1)}" y1="${y-4}" x2="${x(v).toFixed(1)}" y2="${y+h+4}" stroke="var(--line)" stroke-width="1"/>`
+      +`<text x="${x(v).toFixed(1)}" y="${y+h+17}" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9" fill="var(--ink3)">${v}</text>`;});
+  b+=`<text x="${L}" y="${y+h+17}" text-anchor="start" font-family="IBM Plex Mono,monospace" font-size="9" fill="var(--ink3)">38</text>`
+    +`<text x="${W-R}" y="${y+h+17}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="9" fill="var(--ink3)">369</text>`;
+  [[1,38,158],[2,158,171],[3,171,185],[4,185,201],[5,201,369]].forEach(([lv,a,z])=>{
+    const cx=(x(a)+x(z))/2;
+    b+=`<text x="${cx.toFixed(1)}" y="${y+14}" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" font-weight="700" fill="var(--ink2)">${lv}</text>`;});
+  if(anchor!=null){
+    const ax=Math.max(L+22,Math.min(W-R-22,x(anchor)));
+    b+=`<path d="M${x(anchor).toFixed(1)} ${y+h+24} l-5 8 l10 0 Z" fill="var(--ink2)"/>`
+      +`<text x="${ax.toFixed(1)}" y="${y+h+46}" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="9.5" fill="var(--ink2)">Sept ${anchor}</text>`;}
+  if(proj){
+    const a=x(proj.lo), z=x(proj.hi);
+    b+=`<rect x="${a.toFixed(1)}" y="${y-14}" width="${Math.max(3,z-a).toFixed(1)}" height="${h+28}" fill="none" stroke="var(--accent)" stroke-width="2.2" rx="4"/>`
+      +`<text x="${((a+z)/2).toFixed(1)}" y="${y-19}" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10.5" font-weight="700" fill="var(--accent-ink)">this paper</text>`;}
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px;height:auto;display:block;margin:16px 0 4px" role="img" aria-label="the 38 to 369 scale with the five achievement levels, this paper's estimated range marked">${b}</svg>`;}
+
+let repT=null;
+function holdReport(){const b=$("gupBtn");if(!b)return;b.dataset.hold="1";b.textContent="keep holding…";
+  repT=setTimeout(()=>{b.dataset.hold="";b.hidden=true;const x=$("gupBox");if(x)x.hidden=false;},1200);}
+function holdCancel(){const b=$("gupBtn");clearTimeout(repT);
+  if(b&&!b.hidden){b.dataset.hold="";b.textContent="For a grown-up — press and hold to see the score and level";}}
+
 function copyExport(){const t=$("exportTxt");t.select();
   const done=()=>{const m=$("copiedMsg");m.hidden=false;setTimeout(()=>{m.hidden=true;},2200);};
   try{navigator.clipboard.writeText(t.value).then(done,()=>{document.execCommand("copy");done();});}
@@ -3867,17 +3981,24 @@ function mockHistoryBlock(){
         ? "One full mock so far. The three forms are built to be equally hard, so when he sits Form B and Form C these rows compare like with like."
         : rows.length+" full mocks. The forms are equally hard by construction, so a change here is him, not the paper."}</p>
     <div class="twrap"><table><thead><tr>
-      <th>Form</th><th>When</th><th>Score</th><th>Mastery</th><th>Secure domains</th></tr></thead><tbody>
+      <th>Paper</th><th>When</th><th>Raw</th><th>FAST equivalent</th><th>Level</th><th>Secure</th></tr></thead><tbody>
       ${rows.map((a,i)=>{const prev=i?rows[i-1]:null;
-        const dS=prev?a.sec-prev.sec:null, dM=prev?Math.round(10*(a.mastery-prev.mastery))/10:null;
+        const dS=prev?a.sec-prev.sec:null;
+        const sc=attemptScore(a.per), pv=prev?attemptScore(prev.per):null;
+        const mid=x=>x&&x.proj?Math.round((x.proj.lo+x.proj.hi)/2):null;
+        const dF=(mid(sc)!=null&&mid(pv)!=null)?mid(sc)-mid(pv):null;
         return `<tr><td><b>${esc(a.form||"Mock")}</b>${a.kind==="mock-exam"?' <span class="pill">real rules</span>':""}</td>
           <td class="num">${new Date(a.when).toLocaleDateString()}</td>
-          <td class="num">${a.ok}/${a.n}</td>
-          <td class="num">${a.mastery}%${dM!=null?` <small class="delta ${dM>0?"up":dM<0?"dn":"same"}">${dM>0?"+":""}${dM}</small>`:""}</td>
-          <td class="num"><b>${a.sec!=null?a.sec:"—"}</b> / 9${dS!=null?` <small class="delta ${dS>0?"up":dS<0?"dn":"same"}">${dS>0?"+":""}${dS}</small>`:""}</td></tr>`;}).join("")}
+          <td class="num">${a.ok}/${a.n} <small style="color:var(--ink3)">${a.mastery}%</small></td>
+          <td class="num">${sc&&sc.proj?`<b>${sc.proj.lo}–${sc.proj.hi}</b>${dF!=null?` <small class="delta ${dF>0?"up":dF<0?"dn":"same"}">${dF>0?"+":""}${dF}</small>`:""}`:"—"}</td>
+          <td class="num">${sc&&sc.proj?`<span class="pill ${sc.proj.loLvl>=4?"sec":sc.proj.loLvl===3?"dev":"beg"}">${sc.proj.loLvl===sc.proj.hiLvl?sc.proj.loLvl:sc.proj.loLvl+"–"+sc.proj.hiLvl}</span>`:"—"}</td>
+          <td class="num"><b>${a.sec!=null?a.sec:"—"}</b>/9${dS!=null?` <small class="delta ${dS>0?"up":dS<0?"dn":"same"}">${dS>0?"+":""}${dS}</small>`:""}</td></tr>`;}).join("")}
     </tbody></table></div>
     ${rows.length>1
-      ? `<p style="font-size:14px;color:var(--ink2);margin-top:12px;line-height:1.5">From <b>${esc(first.form||"the first mock")}</b> to <b>${esc(last.form||"the latest")}</b>: <b>${last.ok-first.ok>0?"+":""}${last.ok-first.ok}</b> marks and <b>${last.sec-first.sec>0?"+":""}${last.sec-first.sec}</b> Secure domains.</p>`
+      ? (()=>{const f=attemptScore(first.per), l=attemptScore(last.per);
+          const mid=x=>x&&x.proj?Math.round((x.proj.lo+x.proj.hi)/2):null;
+          const mv=(mid(f)!=null&&mid(l)!=null)?mid(l)-mid(f):null;
+          return `<p style="font-size:14px;color:var(--ink2);margin-top:12px;line-height:1.5">From <b>${esc(first.form||"the first mock")}</b> to <b>${esc(last.form||"the latest")}</b>: <b>${last.ok-first.ok>0?"+":""}${last.ok-first.ok}</b> marks and <b>${last.sec-first.sec>0?"+":""}${last.sec-first.sec}</b> Secure domains${mv!=null?`, which is about <b>${mv>0?"+":""}${mv}</b> on the FAST scale${l.proj&&f.proj&&l.proj.loLvl!==f.proj.loLvl?` and a move from Level ${f.proj.loLvl} to Level ${l.proj.loLvl}`:""}`:""}.</p>`;})()
       : `<p style="font-size:13px;color:var(--ink3);margin-top:10px;line-height:1.5">Form B is next: same blueprint, same difficulty, none of the same questions.</p>`}
   </div>`;}
 
