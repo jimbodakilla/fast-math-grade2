@@ -1961,7 +1961,23 @@ function rankBalance(a,wrongs){
   if(parts.some(p=>!p||p[1]!==suf))return null;      // mixed units: leave it alone
   const pool=new Set();
   parts.forEach(([v])=>{if(v!==K&&v>0)pool.add(v);});
-  parts.forEach(([v])=>{const m=2*K-v; if(m>0&&m!==K&&Number.isInteger(m))pool.add(m);});
+  /* Mirroring only makes sense for a near-miss arithmetic slip. The opposite of
+     "read the far end of the ruler" or "forgot to round at all" is not an error
+     a child makes, and it shows up as a nonsense option (103 for "round 97 to
+     the nearest 10"). So mirror only small slips, and never break the key's own
+     roundness. */
+  const mod=K%10===0?10:(K%5===0?5:0);
+  /* Several grade-2 benchmarks cap at 100 (coins within 100c, rounding within
+     100). If the key and every supplied error sit inside that, a mirror must
+     too, or the item quietly breaks its own benchmark. */
+  const cap=Math.max(K,...parts.map(p=>p[0]))<=100?100:Infinity;
+  parts.forEach(([v])=>{
+    const m=2*K-v;
+    if(!(m>0&&m!==K&&Number.isInteger(m)))return;
+    if(Math.abs(v-K)>0.3*Math.abs(K))return;          // not a near miss
+    if(mod&&m%mod!==0)return;                         // a rounded key needs rounded options
+    if(m>cap)return;                                  // past the benchmark limit
+    pool.add(m);});
   const all=[...pool], near=(x,y)=>Math.abs(x-K)-Math.abs(y-K);
   const below=all.filter(v=>v<K).sort(near), above=all.filter(v=>v>K).sort(near);
   for(const target of [1,2,3,4].sort(()=>Math.random()-0.5)){
@@ -2112,7 +2128,32 @@ const GEN={
 
 /* ---- MA.2.M.2  time to five minutes, coins within 100c ---- */
 6(d){
-  if(Math.random()<0.55){ const h=RI(1,12), m=PICK(d<=2?[0,30]:[0,5,10,15,20,25,30,35,40,45,50,55]);
+  const kind=Math.random();
+  if(kind<0.14){ /* MA.2.M.2.1 — a.m. or p.m. */
+    const EV=[["eats breakfast",7,0,"a.m."],["walks to school",8,15,"a.m."],
+              ["has lunch",12,30,"p.m."],["goes to bed",8,30,"p.m."],
+              ["wakes up",6,45,"a.m."],["eats dinner",6,30,"p.m."]];
+    const [what,h,m,ap]=PICK(EV), S=x=>String(x).padStart(2,"0");
+    return mkItem({dom:6,bench:"MA.2.M.2.1",d,
+      q:`Sam ${what} at ${h}:${S(m)}. Is that a.m. or p.m.?`,fig:null,a:ap,
+      why:`${ap==="a.m."?"a.m. is midnight to noon, and that is the morning.":"p.m. is noon to midnight, so it is the afternoon or evening."}`,
+      trap:"a.m. runs from midnight to noon. p.m. runs from noon to midnight."},
+      [ap==="a.m."?"p.m.":"a.m.","Neither, it is noon","You cannot tell from the time"]);}
+  if(kind<0.28){ /* MA.2.M.2.2 — coins named in words, no picture */
+    const CV2={quarter:25,dime:10,nickel:5,penny:1};
+    const names=shuffle(Object.keys(CV2)).slice(0,2);
+    const n1=RI(1,3), n2=RI(1,4);
+    const tot=n1*CV2[names[0]]+n2*CV2[names[1]];
+    if(tot>100||tot<6)return GEN[6](d);
+    const pl=(n,w)=>`${n} ${w}${n>1?(w==="penny"?"ies":"s"):""}`;
+    return mkItem({dom:6,bench:"MA.2.M.2.2",d,
+      q:`Ana has ${pl(n1,names[0])} and ${pl(n2,names[1])}. How much money does she have?`,
+      fig:null,a:tot+"¢",
+      why:`${n1} × ${CV2[names[0]]}¢ = ${n1*CV2[names[0]]}¢, and ${n2} × ${CV2[names[1]]}¢ = ${n2*CV2[names[1]]}¢. Together that is ${tot}¢.`,
+      trap:`${n1+n2} is how many coins she has, not how much they are worth.`},
+      [(n1+n2)+"¢",(tot-CV2[names[0]])+"¢",(tot+CV2[names[1]])+"¢",(tot-CV2[names[1]])+"¢"]
+        .filter(x=>{const v=parseInt(x);return v>0&&v<=100&&v!==tot;}));}
+  if(kind<0.62){ const h=RI(1,12), m=PICK(d<=2?[0,30]:[0,5,10,15,20,25,30,35,40,45,50,55]);
     const S=x=>String(x).padStart(2,"0");
     const nh=h===12?1:h+1;
     return mkItem({dom:6,bench:"MA.2.M.2.1",d,q:"What time does the clock show?",
@@ -2131,7 +2172,10 @@ const GEN={
     fig:{t:"coins",c},a:tot+"¢",
     why:`Start with the biggest coin and count on. Altogether that is ${tot}¢.`,
     trap:`${c.length} is how many coins there are, not how much they are worth. Mixing up nickels and dimes is the other usual slip.`},
-    [c.length+"¢",(tot+5)+"¢",(tot-5)+"¢",(tot+nd*5-nn*5)+"¢"]);},
+    /* every option stays inside the 100c the benchmark allows */
+    [c.length+"¢",(tot-5)+"¢",(tot+5<=100?tot+5:tot-10)+"¢",
+     (tot-10>0?tot-10:tot-1)+"¢",(tot+nd*5-nn*5)+"¢"]
+      .filter(x=>{const v=parseInt(x);return v>0&&v<=100&&v!==tot;})); },
 
 /* ---- MA.2.NSO.1  place value, compare, round ---- */
 8(d){
@@ -2157,12 +2201,16 @@ const GEN={
     return mkItem({dom:8,bench:"MA.2.NSO.1.3",d,q:`Compare:    ${a}  ▢  ${b}`,fig:null,a:a<b?"<":">",
       why:`${a} is ${a<b?"less than":"greater than"} ${b}. Check the hundreds first, then the tens, then the ones.`,
       trap:"Compare place by place, starting from the left."},["<",">","=","+"]);}
-  if(k==="round"){ const n=RI(11,99); const r=Math.round(n/10)*10;
+  if(k==="round"){ const n=RI(11,99); if(n%10===0)return GEN[8](d);   // already a ten: nothing to round
+    const r=Math.round(n/10)*10;
     return mkItem({dom:8,bench:"MA.2.NSO.1.4",d,q:`Round ${n} to the nearest 10.`,
       fig:{t:"numline",min:Math.floor(n/10)*10,max:Math.floor(n/10)*10+10,mark:n},a:String(r),
       why:n%10===5?`${n} is exactly halfway, and the rule is to round up, so ${r}.`:`${n} is closer to ${r}, so it rounds to ${r}.`,
       trap:"Check which ten it is closer to. Halfway always rounds up."},
-      [String(Math.floor(n/10)*10),String(Math.ceil(n/10)*10),String(n)]);}
+      [String(n%10>=5?Math.floor(n/10)*10:Math.ceil(n/10)*10),   // rounded the wrong way
+       String(n),                                                 // did not round at all
+       String(r+10>100?r-20:r+10),                                // slid one ten too far
+       String(r>=50?100:r-20>0?r-20:r+20)]);}                     // jumped to the hundred, or two tens off
   const more=Math.random()<0.5, amt=PICK([10,100]);
   /* 165 - 100 = 65 made the key the only two-digit option, which answered it
      without any place-value thinking; keep every option three digits */
@@ -2174,8 +2222,159 @@ const GEN={
     trap:`Changing the wrong place value gives ${more?n+(amt===10?1:10):n-(amt===10?1:10)}.`},
     [String(more?n+(amt===10?1:10):n-(amt===10?1:10)),String(more?n-amt:n+amt),String(n)]);},
 
+/* ---- MA.2.NSO.2.3/2.4 + MA.2.AR.1.1  add and subtract with place value ---- */
+0(d){
+  const k=d<=2?PICK(["jumps","split","plain"]):PICK(["split","plain","big","sentence"]);
+  if(k==="jumps"){ const start=RI(21,68), tens=RI(1,3), ones=RI(1,8);
+    const a=start+tens*10+ones; if(a>100)return GEN[0](d);
+    return mkItem({dom:0,bench:"MA.2.NSO.2.3",d,q:`The number line shows ${start} + ${tens*10+ones}. Where do you land?`,
+      fig:{t:"jumps",start,tens,ones},a:String(a),
+      why:`${start} and ${tens} jump${tens>1?"s":""} of ten is ${start+tens*10}, then ${ones} more is ${a}.`,
+      trap:"Jump the tens first, then the ones."},
+      [String(start+tens*10),String(start+ones),String(a+10),String(a-10)]);}
+  if(k==="split"||k==="plain"){
+    const plus=Math.random()<0.5;
+    let a=RI(23,78), b=RI(12,Math.min(45,plus?100-a:a-4));
+    if(b<11)return GEN[0](d);
+    const ans=plus?a+b:a-b;
+    const carry=plus?(a%10)+(b%10)>=10:(a%10)<(b%10);   // the item is harder when it regroups
+    return mkItem({dom:0,bench:"MA.2.NSO.2.3",d,
+      q:k==="split"?`Use place value: ${a} ${plus?"+":"-"} ${b}. What is the ${plus?"sum":"difference"}?`
+                   :`${a} ${plus?"+":"-"} ${b} = ?`,
+      fig:k==="split"?{t:"split",a,b,op:plus?"+":"-"}:null, a:String(ans),
+      why:plus?`${a} + ${Math.floor(b/10)*10} = ${a+Math.floor(b/10)*10}, then + ${b%10} = ${ans}.`
+              :`${a} - ${Math.floor(b/10)*10} = ${a-Math.floor(b/10)*10}, then - ${b%10} = ${ans}.`,
+      trap:carry?"The ones regroup here, so keep the ten you carry or borrow.":"Take the tens first, then the ones."},
+      [String(plus?a-b:a+b),String(ans+10),String(ans-10),String(ans+1)]);}
+  if(k==="big"){ const a=RI(320,980), b=RI(11,60), ans=a-b;
+    return mkItem({dom:0,bench:"MA.2.NSO.2.4",d,q:`${a.toLocaleString("en-US")} - ${b} = ?`,fig:null,a:String(ans),
+      why:`${a} - ${Math.floor(b/10)*10} = ${a-Math.floor(b/10)*10}, then - ${b%10} = ${ans}.`,
+      trap:"Work in the ones, then the tens. The hundreds only change if you borrow past them."},
+      [String(a+b),String(ans+10),String(ans-10),String(ans+1)]);}
+  /* AR.1.1 — choose the number sentence, not the answer */
+  const small=RI(12,40), big=small+RI(6,35), who=PICK([["Sam","Max"],["Ana","Leo"],["Mia","Ben"]]);
+  const thing=PICK(["marbles","stickers","shells","cards"]);
+  return mkItem({dom:0,bench:"MA.2.AR.1.1",d,
+    q:`${who[0]} has ${small} ${thing}. ${who[1]} has ${big}. Which number sentence shows how many *more* ${who[1]} has?`,
+    fig:null,a:`${big} - ${small} = ▢`,
+    why:`"How many more" compares the two amounts, so you take the smaller from the larger: ${big} - ${small}.`,
+    trap:"Putting the smaller number first, or adding, answers a different question."},
+    [`${small} - ${big} = ▢`,`${big} + ${small} = ▢`,`${small} + ${big} = ▢`]);},
+
+/* ---- MA.2.DP.1  read a graph with up to four categories, scale 1, 5 or 10 ---- */
+2(d){
+  const SETS=[["Favorite Fruit","Students",["Apple","Banana","Grape","Peach"]],
+              ["Favorite Pet","Students",["Dog","Cat","Fish","Bird"]],
+              ["Recess Game","Students",["Tag","Soccer","Swings","Blocks"]],
+              ["Books Read","Books",["Ben","Maya","Leo","Ivy"]]];
+  const [title,unit,allLbl]=PICK(SETS);
+  const nCat=d<=2?3:4, lbl=allLbl.slice(0,nCat);
+  const v=lbl.map(()=>RI(2,9));
+  if(new Set(v).size!==v.length) return GEN[2](d);          // ties make "most" ambiguous
+  const kind=d<=2?PICK(["most","one","tally"]):PICK(["one","diff","total","picto","least"]);
+  const mx=Math.max(...v), mn=Math.min(...v);
+  const bars={t:"bars",title,lbl,v,step:1,u:unit};
+  if(kind==="most"||kind==="least"){
+    const want=kind==="most"?mx:mn, key=lbl[v.indexOf(want)];
+    return mkItem({dom:2,bench:"MA.2.DP.1.2",d,
+      q:`Which one did the *${kind==="most"?"most":"fewest"}* ${unit==="Books"?"books go to":"students choose"}?`,
+      fig:bars,a:key,
+      why:`${key} has the ${kind==="most"?"tallest":"shortest"} bar, at ${want}.`,
+      trap:"Read the bar against the side scale, not by how wide it looks."},
+      lbl.filter(x=>x!==key));}
+  if(kind==="one"||kind==="tally"){
+    const i=RI(0,lbl.length-1), key=v[i];
+    return mkItem({dom:2,bench:"MA.2.DP.1.2",d,
+      q:`How many ${unit.toLowerCase()} for *${lbl[i]}*?`,
+      fig:kind==="tally"?{t:"tally",lbl,v}:bars,a:String(key),
+      why:`${lbl[i]} reaches ${key} on the scale.`,
+      trap:kind==="tally"?"A crossed bundle is five, not four.":"Follow the top of the bar across to the number."},
+      [String(key+1),String(key-1),String(mx),String(mn)].filter(x=>+x!==key&&+x>0));}
+  if(kind==="diff"){
+    const hi=v.indexOf(mx), lo=v.indexOf(mn), key=mx-mn;
+    return mkItem({dom:2,bench:"MA.2.DP.1.2",d,
+      q:`How many *more* for ${lbl[hi]} than for ${lbl[lo]}?`,fig:bars,a:String(key),
+      why:`${lbl[hi]} has ${mx} and ${lbl[lo]} has ${mn}. ${mx} - ${mn} = ${key}.`,
+      trap:`"How many more" is a subtraction, not the taller bar on its own.`},
+      [String(mx),String(mn),String(mx+mn),String(key+1)]);}
+  if(kind==="total"){
+    const key=v.reduce((x,y)=>x+y,0);
+    return mkItem({dom:2,bench:"MA.2.DP.1.2",d,q:`How many ${unit.toLowerCase()} altogether?`,fig:bars,a:String(key),
+      why:`${v.join(" + ")} = ${key}.`,trap:"Every bar counts, not just the tallest ones."},
+      [String(key-mn),String(key-mx),String(mx),String(key+mn)]);}
+  /* pictograph, each symbol worth five */
+  const pn=lbl.map(()=>RI(1,5)), i=RI(0,lbl.length-1), key=pn[i]*5;
+  return mkItem({dom:2,bench:"MA.2.DP.1.2",d,
+    q:`Each ◼ stands for 5 ${unit.toLowerCase()}. How many for *${lbl[i]}*?`,
+    fig:{t:"picto",title,key:5,lbl,n:pn,sym:"◼"},a:String(key),
+    why:`${lbl[i]} has ${pn[i]} symbol${pn[i]>1?"s":""}, and each one is 5, so ${pn[i]} × 5 = ${key}.`,
+    trap:"Each picture is worth five, so counting the pictures gives you far too few."},
+    [String(pn[i]),String(key+5),String(key-5),String(pn[i]*2)]);},
+
+/* ---- MA.2.GR.1 shapes and symmetry, MA.2.FR.1.1 equal parts ---- */
+3(d){
+  const NAME={tri:["triangle",3],sq:["square",4],pent:["pentagon",5],hex:["hexagon",6],oct:["octagon",8]};
+  const keys=Object.keys(NAME);
+  const k=d<=2?PICK(["pick","count","parts"]):PICK(["count","parts","symm","describe"]);
+  if(k==="pick"){
+    const opts=shuffle(keys.slice()).slice(0,4), want=PICK(opts);
+    return mkItem({dom:3,bench:"MA.2.GR.1.1",d,q:`Which shape is a *${NAME[want][0]}*?`,
+      fig:{t:"shapePick",opts},a:"ABCD"[opts.indexOf(want)],
+      why:`A ${NAME[want][0]} has ${NAME[want][1]} sides. That is shape ${"ABCD"[opts.indexOf(want)]}.`,
+      trap:"Count the sides. Turning a shape round does not change what it is."},
+      ["A","B","C","D"].filter(x=>x!=="ABCD"[opts.indexOf(want)]));}
+  if(k==="count"){
+    const sh=PICK(keys.filter(x=>x!=="tri")), [nm,n]=NAME[sh], vert=Math.random()<0.5;
+    return mkItem({dom:3,bench:"MA.2.GR.1.2",d,
+      q:`How many *${vert?"vertices* (corners)":"sides*"} does a ${nm} have?`,
+      fig:{t:"shapePick",opts:[sh]},a:String(n),
+      why:`A ${nm} has ${n} sides and ${n} corners. They always match.`,
+      trap:"Sides and corners come in the same number, so counting either one works."},
+      [String(n-1),String(n+1),String(n-2),String(n+2)]);}
+  if(k==="parts"){
+    const n=PICK([2,3,4]), shape=PICK(["circle","rect"]);
+    const NM={2:"Halves",3:"Thirds",4:"Fourths"};
+    return mkItem({dom:3,bench:"MA.2.FR.1.1",d,
+      q:`This ${shape==="circle"?"circle":"rectangle"} is split into equal parts. What is each part called?`,
+      fig:{t:"parts",n,shape},a:NM[n],
+      why:`It is split into ${n} equal parts, so each part is ${NM[n].toLowerCase().replace(/s$/,"")}.`,
+      trap:"Count the *parts*, not the cutting lines."},
+      ["Halves","Thirds","Fourths","Wholes"].filter(x=>x!==NM[n]));}
+  if(k==="symm"){
+    const ok=Math.random()<0.5;
+    return mkItem({dom:3,bench:"MA.2.GR.1.3",d,q:"Is the dashed line a *line of symmetry*?",
+      fig:{t:"symm",ok},a:ok?"Yes, both halves match":"No, the halves do not match",
+      why:ok?"Folded on the dashed line, the two halves land exactly on each other."
+            :"Folded on the dashed line, the two halves do not land on each other.",
+      trap:"A line of symmetry has to fold the shape onto itself exactly, not just cut it in two."},
+      [ok?"No, the halves do not match":"Yes, both halves match",
+       "Yes, it cuts the shape in two","No, the shape has no straight sides"]);}
+  const sh=PICK(["sq","pent","hex","oct"]), [nm,n]=NAME[sh];
+  const other=keys.filter(x=>x!==sh).map(x=>NAME[x][0]);
+  return mkItem({dom:3,bench:"MA.2.GR.1.2",d,
+    q:`A shape has ${n} sides and ${n} corners. Which shape is it?`,fig:null,
+    a:nm.charAt(0).toUpperCase()+nm.slice(1),
+    why:`${n} sides and ${n} corners describes a ${nm}.`,
+    trap:"Match the number of sides to the name."},
+    shuffle(other).slice(0,3).map(x=>x.charAt(0).toUpperCase()+x.slice(1)));},
+
 /* ---- MA.2.NSO.2  fluency, for warm-ups ---- */
 7(d){
+  if(Math.random()<0.3&&d>=2){ /* the same fluency, asked as a situation */
+    const plus=Math.random()<0.5;
+    const a=RI(24,78), b=RI(11,Math.min(40,plus?100-a:a-4));
+    if(b<11)return GEN[7](d);
+    const ans=plus?a+b:a-b;
+    const S=PICK([["birds are in a tree","fly away","land in it too","birds"],
+                  ["books are on a shelf","are taken out","are put on it too","books"],
+                  ["cars are in a car park","drive away","park there too","cars"]]);
+    return mkItem({dom:7,bench:"MA.2.NSO.2.3",d,
+      q:`${a} ${S[0]}. Then ${b} ${plus?S[2]:S[1]}. How many ${S[3]} are there now?`,
+      fig:null,a:String(ans),
+      why:`${plus?"More arrive, so you add":"Some leave, so you take away"}: ${a} ${plus?"+":"-"} ${b} = ${ans}.`,
+      trap:plus?"\"Too\" and \"also\" mean more arrive, so it is an addition."
+               :"\"Away\" means they leave, so it is a subtraction."},
+      [String(plus?a-b:a+b),String(ans+10),String(ans-10),String(ans+1)]);}
   if(d<=1){const a=RI(4,9),b=RI(3,9);
     return mkItem({dom:7,bench:"MA.2.NSO.2.1",d:1,q:`${a} + ${b} = ?`,fig:null,a:String(a+b),
       why:`${a} + ${b} = ${a+b}.`,trap:"This is a fact to know by heart."},
@@ -2550,7 +2749,12 @@ function kidHome(){
      <button class="mission test" onclick="mockIntro('practice')">
        <div class="mn">Practice test</div><h3>34 questions, with review</h3>
        <p>You can go back, change an answer, and flag ones to come back to. Pause any time.</p>
-       <div class="mmeta"><span class="pill dev">back · next · flag</span><span class="pill dev">pause</span></div></button>
+       <div class="mmeta"><span class="pill dev">back · next · flag</span><span class="pill dev">pause</span>
+         <span class="pill ${formsLeft()?"sec":"dev"}">${formsLeft()?FORM_NAMES[nextFormIndex()]:"a brand-new paper"}</span></div></button>
+     ${store.get("lastMock",null)?`<button class="mission test" onclick="mockIntro('fresh')">
+       <div class="mn">Do it again</div><h3>34 questions you have never seen</h3>
+       <p>A brand-new paper, made fresh every time. Same subjects, same difficulty, different questions.</p>
+       <div class="mmeta"><span class="pill sec">never repeats</span><span class="pill dev">back · next · flag</span></div></button>`:""}
      <button class="mission test" onclick="mockIntro('exam')">
        <div class="mn">Real test rules</div><h3>34 questions, no going back</h3>
        <p>Exactly like the real FAST. Once you pick, it is locked. It gets harder when you are right.</p>
@@ -2577,6 +2781,35 @@ function mockSlots(){
    ================================================================== */
 const FORM_SPEC={0:[2,3,3,4], 1:[2,3,3,4,5], 2:[2,3,4], 3:[2,3,4], 4:[1,2,3,4],
                  5:[2,3,4,5], 6:[2,3,3,4], 7:[1,2,3,4], 8:[2,3,4]};
+/* A fresh paper: the same blueprint as Forms A, B and C — the same domains,
+   the same difficulty ladder, 34 questions — but every question generated, so
+   no sitting ever repeats one. Built for the retake: he has already seen
+   Form A, and a mock you remember is not a measurement. */
+function buildFreshForm(){
+  const out=[];
+  for(const dom of Object.keys(FORM_SPEC))
+    FORM_SPEC[dom].forEach(want=>{
+      let it=null;
+      /* two perimeter questions share a stem and differ only in the figure, so
+         identity is the stem plus the picture plus the key, not the stem */
+      const sig=x=>x.q+"|"+JSON.stringify(x.fig||null)+"|"+x.a;
+      const taken=new Set(out.map(sig));
+      const stems=new Set(out.filter(x=>x.dom==dom).map(x=>x.q));
+      /* a real paper does not ask "How much money is this?" twice, so prefer a
+         different kind of question within the same domain before allowing one */
+      for(let tries=0;tries<250&&!it;tries++){
+        const g=genItem(+dom,want); if(!g||taken.has(sig(g)))continue;
+        if(tries<120&&stems.has(g.q))continue;
+        it=g;
+      }
+      if(!it){                                      // no generator reached it: fall back to a
+        const pool=ITEMS.filter(i=>i.dom==dom&&i.d===want&&!taken.has(sig(i))&&!out.some(x=>x.id===i.id));
+        if(pool.length)it=pool[Math.floor(Math.random()*pool.length)];}
+      if(it){it=Object.assign({},it,{d:want}); out.push(it);}
+    });
+  for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}
+  return out;}
+
 function buildForms(seed){
   let r=seed||20260912;
   const rnd=()=>{r=(r*1103515245+12345)&0x7fffffff;return r/0x7fffffff;};
@@ -2600,13 +2833,15 @@ const FORM_NAMES=["Form A","Form B","Form C"];
 function nextFormIndex(){
   const done=store.get("formsDone",[]);
   for(let i=0;i<FORMS.length;i++) if(!done.includes(i)) return i;
-  return done.length%FORMS.length;
+  return null;                      // all three sat: from here on it is a new paper
 }
+const formsLeft=()=>FORMS.length-store.get("formsDone",[]).length;
 
 /* fixed balanced form for practice mode: going back is incompatible with an adaptive ladder */
 function buildForm(fi){
   const i=(fi===undefined)?nextFormIndex():fi;
-  return FORMS[i].slice();}
+  /* a paper he has already sat measures memory, not maths */
+  return i==null?buildFreshForm():FORMS[i].slice();}
 /* drills: 3 warm-up items from his SECURE domains, then his target domain easy -> hard,
    covering every benchmark in that domain rather than only the difficulty ladder */
 function buildDrill(dayN){
@@ -2743,13 +2978,16 @@ function practiceNext(){
 
 function mockIntro(variant){
   const real=variant==="exam";
-  const fi=nextFormIndex(), doneF=store.get("formsDone",[]);
+  const doneF=store.get("formsDone",[]);
+  const fi=variant==="fresh"?null:nextFormIndex();
   $("progWrap").hidden=true;
-  $("kidStage").innerHTML=`<div class="kidtop"><div class="ktitle">${real?"Real test rules":"Practice test"}</div>
+  $("kidStage").innerHTML=`<div class="kidtop"><div class="ktitle">${real?"Real test rules":variant==="fresh"?"A brand-new paper":"Practice test"}</div>
      <button class="gate" id="gateBtn" onmousedown="gateDown()" onmouseup="gateUp()" onmouseleave="gateUp()"
        ontouchstart="gateDown()" ontouchend="gateUp()">for grown-ups</button></div>
    <div class="stage">
-    ${real?"":`<p style="font-size:17px;color:var(--ink2);margin-bottom:14px;line-height:1.5">This is <b>${FORM_NAMES[fi]}</b>${doneF.length?` — you have already finished ${doneF.map(i=>FORM_NAMES[i]).join(" and ")}.`:", the first of three."} Every form is a different set of 34 questions, built to be exactly as hard as the others.</p>`}
+    ${real?"":`<p style="font-size:17px;color:var(--ink2);margin-bottom:14px;line-height:1.5">${fi==null
+        ? `This is a <b>brand-new paper</b>. Every question is made fresh, so you have never seen any of them before. It is built to be exactly as hard as the papers you have already done.`
+        : `This is <b>${FORM_NAMES[fi]}</b>${doneF.length?` — you have already finished ${doneF.map(i=>FORM_NAMES[i]).join(" and ")}.`:", the first of three."} Every form is a different set of 34 questions, built to be exactly as hard as the others.`}</p>`}
     <div class="testnote" style="margin-bottom:16px">
       · 34 questions, four answers each: A, B, C or D. It takes about <b>20 minutes</b>.<br>
       · <b>Headphones on.</b> Every question is read out loud to you automatically, just like the real test. You can pause it or play it again.<br>
@@ -2768,10 +3006,10 @@ function mockIntro(variant){
 
 function startMock(variant){
   primeSpeech();                      // must happen inside the user gesture, or iOS stays silent
-  const exam=variant==="exam";
-  state={run:{mode:"mock",exam,i:0,ans:[],meta:[],view:[],broke:{},theta:3,used:new Set(),earned:0,t0:Date.now(),
-    slots:exam?mockSlots():null, formIdx:exam?null:nextFormIndex(),
-    form:exam?[]:buildForm(), flags:new Set(), paused:false, elapsed:0}};
+  const exam=variant==="exam", fresh=variant==="fresh";
+  state={run:{mode:"mock",exam,i:0,ans:[],meta:[],view:[],broke:{},theta:3,used:new Set(),seen:new Set(),earned:0,t0:Date.now(),
+    slots:exam?mockSlots():null, formIdx:(exam||fresh)?null:nextFormIndex(),
+    fresh, form:exam?[]:(fresh?buildFreshForm():buildForm()), flags:new Set(), paused:false, elapsed:0}};
   $("progWrap").hidden=false; showQ();}
 
 /* ---------- timing ---------- */
@@ -2835,9 +3073,17 @@ function curItem(){
   if(r.mode==="drill")return r.items[r.i];
   if(!r.exam)return r.form[r.i];
   if(r.form[r.i])return r.form[r.i];                    // already served (exam never revisits, but be safe)
-  /* measure with the reserved items only — the rest are what he practised on */
-  const it=pickAdaptive(ITEMS.filter(x=>x.dom===r.slots[r.i]&&EXAM_ONLY.has(x.id)),r.theta,r.used)
-        || pickAdaptive(ITEMS.filter(x=>x.dom===r.slots[r.i]),r.theta,r.used);
+  /* Generate at the difficulty his answers have earned, so the adaptive test
+     never runs out and never repeats. Reserved authored items are the fallback
+     for any slot the generators cannot reach. */
+  const want=Math.max(1,Math.min(5,Math.round(r.theta)));
+  let it=null;
+  for(let tries=0;tries<120&&!it;tries++){
+    const g=genItem(r.slots[r.i],want);
+    if(g&&!r.seen.has(g.q+"|"+JSON.stringify(g.fig||null)+"|"+g.a))it=g;}
+  if(!it) it=pickAdaptive(ITEMS.filter(x=>x.dom===r.slots[r.i]&&EXAM_ONLY.has(x.id)),r.theta,r.used)
+          || pickAdaptive(ITEMS.filter(x=>x.dom===r.slots[r.i]),r.theta,r.used);
+  if(it) r.seen.add(it.q+"|"+JSON.stringify(it.fig||null)+"|"+it.a);
   if(it){r.used.add(it.id);r.form[r.i]=it;}
   return it;}
 function total(){const r=state.run;return r.endless?Infinity:(r.mode==="drill"?r.items.length:34);}
@@ -2860,7 +3106,7 @@ function showQ(){
   const answered=prev!==undefined;
   const showMark=r.mode==="drill"&&answered;
   $("kidStage").innerHTML=`
-   <div class="kidtop"><div class="ktitle">${r.mode==="drill"?(r.review?"Checking your flags":(r.day?((DAYS.find(x=>x.n===r.day)||{}).kidTitle||"Day "+r.day):"Fix-it round")):(r.exam?"Real rules":FORM_NAMES[r.formIdx]||"Practice")}</div>
+   <div class="kidtop"><div class="ktitle">${r.mode==="drill"?(r.review?"Checking your flags":(r.day?((DAYS.find(x=>x.n===r.day)||{}).kidTitle||"Day "+r.day):"Fix-it round")):(r.exam?"Real rules":r.fresh?"New paper":FORM_NAMES[r.formIdx]||"Practice")}</div>
      <button class="nbtn quiet" onclick="quitToHome()">Stop for now</button>
      ${r.mode==="mock"?`<span class="clockchip" id="clk"></span>`:""}
      <button class="gate" id="gateBtn" onmousedown="gateDown()" onmouseup="gateUp()" onmouseleave="gateUp()"
@@ -2934,6 +3180,9 @@ function answer(k){
   r.ans[r.i]=chosen;
   r.meta[r.i]={id:it.id,dom:it.dom,d:it.d,bench:it.bench,ok,chose:chosen,answer:it.a,
     gen:!!it.gen,flag:r.flags.has(r.i)};
+  /* an authored item can be looked up by id later; a generated one cannot, so
+     carry everything the review tab needs to show the miss and re-teach it */
+  if(it.gen)Object.assign(r.meta[r.i],{q:it.q,why:it.why,trap:it.trap,fig:it.fig,ch:it.ch});
   if(first){ r.earned+=1; if(ok)r.earned+=1; setStars(stars+(ok?2:1));
     const tapped=document.querySelectorAll(".opt,.figopt")[k];
     if(ok){dingOK(); flyStar(tapped);} else tockNo(); }   // a star for trying, another for right
@@ -3008,7 +3257,7 @@ function logAttempt(r,meta){
   const sec=Object.keys(per).filter(d=>per[d][1]&&Math.round(100*per[d][0]/per[d][1])>=80).length;
   h.push({when:Date.now(),
     kind:r.mode==="mock"?(r.exam?"mock-exam":"mock-practice"):(r.endless?"endless":"drill"),
-    form:(r.formIdx!=null?FORM_NAMES[r.formIdx]:null),
+    form:(r.formIdx!=null?FORM_NAMES[r.formIdx]:(r.fresh?"New paper":r.exam?"Real rules":null)),
     day:r.day||0, n:meta.length, ok:meta.filter(m=>m.ok).length, sec, per});
   store.set("history",h.slice(-60));}
 function domScore(rows){const w=rows.reduce((a,x)=>a+x.d,0); if(!w)return null;
@@ -3019,7 +3268,7 @@ function buildExport(r){
   const wrong=r.meta.filter(Boolean).filter(m=>!m.ok);
   const L=[];
   L.push("=== FAST GRADE 2 MATH · MOCK RESULT ===");
-  L.push(`when: ${new Date().toISOString().slice(0,16).replace("T"," ")}   form: ${r.formIdx!=null?FORM_NAMES[r.formIdx]:"adaptive"}   mode: ${r.exam?"exam (no going back)":"practice (back/flag)"}`);
+  L.push(`when: ${new Date().toISOString().slice(0,16).replace("T"," ")}   form: ${r.formIdx!=null?FORM_NAMES[r.formIdx]:(r.fresh?"new paper":"adaptive")}   mode: ${r.exam?"exam (no going back)":"practice (back/flag)"}`);
   L.push(`score: ${r.meta.filter(m=>m&&m.ok).length} of ${r.meta.filter(Boolean).length}   time: ${mmss(r.elapsed||Math.round((Date.now()-r.t0)/1000))}`);
   L.push("");
   L.push(`GOT WRONG (${wrong.length}) — id | domain | benchmark | difficulty | he chose -> correct | flagged`);
@@ -3033,8 +3282,9 @@ function buildExport(r){
   if(fl.length){L.push("");L.push("FLAGGED BUT CORRECT (he was unsure, worth re-checking): "+fl.join(", "));}
   if(FLAGGED.length){L.push("");L.push("ALL FLAGS STANDING ("+FLAGGED.length+"): "+FLAGGED.join(", "));}
   L.push("");
-  L.push("DATA:"+JSON.stringify({v:1,exam:!!r.exam,t:r.elapsed||0,
-    a:r.meta.filter(Boolean).map(m=>[m.id,m.ok?1:0,m.flag?1:0,plain(m.chose)])}));
+  L.push("DATA:"+JSON.stringify({v:2,exam:!!r.exam,t:r.elapsed||0,
+    a:r.meta.filter(Boolean).map(m=>[m.id,m.ok?1:0,m.flag?1:0,plain(m.chose)]),
+    g:genPayload(r.meta.filter(Boolean))}));
   return L.join("\n");}
 
 function showResults(){
@@ -3049,8 +3299,11 @@ function showResults(){
     if(r.formIdx!=null){const df=store.get("formsDone",[]);
       if(!df.includes(r.formIdx)){df.push(r.formIdx);store.set("formsDone",df);}}
     store.set("lastMock",{when:Date.now(),exam:!!r.exam,elapsed:r.elapsed,
-      form:r.formIdx!=null?FORM_NAMES[r.formIdx]:null,
-      a:meta.map(m=>({id:m.id,ok:m.ok,flag:m.flag,chose:m.chose,answer:m.answer,dom:m.dom,bench:m.bench,gen:m.gen}))});
+      form:r.formIdx!=null?FORM_NAMES[r.formIdx]:(r.fresh?"New paper":r.exam?"Real rules":null),
+      a:meta.map(m=>{const o={id:m.id,ok:m.ok,flag:m.flag,chose:m.chose,answer:m.answer,
+          dom:m.dom,bench:m.bench,gen:m.gen};
+        if(m.gen)Object.assign(o,{q:m.q,why:m.why,trap:m.trap,fig:m.fig,ch:m.ch});
+        return o;})});
     logAttempt(r,meta);
   }
   const wrong=meta.filter(m=>!m.ok);
@@ -3096,10 +3349,22 @@ function copyExport(){const t=$("exportTxt");t.select();
 /* ==================================================================
    MOCK REVIEW  — parent-facing: only what went wrong, and what to do next
    ================================================================== */
+/* Generated questions exist only in the sitting that produced them, so a
+   result shared with another device has to carry them or the review rebuilds
+   nothing. Authored items are still sent as an id alone. */
+function genPayload(rows){
+  const g={};
+  rows.forEach(m=>{if(m&&m.gen)g[m.id]={q:m.q,a:m.answer,ch:m.ch,why:m.why,trap:m.trap,
+    fig:m.fig,dom:m.dom,bench:m.bench};});
+  return g;}
 function parseExport(txt){
   const m=txt.match(/DATA:(\{[\s\S]*\})/);
-  if(m){try{const d=JSON.parse(m[1]);
-    return {exam:d.exam,elapsed:d.t,a:d.a.map(([id,ok,flag,chose])=>({id,ok:!!ok,flag:!!flag,chose}))};}catch(e){}}
+  if(m){try{const d=JSON.parse(m[1]); const g=d.g||{};
+    return {exam:d.exam,elapsed:d.t,form:d.f||null,
+      a:d.a.map(([id,ok,flag,chose])=>Object.assign({id,ok:!!ok,flag:!!flag,chose},
+        g[id]?{gen:true,q:g[id].q,answer:g[id].a,ch:g[id].ch,why:g[id].why,
+               trap:g[id].trap,fig:g[id].fig,dom:g[id].dom,bench:g[id].bench}:{}))};
+  }catch(e){}}
   return null;}
 
 /* recommendation weighs PM1 as well as this attempt: 3-5 items cannot
@@ -3129,9 +3394,14 @@ function renderReview(txt){
     return;}
 
   const rows=last.a.map(x=>{
+    /* a generated question is not in ITEMS — it was saved with the result, so
+       rebuild it from there rather than showing a placeholder */
     const it=ITEMS.find(i=>i.id===x.id)
-      ||(x.answer?{id:x.id,dom:x.dom,bench:x.bench||"generated",a:x.answer,q:x.q||"(generated question)",
-                   why:"",trap:"",fig:null}:null);
+      ||(x.q||x.answer
+          ? {id:x.id,dom:x.dom,bench:x.bench||"generated",a:x.answer,
+             q:x.q||"(this question was not saved)",ch:x.ch||[],
+             why:x.why||"",trap:x.trap||"",fig:x.fig||null,gen:true}
+          : null);
     return {...x,it};}).filter(x=>x.it);
   const wrong=rows.filter(x=>!x.ok), unsure=rows.filter(x=>x.ok&&x.flag);
   const byDom={}; wrong.forEach(x=>{(byDom[x.it.dom]=byDom[x.it.dom]||[]).push(x);});
@@ -3222,8 +3492,9 @@ function compactResult(){
   if(FLAGGED.length)L.push("Flagged: "+FLAGGED.join(", "));
   L.push("");
   L.push("--- paste everything below to Claude ---");
-  L.push("DATA:"+JSON.stringify({v:1,f:last.form||null,t:last.elapsed||0,
-    a:last.a.map(x=>[x.id,x.ok?1:0,x.flag?1:0])}));
+  L.push("DATA:"+JSON.stringify({v:2,f:last.form||null,t:last.elapsed||0,
+    a:last.a.map(x=>[x.id,x.ok?1:0,x.flag?1:0,plain(x.chose||"")]),
+    g:genPayload(last.a)}));
   return L.join("\n");}
 function saveFastScore(){
   const v=parseInt(($("fScore")&&$("fScore").value)||"",10);
@@ -3252,8 +3523,10 @@ function exportText(){
   const fl=last.a.filter(x=>x.flag&&x.ok).map(x=>x.id);
   if(fl.length){L.push("");L.push("FLAGGED BUT CORRECT (unsure): "+fl.join(", "));}
   if(FLAGGED.length){L.push("");L.push("ALL FLAGS STANDING ("+FLAGGED.length+"): "+FLAGGED.join(", "));}
-  L.push(""); L.push("DATA:"+JSON.stringify({v:1,exam:!!last.exam,t:last.elapsed||0,
-    a:last.a.map(x=>[x.id,x.ok?1:0,x.flag?1:0,plain(x.chose)])}));
+  L.push(""); L.push("DATA:"+JSON.stringify({v:2,exam:!!last.exam,t:last.elapsed||0,
+    f:last.form||null,
+    a:last.a.map(x=>[x.id,x.ok?1:0,x.flag?1:0,plain(x.chose||"")]),
+    g:genPayload(last.a)}));
   return L.join("\n");}
 function revealExport(){
   const box=$("outBox"); if(!box)return;
