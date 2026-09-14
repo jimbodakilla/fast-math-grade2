@@ -1194,55 +1194,55 @@ const ITEMS = [
 
 /* ---------- 5. PERIMETER  (MA.2.GR.2.1 / .2)  score 24 ---------- */
 {id:"P1",dom:4,bench:"MA.2.GR.2.1",d:1,q:"Count the unit segments all the way around the outside. What is the perimeter?",
- fig:{t:"gridRect",w:4,h:2},ch:["8 units","10 units","12 units","14 units"],a:"12 units",chk:["perimRect",4,2,"units"],
- why:"Walk the outside: 4 across the top, 2 down, 4 back, 2 up. 4+2+4+2 = 12.",trap:"8 is the count of squares inside (that is area, not perimeter)."},
+ fig:{t:"gridRect",w:4,h:2},ch:["6 units","8 units","10 units","12 units"],a:"12 units",chk:["perimRect",4,2,"units"],
+ why:"Walk the outside: 4 across the top, 2 down, 4 back, 2 up. 4+2+4+2 = 12.",trap:"10 units is what you get if you missed one side. 8 units is what you get if you found the area instead. 6 units is what you get if you added only two sides."},
 {id:"P2",dom:4,bench:"MA.2.GR.2.1",d:1,q:"Count the unit segments around the outside of the square.",
- fig:{t:"gridRect",w:3,h:3},ch:["9 units","12 units","6 units","16 units"],a:"12 units",chk:["perimRect",3,3,"units"],
- why:"All four sides are 3. 3+3+3+3 = 12.",trap:"9 is the squares inside."},
+ fig:{t:"gridRect",w:3,h:3},ch:["6 units","9 units","12 units","15 units"],a:"12 units",chk:["perimRect",3,3,"units"],
+ why:"All four sides are 3. 3+3+3+3 = 12.",trap:"15 units is what you get if you counted a side twice. 9 units is what you get if you found the area instead. 6 units is what you get if you added only two sides."},
 {id:"P3",dom:4,bench:"MA.2.GR.2.1",d:2,q:"What is the perimeter of this rectangle?",
- fig:{t:"gridRect",w:5,h:3},ch:["15 units","16 units","8 units","18 units"],a:"16 units",chk:["perimRect",5,3,"units"],
- why:"5+3+5+3 = 16.",trap:"8 is one long side plus one short side. You must go all the way around."},
+ fig:{t:"gridRect",w:5,h:3},ch:["15 units","16 units","19 units","20 units"],a:"16 units",chk:["perimRect",5,3,"units"],
+ why:"5+3+5+3 = 16.",trap:"19 units is what you get if you counted the other side twice. 20 units is what you get if you used the long side four times. 15 units is what you get if you found the area instead."},
 {id:"P4",dom:4,bench:"MA.2.GR.2.1",d:2,q:"What is the perimeter of this rectangle?",
- fig:{t:"gridRect",w:6,h:2},ch:["12 units","14 units","16 units","20 units"],a:"16 units",chk:["perimRect",6,2,"units"],
- why:"6+2+6+2 = 16.",trap:"12 is the number of squares inside."},
+ fig:{t:"gridRect",w:6,h:2},ch:["16 units","18 units","22 units","24 units"],a:"16 units",chk:["perimRect",6,2,"units"],
+ why:"6+2+6+2 = 16.",trap:"18 units is what you get if you counted the other side twice. 22 units is what you get if you counted a side twice. 24 units is what you get if you used the long side four times."},
 {id:"P5",dom:4,bench:"MA.2.GR.2.2",d:2,q:"Find the perimeter of the triangle.",
- fig:{t:"tri",s:[5,7,9]},ch:["19 cm","20 cm","21 cm","23 cm"],a:"21 cm",chk:["sum",[5,7,9],"cm"],
- why:"Add every side: 5+7+9 = 21 cm.",trap:"Dropping one side gives 12, 14 or 16."},
+ fig:{t:"tri",s:[5,7,9]},ch:["12 cm","14 cm","16 cm","21 cm"],a:"21 cm",chk:["sum",[5,7,9],"cm"],
+ why:"Add every side: 5+7+9 = 21 cm.",trap:"16 cm is what you get if you left out the side of 5. 14 cm is what you get if you left out the side of 7. 12 cm is what you get if you left out the side of 9."},
 {id:"P6",dom:4,bench:"MA.2.GR.2.2",d:2,q:"Each side of this square is 8 inches. What is the perimeter?",
- fig:{t:"sq",s:8,u:"in"},ch:["16 in","24 in","32 in","64 in"],a:"32 in",chk:["sum",[8,8,8,8],"in"],
- why:"A square has 4 equal sides: 8+8+8+8 = 32 inches.",trap:"64 is 8 eights added up. That is the space inside, not the walk around the edge."},
+ fig:{t:"sq",s:8,u:"in"},ch:["16 in","24 in","32 in","40 in"],a:"32 in",chk:["sum",[8,8,8,8],"in"],
+ why:"A square has 4 equal sides: 8+8+8+8 = 32 inches.",trap:"40 in is what you get if you counted the side of 8 twice. 24 in is what you get if you left out the side of 8. 16 in is what you get if you added only the last sides."},
 {id:"P7",dom:4,bench:"MA.2.GR.2.2",d:3,q:"Find the perimeter of the pentagon.",
- fig:{t:"pent",s:[4,6,3,7,5]},ch:["22 cm","24 cm","25 cm","26 cm"],a:"25 cm",chk:["sum",[4,6,3,7,5],"cm"],
- why:"A pentagon has 5 sides: 4+6+3+7+5 = 25 cm.",trap:"Forgetting the fifth side is the most common slip."},
+ fig:{t:"pent",s:[4,6,3,7,5]},ch:["22 cm","25 cm","28 cm","29 cm"],a:"25 cm",chk:["sum",[4,6,3,7,5],"cm"],
+ why:"A pentagon has 5 sides: 4+6+3+7+5 = 25 cm.",trap:"28 cm is what you get if you counted the side of 3 twice. 29 cm is what you get if you counted the side of 4 twice. 22 cm is what you get if you left out the side of 3."},
 {id:"P8",dom:4,bench:"MA.2.GR.2.2",d:3,q:"Only two sides are labeled. Find the perimeter of the rectangle.",
- fig:{t:"rectLbl",w:12,h:7,u:"ft"},ch:["19 ft","26 ft","38 ft","84 ft"],a:"38 ft",chk:["sum",[12,7,12,7],"ft"],
- why:"The other two sides match: 12+7+12+7 = 38 feet.",trap:"19 means you only added the two labels you could see."},
+ fig:{t:"rectLbl",w:12,h:7,u:"ft"},ch:["19 ft","26 ft","31 ft","38 ft"],a:"38 ft",chk:["sum",[12,7,12,7],"ft"],
+ why:"The other two sides match: 12+7+12+7 = 38 feet.",trap:"31 ft is what you get if you left out the side of 7. 26 ft is what you get if you left out the side of 12. 19 ft is what you get if you added only the last sides."},
 {id:"P9",dom:4,bench:"MA.2.GR.2.1",d:4,q:"Count the unit segments all the way around the outside.",
- fig:{t:"gridRect",w:7,h:4},ch:["11 units","22 units","28 units","24 units"],a:"22 units",chk:["perimRect",7,4,"units"],
- why:"7 + 4 + 7 + 4 = 22 units. Touch each dot as you count so you do not lose your place.",trap:"28 is how many squares are inside. That is the space in the middle, not the walk around the edge."},
+ fig:{t:"gridRect",w:7,h:4},ch:["15 units","16 units","18 units","22 units"],a:"22 units",chk:["perimRect",7,4,"units"],
+ why:"7 + 4 + 7 + 4 = 22 units. Touch each dot as you count so you do not lose your place.",trap:"18 units is what you get if you missed one side. 16 units is what you get if you used the short side four times. 15 units is what you get if you missed the other side."},
 {id:"P10",dom:4,bench:"MA.2.GR.2.2",d:4,q:"A garden is shaped like a pentagon. Find the perimeter.",
- fig:{t:"pent",s:[9,12,7,10,6]},ch:["34 m","42 m","44 m","46 m"],a:"44 m",chk:["sum",[9,12,7,10,6],"m"],
- why:"Add all five sides: 9 + 12 = 21, + 7 = 28, + 10 = 38, + 6 = 44 m.",trap:"It is easy to lose one side. Touch each side as you add it."},
+ fig:{t:"pent",s:[9,12,7,10,6]},ch:["37 m","38 m","44 m","50 m"],a:"44 m",chk:["sum",[9,12,7,10,6],"m"],
+ why:"Add all five sides: 9 + 12 = 21, + 7 = 28, + 10 = 38, + 6 = 44 m.",trap:"50 m is what you get if you counted the side of 6 twice. 38 m is what you get if you left out the side of 6. 37 m is what you get if you left out the side of 7."},
 {id:"P11",dom:4,bench:"MA.2.GR.2.2",d:4,q:"Which shape has the *larger* perimeter?",
  fig:{t:"twoRect",a:[9,1],b:[4,4]},ch:["Shape A","Shape B","They are equal","You cannot compare them"],a:"Shape A",chk:["perimCmp",[9,1],[4,4]],
  why:"Shape A: 9+1+9+1 = 20 units. Shape B: 4+4+4+4 = 16 units. 20 is more than 16, so skinny Shape A has the *larger* perimeter.",trap:"Shape B looks bigger because it holds more squares inside (16 vs 9). But perimeter is the walk *around* the edge, not the space inside. A long skinny shape can have a big perimeter and a small inside."},
 {id:"P12",dom:4,bench:"MA.2.GR.2.2",d:3,q:"A frame is 9 inches long and 6 inches wide. Ribbon goes all the way around it. How many inches of ribbon?",
- fig:null,ch:["15 in","24 in","30 in","54 in"],a:"30 in",chk:["sum",[9,6,9,6],"in"],
- why:"All the way around = 9+6+9+6 = 30 inches.",trap:"Ribbon goes *around* the edge, so you add the four sides. You never multiply here."},
+ fig:null,ch:["24 in","30 in","36 in","39 in"],a:"30 in",chk:["sum",[9,6,9,6],"in"],
+ why:"All the way around = 9+6+9+6 = 30 inches.",trap:"36 in is what you get if you counted the side of 6 twice. 39 in is what you get if you counted the side of 9 twice. 24 in is what you get if you left out the side of 6."},
 {id:"P13",dom:4,bench:"MA.2.GR.2.2",d:2,q:"A desktop is 8 feet long and 4 feet wide. What is its perimeter?",
- fig:{t:"rectLbl",w:8,h:4,u:"ft"},ch:["12 ft","24 ft","32 ft","16 ft"],a:"24 ft",chk:["sum",[8,4,8,4],"ft"],
- why:"8+4+8+4 = 24 feet. The answer needs the unit: feet.",trap:"32 is the space inside, not the walk around the edge."},
+ fig:{t:"rectLbl",w:8,h:4,u:"ft"},ch:["12 ft","16 ft","20 ft","24 ft"],a:"24 ft",chk:["sum",[8,4,8,4],"ft"],
+ why:"8+4+8+4 = 24 feet. The answer needs the unit: feet.",trap:"20 ft is what you get if you left out the side of 4. 16 ft is what you get if you left out the side of 8. 12 ft is what you get if you added only the last sides."},
 {id:"P14",dom:4,bench:"MA.2.GR.2.2",d:5,q:"Find the perimeter of the pentagon.",
- fig:{t:"pent",s:[23,18,31,14,9]},ch:["86 cm","95 cm","96 cm","105 cm"],a:"95 cm",chk:["sum",[23,18,31,14,9],"cm"],
- why:"Add them one at a time and write each total down: 23 + 18 = 41, + 31 = 72, + 14 = 86, + 9 = 95 cm.",trap:"Five two-digit numbers is a lot to hold. Write each running total down."},
+ fig:{t:"pent",s:[23,18,31,14,9]},ch:["77 cm","81 cm","86 cm","95 cm"],a:"95 cm",chk:["sum",[23,18,31,14,9],"cm"],
+ why:"Add them one at a time and write each total down: 23 + 18 = 41, + 31 = 72, + 14 = 86, + 9 = 95 cm.",trap:"86 cm is what you get if you left out the side of 9. 81 cm is what you get if you left out the side of 14. 77 cm is what you get if you left out the side of 18."},
 
 /* ---------- 6. MEASUREMENT  (MA.2.M.1)  score 45 ---------- */
 {id:"M1",dom:5,bench:"MA.2.M.1.1",d:1,q:"How long is the pencil?",
- fig:{t:"ruler",from:0,to:6,u:"in",obj:"pencil"},ch:["5 inches","6 inches","7 inches","0 inches"],a:"6 inches",chk:["diff",0,6,"inches"],
- why:"It starts at 0 and ends at 6. 6 - 0 = 6 inches.",trap:"No trap here. This is the easy kind that starts at zero."},
+ fig:{t:"ruler",from:0,to:6,u:"in",obj:"pencil"},ch:["4 inches","5 inches","6 inches","7 inches"],a:"6 inches",chk:["diff",0,6,"inches"],
+ why:"It starts at 0 and ends at 6. 6 - 0 = 6 inches.",trap:"7 inches is what you get if you counted the marks instead of the spaces. 5 inches is what you get if you lost one at the start. 4 inches is what you get if you counted short by two."},
 {id:"M2",dom:5,bench:"MA.2.M.1.1",d:2,q:"How long is the crayon?",
- fig:{t:"ruler",from:1,to:4,u:"in",obj:"crayon"},ch:["3 inches","4 inches","5 inches","1 inch"],a:"3 inches",chk:["diff",1,4,"inches"],
- why:"It does *not* start at 0. It goes from 1 to 4, so 4 - 1 = 3 inches.",trap:"4 is the number it ends on. Always subtract the start."},
+ fig:{t:"ruler",from:1,to:4,u:"in",obj:"crayon"},ch:["2 inches","3 inches","4 inches","5 inches"],a:"3 inches",chk:["diff",1,4,"inches"],
+ why:"It does *not* start at 0. It goes from 1 to 4, so 4 - 1 = 3 inches.",trap:"4 inches is what you get if you counted the marks instead of the spaces. 5 inches is what you get if you started at the wrong mark. 2 inches is what you get if you lost one at the start."},
 {id:"M3",dom:5,bench:"MA.2.M.1.1",d:2,q:"Which unit would you use to measure how long a classroom is?",
  fig:null,ch:["Inches","Centimeters","Meters","Cups"],a:"Meters",chk:["val","Meters",""],
  why:"A classroom is big, so use a big unit: meters (or feet/yards).",trap:"Inches and centimeters are for small things like a crayon."},
@@ -1250,8 +1250,8 @@ const ITEMS = [
  fig:null,ch:["4 inches","4 feet","4 yards","4 meters"],a:"4 inches",chk:["val","4 inches",""],
  why:"A crayon fits in your hand, so the unit must be small: about 4 inches. Feet, yards and meters are all far too big.",trap:"The number is the same in every choice. The *unit* is the question."},
 {id:"M5",dom:5,bench:"MA.2.M.1.2",d:3,q:"Ribbon A is 9 inches long. Ribbon B is 4 inches long. How much longer is Ribbon A?",
- fig:{t:"twoBars",a:9,b:4,u:"in"},ch:["4 inches","5 inches","13 inches","6 inches"],a:"5 inches",chk:["diff",4,9,"inches"],
- why:"'How much longer' means subtract: 9 - 4 = 5 inches.",trap:"13 is what you get if you add instead of subtract."},
+ fig:{t:"twoBars",a:9,b:4,u:"in"},ch:["5 inches","6 inches","7 inches","9 inches"],a:"5 inches",chk:["diff",4,9,"inches"],
+ why:"'How much longer' means subtract: 9 - 4 = 5 inches.",trap:"6 inches is what you get if you counted the marks instead of the spaces. 7 inches is what you get if you started at the wrong mark. 9 inches is what you get if you read the far end instead of the length."},
 {id:"M6",dom:5,bench:"MA.2.M.1.1",d:1,q:"Paper clips are lined up along the marker with no gaps. How long is the marker?",
  fig:{t:"clips",n:5},ch:["4 paper clips","5 paper clips","6 paper clips","5 inches"],a:"5 paper clips",chk:["val","5 paper clips",""],
  why:"Count the paper clips: 5. The unit is 'paper clips' because that is what you measured with.",trap:"'5 inches' uses the wrong unit."},
@@ -1271,8 +1271,8 @@ const ITEMS = [
  fig:null,ch:["A ruler","A clock","A cup","A paintbrush"],a:"A ruler",chk:["val","A ruler",""],
  why:"A ruler measures how long something is. A clock measures time.",trap:"No trap here. This one is free."},
 {id:"M12",dom:5,bench:"MA.2.M.1.1",d:3,q:"How long is the eraser?",
- fig:{t:"ruler",from:2,to:9,u:"cm",obj:"eraser"},ch:["7 cm","9 cm","11 cm","2 cm"],a:"7 cm",chk:["diff",2,9,"cm"],
- why:"From 2 to 9 is 9 - 2 = 7 cm. Count the *spaces*, not the tick marks.",trap:"9 is the ending number. It did not start at 0."},
+ fig:{t:"ruler",from:2,to:9,u:"cm",obj:"eraser"},ch:["5 cm","6 cm","7 cm","8 cm"],a:"7 cm",chk:["diff",2,9,"cm"],
+ why:"From 2 to 9 is 9 - 2 = 7 cm. Count the *spaces*, not the tick marks.",trap:"8 cm is what you get if you counted the marks instead of the spaces. 6 cm is what you get if you lost one at the start. 5 cm is what you get if you counted short by two."},
 
 /* ---------- 2. ALGEBRAIC THINKING  (MA.2.AR)  score 49 ---------- */
 {id:"A1",dom:1,bench:"MA.2.AR.2.1",d:2,q:"Is this number sentence *true* or *false*?    27 + 13 = 26 + 14",
@@ -1315,11 +1315,11 @@ const ITEMS = [
  fig:null,ch:["16","12","15","20"],a:"15",chk:["odd",[16,12,15,20],"15"],
  why:"15 makes two equal groups of 7 with *one* left over (7 + 7 + 1), so it is odd.",trap:"All the others split evenly in half."},
 {id:"A14",dom:1,bench:"MA.2.AR.3.2",d:3,q:"How many dots are there in all?",
- fig:{t:"array",r:4,c:5},ch:["9","16","20","25"],a:"20",chk:["prod",4,5,""],
- why:"4 rows of 5: 5 + 5 + 5 + 5 = 20.",trap:"9 is 4 + 5. Rows of dots means you add the same number again and again."},
+ fig:{t:"array",r:4,c:5},ch:["15","16","20","24"],a:"20",chk:["prod",4,5,""],
+ why:"4 rows of 5: 5 + 5 + 5 + 5 = 20.",trap:"24 is what you get if you counted a column twice. 16 is what you get if you missed a whole column. 15 is what you get if you missed a whole row."},
 {id:"A15",dom:1,bench:"MA.2.AR.3.2",d:3,q:"There are 3 equal groups with 6 crayons in each group. How many crayons in all?",
- fig:{t:"array",r:3,c:6},ch:["9","15","18","24"],a:"18",chk:["prod",3,6,""],
- why:"6 + 6 + 6 = 18.",trap:"9 is 3 + 6."},
+ fig:{t:"array",r:3,c:6},ch:["15","18","21","24"],a:"18",chk:["prod",3,6,""],
+ why:"6 + 6 + 6 = 18.",trap:"21 is what you get if you counted a column twice. 24 is what you get if you counted a row twice. 15 is what you get if you missed a whole column."},
 {id:"A16",dom:1,bench:"MA.2.AR.1.1",d:5,q:"Class A has 38 books. Class B has 15 *more* than Class A. How many books in all?",
  fig:null,ch:["53","76","91","23"],a:"91",chk:["val",91,""],
  why:"Step 1: Class B = 38 + 15 = 53. Step 2: together = 38 + 53 = 91.",trap:"53 is only Class B. The question asks for *both* classes."},
@@ -1347,11 +1347,11 @@ const ITEMS = [
  fig:null,ch:["a.m.","p.m.","Both","Neither"],a:"a.m.",chk:["val","a.m.",""],
  why:"a.m. is midnight to noon (morning). Breakfast is in the morning.",trap:"p.m. is noon to midnight. That would be dinner time."},
 {id:"T8",dom:6,bench:"MA.2.M.2.2",d:2,q:"How much money is this?",fig:{t:"coins",c:["q","q","d","p","p","p"]},
- ch:["53¢","63¢","68¢","36¢"],a:"63¢",chk:["coins",["q","q","d","p","p","p"]],
- why:"Start with the biggest: 25, 50, then 60, then 61, 62, 63. That is 63¢.",trap:"Counting the coins instead of their *values* gives 6."},
+ ch:["63¢","68¢","78¢","83¢"],a:"63¢",chk:["coins",["q","q","d","p","p","p"]],
+ why:"Start with the biggest: 25, 50, then 60, then 61, 62, 63. That is 63¢.",trap:"68¢ is what you get if you counted a penny as a nickel. 78¢ is what you get if you counted a dime as a quarter. 83¢ is what you get if you counted a nickel as a quarter."},
 {id:"T9",dom:6,bench:"MA.2.M.2.2",d:3,q:"How much money is this?",fig:{t:"coins",c:["d","d","d","n","n","p","p","p","p"]},
- ch:["39¢","44¢","49¢","54¢"],a:"44¢",chk:["coins",["d","d","d","n","n","p","p","p","p"]],
- why:"Dimes: 10, 20, 30. Nickels: 35, 40. Pennies: 41, 42, 43, 44. That is 44¢.",trap:"Mixing up nickels (5¢) and dimes (10¢) is the usual slip."},
+ ch:["34¢","39¢","43¢","44¢"],a:"44¢",chk:["coins",["d","d","d","n","n","p","p","p","p"]],
+ why:"Dimes: 10, 20, 30. Nickels: 35, 40. Pennies: 41, 42, 43, 44. That is 44¢.",trap:"43¢ is what you get if you missed one penny. 39¢ is what you get if you missed one nickel. 34¢ is what you get if you missed one dime."},
 {id:"T10",dom:6,bench:"MA.2.M.2.2",d:2,q:"How much money is this?",fig:{t:"coins",c:["q","d","d","d","n"]},
  ch:["50¢","55¢","60¢","65¢"],a:"60¢",chk:["coins",["q","d","d","d","n"]],
  why:"Quarter 25, then dimes 35, 45, 55, then a nickel 60. That is 60¢.",trap:"Always start from the largest coin and count on."},
@@ -1460,40 +1460,40 @@ const ITEMS = [
  ch:["44","61","64","67"],a:"64",chk:["val",64,""],
  why:"Jump up 2 tens: 41 to 51 to 61. Then 3 ones: 62, 63, 64.",trap:"44 only jumps the ones."},
 {id:"O2",dom:0,bench:"MA.2.NSO.2.3",d:3,q:"Use place value: 87 - 25. What is the difference?",fig:{t:"split",a:87,b:25,op:"-"},
- ch:["52","62","72","112"],a:"62",chk:["arith",87,25,"-"],
- why:"Take the tens off first: 87 - 20 = 67. Then take the ones off: 67 - 5 = 62.",trap:"112 is adding instead of subtracting. Subtract in two steps, tens then ones."},
+ ch:["61","62","63","71"],a:"62",chk:["arith",87,25,"-"],
+ why:"Take the tens off first: 87 - 20 = 67. Then take the ones off: 67 - 5 = 62.",trap:"63 is what you get if you are off by one. 71 is what you get if you regrouped the wrong way. 61 is what you get if you are off by one the other way."},
 {id:"O3",dom:0,bench:"MA.2.NSO.2.3",d:2,q:"What total do these base-ten blocks show when you add them?",fig:{t:"base10add",a:[3,4],b:[2,5]},
- ch:["49","59","69","95"],a:"59",chk:["arith",34,25,"+"],
- why:"34 + 25. Tens: 30 + 20 = 50. Ones: 4 + 5 = 9. Total 59.",trap:"Adding the digits without place value."},
+ ch:["59","60","68","69"],a:"59",chk:["arith",34,25,"+"],
+ why:"34 + 25. Tens: 30 + 20 = 50. Ones: 4 + 5 = 9. Total 59.",trap:"60 is what you get if you are off by one. 68 is what you get if you regrouped the wrong way. 69 is what you get if you carried when there was nothing to carry."},
 {id:"O4",dom:1,bench:"MA.2.AR.1.1",d:3,q:"Sam had 52 cards. He gave some away. Now he has 30. Which number sentence shows this?",
  fig:null,ch:["52 + 30 = ▢","52 - ▢ = 30","▢ - 52 = 30","30 - 52 = ▢"],a:"52 - ▢ = 30",chk:["val","52 - ▢ = 30",""],
  why:"He started with 52, took away an unknown amount, and 30 was left: 52 - ▢ = 30.",trap:"The unknown is the amount *given* *away*, not the total."},
-{id:"O5",dom:0,bench:"MA.2.NSO.2.3",d:3,q:"56 + 37 = ?",fig:null,ch:["83","93","813","19"],a:"93",chk:["arith",56,37,"+"],
- why:"50 + 30 = 80, and 6 + 7 = 13. 80 + 13 = 93.",trap:"83 forgets to carry the extra ten from 6 + 7."},
-{id:"O6",dom:0,bench:"MA.2.NSO.2.3",d:3,q:"72 - 38 = ?",fig:null,ch:["34","44","46","110"],a:"34",chk:["arith",72,38,"-"],
- why:"72 - 30 = 42, then 42 - 8 = 34.",trap:"46 subtracts the small digit from the big one in each column instead of regrouping."},
-{id:"O7",dom:0,bench:"MA.2.NSO.2.4",d:5,q:"612 - 17 = ?",fig:null,ch:["585","595","605","629"],a:"595",chk:["arith",612,17,"-"],
- why:"612 - 12 = 600, then 600 - 5 = 595.",trap:"605 only subtracts the 7."},
-{id:"O8",dom:0,bench:"MA.2.NSO.2.4",d:5,q:"1,000 - 17 = ?",fig:null,ch:["983","987","993","1017"],a:"983",chk:["arith",1000,17,"-"],
- why:"Jump back 10 from 1,000 to 990, then 7 more: 983.",trap:"993 only jumps back 7."},
+{id:"O5",dom:0,bench:"MA.2.NSO.2.3",d:3,q:"56 + 37 = ?",fig:null,ch:["83","84","92","93"],a:"93",chk:["arith",56,37,"+"],
+ why:"50 + 30 = 80, and 6 + 7 = 13. 80 + 13 = 93.",trap:"92 is what you get if you are off by one the other way. 84 is what you get if you regrouped the other way. 83 is what you get if you forgot to carry a ten."},
+{id:"O6",dom:0,bench:"MA.2.NSO.2.3",d:3,q:"72 - 38 = ?",fig:null,ch:["25","33","34","35"],a:"34",chk:["arith",72,38,"-"],
+ why:"72 - 30 = 42, then 42 - 8 = 34.",trap:"35 is what you get if you are off by one. 33 is what you get if you are off by one the other way. 25 is what you get if you regrouped the other way."},
+{id:"O7",dom:0,bench:"MA.2.NSO.2.4",d:5,q:"612 - 17 = ?",fig:null,ch:["594","595","596","604"],a:"595",chk:["arith",612,17,"-"],
+ why:"612 - 12 = 600, then 600 - 5 = 595.",trap:"596 is what you get if you are off by one. 604 is what you get if you regrouped the wrong way. 594 is what you get if you are off by one the other way."},
+{id:"O8",dom:0,bench:"MA.2.NSO.2.4",d:5,q:"1,000 - 17 = ?",fig:null,ch:["983","984","992","993"],a:"983",chk:["arith",1000,17,"-"],
+ why:"Jump back 10 from 1,000 to 990, then 7 more: 983.",trap:"984 is what you get if you are off by one. 992 is what you get if you regrouped the wrong way. 993 is what you get if you carried when there was nothing to carry."},
 
 /* ---------- 8. NUMBER OPERATIONS (fluency)  score 80 ---------- */
-{id:"Q1",dom:7,bench:"MA.2.NSO.2.1",d:1,q:"8 + 7 = ?",fig:null,ch:["13","14","15","16"],a:"15",chk:["arith",8,7,"+"],
- why:"8 + 2 = 10, then 5 more = 15.",trap:"This is a fact you should know without counting."},
-{id:"Q2",dom:7,bench:"MA.2.NSO.2.1",d:1,q:"16 - 9 = ?",fig:null,ch:["5","6","7","8"],a:"7",chk:["arith",16,9,"-"],
- why:"9 + 7 = 16, so 16 - 9 = 7.",trap:"Off-by-one when counting back."},
-{id:"Q3",dom:7,bench:"MA.2.NSO.2.3",d:2,q:"45 + 30 = ?",fig:null,ch:["48","65","75","85"],a:"75",chk:["arith",45,30,"+"],
- why:"Add tens to tens: 40 + 30 = 70, then the 5 ones: 75.",trap:"48 adds 3 instead of 30."},
-{id:"Q4",dom:7,bench:"MA.2.NSO.2.3",d:2,q:"63 - 20 = ?",fig:null,ch:["41","43","53","83"],a:"43",chk:["arith",63,20,"-"],
- why:"Take away 2 tens: 63 - 20 = 43.",trap:"83 adds instead of subtracts."},
-{id:"Q5",dom:7,bench:"MA.2.NSO.2.3",d:3,q:"48 + 27 = ?",fig:null,ch:["65","74","75","615"],a:"75",chk:["arith",48,27,"+"],
- why:"40 + 20 = 60, and 8 + 7 = 15. 60 + 15 = 75.",trap:"65 forgets the carried ten."},
-{id:"Q6",dom:7,bench:"MA.2.NSO.2.3",d:3,q:"91 - 46 = ?",fig:null,ch:["45","55","57","137"],a:"45",chk:["arith",91,46,"-"],
- why:"91 - 40 = 51, then 51 - 6 = 45.",trap:"55 forgets to regroup the ones."},
-{id:"Q7",dom:7,bench:"MA.2.NSO.2.4",d:5,q:"236 + 145 = ?",fig:null,ch:["371","381","3711","391"],a:"381",chk:["arith",236,145,"+"],
- why:"200 + 100 = 300. 30 + 40 = 70. 6 + 5 = 11. 300 + 70 + 11 = 381.",trap:"371 forgets the ten carried from 6 + 5."},
-{id:"Q8",dom:7,bench:"MA.2.NSO.2.4",d:5,q:"405 - 128 = ?",fig:null,ch:["277","287","323","333"],a:"277",chk:["arith",405,128,"-"],
- why:"405 - 100 = 305. 305 - 20 = 285. 285 - 8 = 277.",trap:"323 subtracts the smaller digit from the bigger one in each column."}
+{id:"Q1",dom:7,bench:"MA.2.NSO.2.1",d:1,q:"8 + 7 = ?",fig:null,ch:["5","6","14","15"],a:"15",chk:["arith",8,7,"+"],
+ why:"8 + 2 = 10, then 5 more = 15.",trap:"14 is what you get if you are off by one the other way. 6 is what you get if you regrouped the other way. 5 is what you get if you forgot to carry a ten."},
+{id:"Q2",dom:7,bench:"MA.2.NSO.2.1",d:1,q:"16 - 9 = ?",fig:null,ch:["6","7","8","16"],a:"7",chk:["arith",16,9,"-"],
+ why:"9 + 7 = 16, so 16 - 9 = 7.",trap:"8 is what you get if you are off by one. 16 is what you get if you regrouped the wrong way. 6 is what you get if you are off by one the other way."},
+{id:"Q3",dom:7,bench:"MA.2.NSO.2.3",d:2,q:"45 + 30 = ?",fig:null,ch:["74","75","76","84"],a:"75",chk:["arith",45,30,"+"],
+ why:"Add tens to tens: 40 + 30 = 70, then the 5 ones: 75.",trap:"76 is what you get if you are off by one. 84 is what you get if you regrouped the wrong way. 74 is what you get if you are off by one the other way."},
+{id:"Q4",dom:7,bench:"MA.2.NSO.2.3",d:2,q:"63 - 20 = ?",fig:null,ch:["43","44","52","53"],a:"43",chk:["arith",63,20,"-"],
+ why:"Take away 2 tens: 63 - 20 = 43.",trap:"44 is what you get if you are off by one. 52 is what you get if you regrouped the wrong way. 53 is what you get if you carried when there was nothing to carry."},
+{id:"Q5",dom:7,bench:"MA.2.NSO.2.3",d:3,q:"48 + 27 = ?",fig:null,ch:["65","66","74","75"],a:"75",chk:["arith",48,27,"+"],
+ why:"40 + 20 = 60, and 8 + 7 = 15. 60 + 15 = 75.",trap:"74 is what you get if you are off by one the other way. 66 is what you get if you regrouped the other way. 65 is what you get if you forgot to carry a ten."},
+{id:"Q6",dom:7,bench:"MA.2.NSO.2.3",d:3,q:"91 - 46 = ?",fig:null,ch:["36","44","45","46"],a:"45",chk:["arith",91,46,"-"],
+ why:"91 - 40 = 51, then 51 - 6 = 45.",trap:"46 is what you get if you are off by one. 44 is what you get if you are off by one the other way. 36 is what you get if you regrouped the other way."},
+{id:"Q7",dom:7,bench:"MA.2.NSO.2.4",d:5,q:"236 + 145 = ?",fig:null,ch:["380","381","382","390"],a:"381",chk:["arith",236,145,"+"],
+ why:"200 + 100 = 300. 30 + 40 = 70. 6 + 5 = 11. 300 + 70 + 11 = 381.",trap:"382 is what you get if you are off by one. 390 is what you get if you regrouped the wrong way. 380 is what you get if you are off by one the other way."},
+{id:"Q8",dom:7,bench:"MA.2.NSO.2.4",d:5,q:"405 - 128 = ?",fig:null,ch:["277","278","286","287"],a:"277",chk:["arith",405,128,"-"],
+ why:"405 - 100 = 305. 305 - 20 = 285. 285 - 8 = 277.",trap:"278 is what you get if you are off by one. 286 is what you get if you regrouped the wrong way. 287 is what you get if you carried when there was nothing to carry."}
 /* ===== items added to close verified coverage gaps (see audit) ===== */
 ,{id:"F1",dom:3,bench:"MA.2.FR.1.2",d:3,q:"Both rectangles are the same size. Both are cut into 4 equal parts. Is each part the same amount?",
  fig:{t:"parts2"},ch:["Yes, the parts are equal","No, the tall ones are bigger","No, the square ones are bigger","You cannot tell"],a:"Yes, the parts are equal",chk:["val","Yes, the parts are equal",""],
@@ -1525,20 +1525,20 @@ const ITEMS = [
 {id:"O9",dom:0,bench:"MA.2.NSO.2.3",d:1,q:"The number line starts at 30 and jumps up one ten. Where do you land?",
  fig:{t:"jumps",start:30,tens:1,ones:0},ch:["31","40","20","13"],a:"40",chk:["val",40,""],
  why:"One jump of ten from 30 lands on 40.",trap:"31 is a jump of one, not a jump of ten."},
-{id:"Q9",dom:7,bench:"MA.2.NSO.2.1",d:1,q:"9 + 6 = ?",fig:null,ch:["14","15","16","13"],a:"15",chk:["arith",9,6,"+"],
- why:"9 + 1 = 10, then 5 more makes 15.",trap:"This is a fact to know by heart, not to count on fingers."}
+{id:"Q9",dom:7,bench:"MA.2.NSO.2.1",d:1,q:"9 + 6 = ?",fig:null,ch:["5","6","14","15"],a:"15",chk:["arith",9,6,"+"],
+ why:"9 + 1 = 10, then 5 more makes 15.",trap:"14 is what you get if you are off by one the other way. 6 is what you get if you regrouped the other way. 5 is what you get if you forgot to carry a ten."}
 ,{id:"O10",dom:0,bench:"MA.2.NSO.2.3",d:2,q:"What do the blocks add up to?",fig:{t:"base10add",a:[4,0],b:[2,3]},
- ch:["63","57","43","603"],a:"63",chk:["arith",40,23,"+"],
+ ch:["54","62","63","64"],a:"63",chk:["arith",40,23,"+"],
  why:"4 tens and 2 tens is 6 tens. Then 0 ones and 3 ones is 3 ones. That makes 63.",
- trap:"Add the tens to the tens and the ones to the ones. Never mix the columns."},
+ trap:"64 is what you get if you are off by one. 62 is what you get if you are off by one the other way. 54 is what you get if you regrouped the other way."},
 {id:"O11",dom:0,bench:"MA.2.NSO.2.3",d:3,q:"The number line starts at 56 and jumps up 2 tens and 7 ones. Where do you land?",
- fig:{t:"jumps",start:56,tens:2,ones:7},ch:["63","76","83","85"],a:"83",chk:["arith",56,27,"+"],
+ fig:{t:"jumps",start:56,tens:2,ones:7},ch:["82","83","84","92"],a:"83",chk:["arith",56,27,"+"],
  why:"Two jumps of ten: 56 to 66 to 76. Then 7 ones takes you to 83.",
- trap:"63 is only the seven ones. Do the tens first, then the ones."},
+ trap:"84 is what you get if you are off by one. 92 is what you get if you regrouped the wrong way. 82 is what you get if you are off by one the other way."},
 {id:"O12",dom:0,bench:"MA.2.NSO.2.3",d:3,q:"Use place value: 67 - 24. What is left?",fig:{t:"split",a:67,b:24,op:"-"},
- ch:["33","43","45","91"],a:"43",chk:["arith",67,24,"-"],
+ ch:["43","44","52","53"],a:"43",chk:["arith",67,24,"-"],
  why:"Take the tens off first: 67 - 20 = 47. Then the ones: 47 - 4 = 43.",
- trap:"91 is adding instead of subtracting."},
+ trap:"44 is what you get if you are off by one. 52 is what you get if you regrouped the wrong way. 53 is what you get if you carried when there was nothing to carry."},
 {id:"O13",dom:0,bench:"MA.2.AR.1.1",d:3,q:"Sam has 24 marbles. Max has 38. Which number sentence shows how many *more* Max has?",
  fig:null,ch:["38 - 24 = ▢","38 + 24 = ▢","24 - 38 = ▢","▢ - 38 = 24"],a:"38 - 24 = ▢",chk:["val","38 - 24 = ▢",""],
  why:"How many *more* means find the difference, so you take the smaller from the larger: 38 - 24.",
@@ -1548,9 +1548,9 @@ const ITEMS = [
  why:"Step 1: 25 + 30 = 55. Step 2: 55 - 12 = 43.",
  trap:"55 is only step 1. There are two jumps."},
 {id:"O15",dom:0,bench:"MA.2.NSO.2.3",d:4,q:"What do the blocks add up to?",fig:{t:"base10add",a:[3,8],b:[4,7]},
- ch:["75","85","715","81"],a:"85",chk:["arith",38,47,"+"],
+ ch:["75","76","84","85"],a:"85",chk:["arith",38,47,"+"],
  why:"Tens: 30 + 40 = 70. Ones: 8 + 7 = 15. Then 70 + 15 = 85.",
- trap:"75 forgets that 8 + 7 makes a whole new ten plus 5."},
+ trap:"84 is what you get if you are off by one the other way. 76 is what you get if you regrouped the other way. 75 is what you get if you forgot to carry a ten."},
 {id:"O16",dom:0,bench:"MA.2.AR.2.2",d:4,q:"The blocks show 52. How many more do you need to make 80?",
  fig:{t:"base10",h:0,t10:5,o:2},ch:["28","32","38","132"],a:"28",chk:["unk",52,80,"28"],
  why:"Count up: 52 to 60 is 8, then 60 to 80 is 20. 8 + 20 = 28.",
@@ -1559,20 +1559,20 @@ const ITEMS = [
  ch:["245","254","2045","209"],a:"245",chk:["b10",2,4,5],
  why:"2 hundreds, 4 tens, 5 ones. That is 200 + 40 + 5 = 245.",
  trap:"254 swaps the tens and the ones."},
-{id:"Q10",dom:7,bench:"MA.2.NSO.2.3",d:2,q:"57 - 30 = ?",fig:null,ch:["17","27","37","87"],a:"27",chk:["arith",57,30,"-"],
- why:"5 tens take away 3 tens is 2 tens. The 7 ones stay, so 27.",trap:"87 is adding instead of subtracting."},
-{id:"Q11",dom:7,bench:"MA.2.NSO.2.3",d:3,q:"36 + 48 = ?",fig:null,ch:["74","84","714","86"],a:"84",chk:["arith",36,48,"+"],
- why:"30 + 40 = 70, and 6 + 8 = 14. Then 70 + 14 = 84.",trap:"74 drops the extra ten from 6 + 8."},
-{id:"Q12",dom:7,bench:"MA.2.NSO.2.3",d:4,q:"84 - 57 = ?",fig:null,ch:["27","33","37","23"],a:"27",chk:["arith",84,57,"-"],
- why:"84 - 50 = 34, then 34 - 7 = 27.",trap:"33 takes the smaller digit from the bigger one in each column instead of regrouping."},
-{id:"Q13",dom:7,bench:"MA.2.NSO.2.3",d:4,q:"65 + 28 = ?",fig:null,ch:["83","93","813","87"],a:"93",chk:["arith",65,28,"+"],
- why:"60 + 20 = 80, and 5 + 8 = 13. Then 80 + 13 = 93.",trap:"83 forgets the ten carried from 5 + 8."},
-{id:"Q14",dom:7,bench:"MA.2.NSO.2.3",d:4,q:"92 - 45 = ?",fig:null,ch:["47","53","57","43"],a:"47",chk:["arith",92,45,"-"],
- why:"92 - 40 = 52, then 52 - 5 = 47.",trap:"53 subtracts each column the wrong way round."},
-{id:"Q15",dom:7,bench:"MA.2.NSO.2.4",d:5,q:"700 - 250 = ?",fig:null,ch:["350","450","550","250"],a:"450",chk:["arith",700,250,"-"],
- why:"700 - 200 = 500, then 500 - 50 = 450.",trap:"Take the hundreds off first, then the tens."},
-{id:"Q16",dom:7,bench:"MA.2.NSO.2.1",d:3,q:"13 - 8 = ?",fig:null,ch:["4","5","6","7"],a:"5",chk:["arith",13,8,"-"],
- why:"8 + 5 = 13, so 13 - 8 = 5.",trap:"This is a fact worth knowing by heart."},
+{id:"Q10",dom:7,bench:"MA.2.NSO.2.3",d:2,q:"57 - 30 = ?",fig:null,ch:["18","26","27","28"],a:"27",chk:["arith",57,30,"-"],
+ why:"5 tens take away 3 tens is 2 tens. The 7 ones stay, so 27.",trap:"28 is what you get if you are off by one. 26 is what you get if you are off by one the other way. 18 is what you get if you regrouped the other way."},
+{id:"Q11",dom:7,bench:"MA.2.NSO.2.3",d:3,q:"36 + 48 = ?",fig:null,ch:["83","84","85","93"],a:"84",chk:["arith",36,48,"+"],
+ why:"30 + 40 = 70, and 6 + 8 = 14. Then 70 + 14 = 84.",trap:"85 is what you get if you are off by one. 93 is what you get if you regrouped the wrong way. 83 is what you get if you are off by one the other way."},
+{id:"Q12",dom:7,bench:"MA.2.NSO.2.3",d:4,q:"84 - 57 = ?",fig:null,ch:["27","28","36","37"],a:"27",chk:["arith",84,57,"-"],
+ why:"84 - 50 = 34, then 34 - 7 = 27.",trap:"28 is what you get if you are off by one. 36 is what you get if you regrouped the wrong way. 37 is what you get if you carried when there was nothing to carry."},
+{id:"Q13",dom:7,bench:"MA.2.NSO.2.3",d:4,q:"65 + 28 = ?",fig:null,ch:["83","84","92","93"],a:"93",chk:["arith",65,28,"+"],
+ why:"60 + 20 = 80, and 5 + 8 = 13. Then 80 + 13 = 93.",trap:"92 is what you get if you are off by one the other way. 84 is what you get if you regrouped the other way. 83 is what you get if you forgot to carry a ten."},
+{id:"Q14",dom:7,bench:"MA.2.NSO.2.3",d:4,q:"92 - 45 = ?",fig:null,ch:["38","46","47","48"],a:"47",chk:["arith",92,45,"-"],
+ why:"92 - 40 = 52, then 52 - 5 = 47.",trap:"48 is what you get if you are off by one. 46 is what you get if you are off by one the other way. 38 is what you get if you regrouped the other way."},
+{id:"Q15",dom:7,bench:"MA.2.NSO.2.4",d:5,q:"700 - 250 = ?",fig:null,ch:["449","450","451","459"],a:"450",chk:["arith",700,250,"-"],
+ why:"700 - 200 = 500, then 500 - 50 = 450.",trap:"451 is what you get if you are off by one. 459 is what you get if you regrouped the wrong way. 449 is what you get if you are off by one the other way."},
+{id:"Q16",dom:7,bench:"MA.2.NSO.2.1",d:3,q:"13 - 8 = ?",fig:null,ch:["5","6","14","15"],a:"5",chk:["arith",13,8,"-"],
+ why:"8 + 5 = 13, so 13 - 8 = 5.",trap:"6 is what you get if you are off by one. 14 is what you get if you regrouped the wrong way. 15 is what you get if you carried when there was nothing to carry."},
 {id:"G11",dom:3,bench:"MA.2.GR.1.2",d:4,q:"Which one is *not* a closed shape?",fig:{t:"openfig"},
  ch:["A","B","C","D"],a:"C",chk:["val","C",""],
  why:"A closed shape has no gaps. Shape C has an opening, so you could walk out of it.",
@@ -1624,9 +1624,9 @@ const ITEMS = [
  why:"Soccer has 12, Tag has 7 and Swings has 9. Both 7 and 9 are fewer than 10.",
  trap:"Check every row, not just the first one you read."},
 {id:"M13",dom:5,bench:"MA.2.M.1.1",d:3,q:"How long is the leaf?",fig:{t:"ruler",from:3,to:11,u:"cm",obj:"leaf"},
- ch:["8 cm","11 cm","14 cm","3 cm"],a:"8 cm",chk:["diff",3,11,"cm"],
+ ch:["6 cm","7 cm","8 cm","9 cm"],a:"8 cm",chk:["diff",3,11,"cm"],
  why:"It does not start at 0. From 3 to 11 is 11 - 3 = 8 cm.",
- trap:"11 is the number it ends on. Always take away where it started."},
+ trap:"9 cm is what you get if you counted the marks instead of the spaces. 7 cm is what you get if you lost one at the start. 6 cm is what you get if you counted short by two."},
 {id:"M14",dom:5,bench:"MA.2.M.1.3",d:4,q:"A shelf is 54 inches long. Sam cuts 17 inches off, then another 9 inches. How long is it now?",
  fig:null,ch:["26 inches","28 inches","37 inches","46 inches"],a:"28 inches",chk:["val",28,"inches"],
  why:"Step 1: 54 - 17 = 37. Step 2: 37 - 9 = 28 inches.",
@@ -1664,13 +1664,13 @@ const ITEMS = [
  why:"2 + 2 + 2 + 2 = 8 units. Touch each dot as you count.",
  trap:"4 is how many squares are inside, not the walk around the edge."},
 {id:"P16",dom:4,bench:"MA.2.GR.2.2",d:5,q:"A flower bed is a pentagon with sides 14, 9, 22, 11 and 17 meters. What is the perimeter?",
- fig:{t:"pent",s:[14,9,22,11,17],u:"m"},ch:["63 m","73 m","83 m","56 m"],a:"73 m",chk:["sum",[14,9,22,11,17],"m"],
+ fig:{t:"pent",s:[14,9,22,11,17],u:"m"},ch:["64 m","73 m","82 m","84 m"],a:"73 m",chk:["sum",[14,9,22,11,17],"m"],
  why:"Add them one at a time: 14 + 9 = 23, + 22 = 45, + 11 = 56, + 17 = 73 m.",
- trap:"Five two-digit numbers is a lot to hold. Write each running total down."},
+ trap:"82 m is what you get if you counted the side of 9 twice. 84 m is what you get if you counted the side of 11 twice. 64 m is what you get if you left out the side of 9."},
 {id:"P17",dom:4,bench:"MA.2.GR.2.2",d:3,q:"Find the perimeter of the square.",fig:{t:"sq",s:7,u:"cm"},
- ch:["14 cm","21 cm","28 cm","49 cm"],a:"28 cm",chk:["sum",[7,7,7,7],"cm"],
+ ch:["14 cm","21 cm","28 cm","35 cm"],a:"28 cm",chk:["sum",[7,7,7,7],"cm"],
  why:"A square has 4 equal sides: 7 + 7 + 7 + 7 = 28 cm.",
- trap:"49 is 7 sevens added up. That is the space inside, not the walk around."}
+ trap:"35 cm is what you get if you counted the side of 7 twice. 21 cm is what you get if you left out the side of 7. 14 cm is what you get if you added only the last sides."}
 ];
 
 
@@ -1742,7 +1742,7 @@ function fRuler(from,to,u,obj){
   b+=T((x1+x2)/2,33,obj,{s:13.5,f:"var(--on-accent)"});
   b+=`<line x1="${x1}" y1="16" x2="${x1}" y2="46" stroke="${A}" stroke-width="1.4" stroke-dasharray="3 3"/>`;
   b+=`<line x1="${x2}" y1="16" x2="${x2}" y2="46" stroke="${A}" stroke-width="1.4" stroke-dasharray="3 3"/>`;
-  return svg(W+pad*2,106,b,`a ${obj} on a ruler from ${from} to ${to} ${u}`);
+  return svg(W+pad*2,106,b,`a ${obj} lying along a ruler marked in ${u}`);
 }
 function fClockFace(cx,cy,r,h,m,sc=1){
   let b=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${SF}" stroke="${IK}" stroke-width="${2.6*sc}"/>`;
@@ -1766,11 +1766,11 @@ function fCoins(list){const per=list.length<=6?Math.ceil(list.length/2):5,rows=M
     b+=`<circle cx="${x}" cy="${y}" r="${r+4}" fill="${col}" stroke="${IK}" stroke-width="1.8"/>`;
     b+=`<circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="${IK}" stroke-width="0.9" opacity="0.45"/>`;
     b+=`<circle cx="${x}" cy="${y-2}" r="${r*0.42}" fill="${IK}" opacity="0.16"/>`;});
-  return svg(per*62+16,rows*66+16,b,`a group of ${list.length} coins of different sizes`);}
+  return svg(per*62+16,rows*66+16,b,"a group of coins of different sizes");}
 function fArray(r,c){let b="";const s=30,pad=18;
   for(let i=0;i<r;i++)for(let j=0;j<c;j++)b+=`<circle cx="${pad+j*s+s/2}" cy="${pad+i*s+s/2}" r="10" fill="${A}" stroke="${IK}" stroke-width="1.4"/>`;
   b+=`<rect x="${pad-4}" y="${pad-4}" width="${c*s+8}" height="${r*s+8}" fill="none" stroke="${I3}" stroke-width="1.2" stroke-dasharray="4 4" rx="6"/>`;
-  return svg(c*s+pad*2,r*s+pad*2,b,`array of ${r} rows by ${c} columns of dots`);}
+  return svg(c*s+pad*2,r*s+pad*2,b,"an array of dots in equal rows");}
 function fNumline(min,max,mark){const pad=34,W=340,y=54;
   let b=`<line x1="${pad}" y1="${y}" x2="${pad+W}" y2="${y}" stroke="${IK}" stroke-width="2.4"/>`;
   b+=`<path d="M${pad+W} ${y} l-9 -5 v10 z" fill="${IK}"/><path d="M${pad} ${y} l9 -5 v10 z" fill="${IK}"/>`;
@@ -1891,7 +1891,7 @@ function fTwoBars(a,b_,u){let g="";[["A",a],["B",b_]].forEach(([L,v],i)=>{const 
 function fClips(n){let g=`<rect x="20" y="20" width="${n*40}" height="26" rx="6" fill="${A}" stroke="${IK}" stroke-width="1.6"/>`+T(20+n*40/2,38,"marker",{s:12,f:"#fff"});
   for(let i=0;i<n;i++){const x=20+i*40;g+=`<rect x="${x}" y="56" width="40" height="18" rx="9" fill="none" stroke="#8E949C" stroke-width="3"/><rect x="${x+6}" y="60" width="28" height="10" rx="5" fill="none" stroke="#8E949C" stroke-width="2"/>`;}
   g+=T(20+n*40/2,94,"paper clips, no gaps",{s:10.5,m:1,f:I3,w:500});
-  return svg(n*40+40,106,g,`a marker measured against ${n} paper clips`);}
+  return svg(n*40+40,106,g,"a marker laid against a row of paper clips");}
 function fBase10Add(a,b_){return `<div style="display:flex;flex-direction:column;gap:6px;align-items:center">${fBase10(0,a[0],a[1])}<div style="font:600 20px var(--ff-mono);color:var(--ink3)">+</div>${fBase10(0,b_[0],b_[1])}</div>`;}
 
 function renderFig(f){ if(!f) return "";
@@ -1940,12 +1940,44 @@ function renderFig(f){ if(!f) return "";
 const RI=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 const PICK=a=>a[Math.floor(Math.random()*a.length)];
 /* build a 4-choice item: correct plus three distinct plausible wrongs */
+/* Distractors written as "the key plus or minus the usual slip" put the key in
+   the middle of the four values nearly every time, and a child who cannot do
+   the maths then beats chance just by never picking the extremes. Where the
+   options are numeric, choose which slips to show so the key lands at a rank
+   drawn uniformly. The mirror of a slip is that same slip the other way
+   (forgot to carry / carried twice), so it stays a real error, not a random
+   number. */
+const UNIT_SPLIT=/^(-?\d+(?:\.\d+)?)(\s*)([^\d\s].*)?$/;
+function wearLike(v,model){
+  const m=UNIT_SPLIT.exec(String(model).trim());
+  if(!m||!m[3])return String(v);
+  return `${v}${m[2]}${m[3]}`;}
+function rankBalance(a,wrongs){
+  const cut=v=>{const m=UNIT_SPLIT.exec(String(v).trim());
+    return m?[parseFloat(m[1]),(m[2]||"")+(m[3]||"")]:null;};
+  const ka=cut(a); if(!ka)return null;
+  const K=ka[0], suf=ka[1];
+  const parts=wrongs.map(cut);
+  if(parts.some(p=>!p||p[1]!==suf))return null;      // mixed units: leave it alone
+  const pool=new Set();
+  parts.forEach(([v])=>{if(v!==K&&v>0)pool.add(v);});
+  parts.forEach(([v])=>{const m=2*K-v; if(m>0&&m!==K&&Number.isInteger(m))pool.add(m);});
+  const all=[...pool], near=(x,y)=>Math.abs(x-K)-Math.abs(y-K);
+  const below=all.filter(v=>v<K).sort(near), above=all.filter(v=>v>K).sort(near);
+  for(const target of [1,2,3,4].sort(()=>Math.random()-0.5)){
+    const wantAbove=target-1, wantBelow=3-wantAbove;
+    if(above.length>=wantAbove&&below.length>=wantBelow)
+      return above.slice(0,wantAbove).concat(below.slice(0,wantBelow)).map(v=>wearLike(v,a));
+  }
+  return null;}
 function mkItem(o,wrongs,unit){
+  const bal=rankBalance(o.a,wrongs); if(bal)wrongs=bal;
   const seen=new Set([String(o.a)]), ch=[String(o.a)];
   for(const w of wrongs){const s=String(w);
     if(!seen.has(s)&&!/^-/.test(s)&&s!=="0 "+(unit||"")){seen.add(s);ch.push(s);} if(ch.length===4)break;}
   let g=1; while(ch.length<4){const n=(typeof o.a==="string"&&/^\d/.test(o.a))?parseInt(o.a)+g:null;
-    const s=n!==null?n+(unit?" "+unit:""):"none of these"+("!".repeat(g));
+    /* padding must carry the key's unit, or "3¢" next to a bare "4" is a tell */
+    const s=n!==null?wearLike(n,o.a):"none of these"+("!".repeat(g));
     if(!seen.has(s)){seen.add(s);ch.push(s);} g++; if(g>40)break;}
   const out=ch.slice(0,4);
   for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]];}
@@ -2011,7 +2043,42 @@ const GEN={
 
 /* ---- MA.2.AR  the equal sign, unknowns in any position, two-step problems ---- */
 1(d){
-  const k=d<=2?PICK(["unk","tf"]):PICK(["unk","tf","two"]);
+  const k=d<=2?PICK(["unk","tf","eo"]):PICK(["unk","tf","two","eo"]);
+  /* MA.2.AR.3.1 even and odd. Sealing the mock forms took the only three
+     authored items for this benchmark out of practice, so it needs a
+     generator of its own rather than a hole in Day 3. */
+  if(k==="eo"){
+    const v=PICK(["which-odd","which-even","is-it"]);
+    if(v==="is-it"){
+      const n=RI(6,40), even=n%2===0, h=Math.floor(n/2);
+      return mkItem({dom:1,bench:"MA.2.AR.3.1",d,q:`Is ${n} an even number or an odd number?`,fig:null,
+        a:even?`Even, because ${h} + ${h} = ${n}`:`Odd, because ${h} + ${h} is only ${h*2}`,
+        why:even?`${n} splits into two equal groups of ${h}, with none left over, so it is even.`
+                :`${n} splits into ${h} and ${h} with one left over, so it is odd.`,
+        trap:"How big the number is, and how many digits it has, tell you nothing. Only the two equal groups do."},
+        /* two options say Even and two say Odd, so the word alone cannot
+           answer it — he has to read the reason, which is the skill */
+        [`${even?"Odd":"Even"}, because ${h} + ${h} = ${even?n:n-1}`,
+         `${even?"Even":"Odd"}, because ${n} is ${n>20?"bigger":"smaller"} than 20`,
+         `${even?"Odd":"Even"}, because ${n} has ${String(n).length===2?"two":"one"} digit${String(n).length===2?"s":""}`]);}
+    /* one number differs in parity from the other three; all four are the
+       same size and shape so only the parity can single it out */
+    const odd=v==="which-odd";
+    const base=RI(3,22)*2;                       // an even anchor
+    const pool=new Set(); let key=odd?base+1:base;
+    pool.add(key);
+    let g=1; while(pool.size<4&&g<60){const c=base+(odd?2*g*(g%2?1:-1):2*g*(g%2?1:-1)+(odd?0:0));
+      if(c>1&&c!==key&&(odd?c%2===0:c%2===1))pool.add(c); g++;}
+    const others=[...pool].filter(x=>x!==key).slice(0,3);
+    while(others.length<3){const c=key+ (others.length+1)*2 + (odd?1:-1)*0;
+      if(!others.includes(c)&&c!==key&&(odd?c%2===0:c%2===1))others.push(c); else others.push(c+1);}
+    return mkItem({dom:1,bench:"MA.2.AR.3.1",d,
+      q:odd?"Which number is *odd*?":"Which number can be made from *two equal groups* with none left over?",
+      fig:null,a:String(key),
+      why:odd?`${key} splits into ${Math.floor(key/2)} and ${Math.floor(key/2)} with *one* left over, so it is odd.`
+             :`${key} splits into ${key/2} and ${key/2} with nothing left over, so it is even.`,
+      trap:odd?"All the others split evenly in half.":"The others all leave one over when you split them in two."},
+      others.map(String));}
   if(k==="tf"){ const a=RI(10,60), b=RI(5,40); const shift=PICK([1,2,3]);
     const t=Math.random()<0.5;
     const c=t?a-shift:a-shift, e=t?b+shift:b+shift+RI(1,4);
@@ -2075,7 +2142,17 @@ const GEN={
     return mkItem({dom:8,bench:"MA.2.NSO.1.1",d,q:`Which shows ${n} in expanded form?`,fig:null,a,
       why:`${hh} hundreds, ${tt} tens, ${oo} ones.${tt===0?" There are no tens, so you write nothing for them.":""}`,
       trap:"Watch the zero. There is nothing to add for a place that is empty."},
-      [`${hh*100} + ${tt*10} + ${oo}`,`${hh} + ${tt} + ${oo}`,`${hh*100} + ${tt} + ${oo}`,`${hh*10} + ${tt*10} + ${oo}`]);}
+      tt===0
+        /* a zero in the tens shortens the key to two terms, so every distractor
+           must be two terms too or the shape of the answer gives it away */
+        ? [`${hh*10} + ${oo}`,       // hundreds digit read as tens
+           `${hh*100} + ${oo*10}`,   // ones digit written in the tens place
+           `${hh} + ${oo}`,          // digits with no place value at all
+           `${hh*100} + ${oo===9?8:oo+1}`]
+        : [`${hh*100} + ${tt*10} + ${oo}`.replace(String(hh*100),String(hh*10)),
+           `${hh} + ${tt} + ${oo}`,
+           `${hh*100} + ${tt} + ${oo}`,
+           `${hh*10} + ${tt*10} + ${oo}`]);}
   if(k==="cmp"){ let a=RI(100,999),b=RI(100,999); if(a===b)b++;
     return mkItem({dom:8,bench:"MA.2.NSO.1.3",d,q:`Compare:    ${a}  ▢  ${b}`,fig:null,a:a<b?"<":">",
       why:`${a} is ${a<b?"less than":"greater than"} ${b}. Check the hundreds first, then the tens, then the ones.`,
@@ -2086,8 +2163,11 @@ const GEN={
       why:n%10===5?`${n} is exactly halfway, and the rule is to round up, so ${r}.`:`${n} is closer to ${r}, so it rounds to ${r}.`,
       trap:"Check which ten it is closer to. Halfway always rounds up."},
       [String(Math.floor(n/10)*10),String(Math.ceil(n/10)*10),String(n)]);}
-  const n=RI(120,880), more=Math.random()<0.5;
-  const amt=PICK([10,100]); const a=more?n+amt:n-amt;
+  const more=Math.random()<0.5, amt=PICK([10,100]);
+  /* 165 - 100 = 65 made the key the only two-digit option, which answered it
+     without any place-value thinking; keep every option three digits */
+  const n=(!more&&amt===100)?RI(200,880):RI(120,880);
+  const a=more?n+amt:n-amt;
   return mkItem({dom:8,bench:"MA.2.NSO.2.2",d,q:`What number is ${amt===10?"ten":"one hundred"} ${more?"more":"less"} than ${n}?`,
     fig:null,a:String(a),
     why:`${amt===10?"Ten":"One hundred"} ${more?"more":"less"} changes only the ${amt===10?"tens":"hundreds"} digit. ${n} becomes ${a}.`,
@@ -2545,12 +2625,24 @@ function buildDrill(dayN){
     const c=pool.filter(i=>!used.has(i.id)); if(!c.length)return;
     let best=c[0],bd=9; for(const i of shuffle(c)){const dd=Math.abs(i.d-t);if(dd<bd){bd=dd;best=i;}}
     used.add(best.id); out.push(best);});
-  /* sealing the mocks thins the authored pool, so top the day up with
-     generated items on the same day's domains rather than repeating one */
+  /* Sealing the mocks thins the authored pool and can leave a benchmark with
+     no item at all, so fill those gaps from the generators first, then top up. */
+  const need=[...new Set(ITEMS.filter(i=>day.dom.includes(i.dom)).map(i=>i.bench))];
+  const have=()=>new Set(out.concat(warm).map(i=>i.bench));
+  need.filter(b=>!have().has(b)).forEach(b=>{
+    for(let tries=0;tries<400;tries++){
+      const g=genItem(day.dom[tries%day.dom.length],1+(tries%5));
+      if(g&&g.bench===b&&!used.has(g.id)){used.add(g.id);out.push(g);return;}}});
   let guard=0;
   while(warm.length+out.length<13&&guard++<200){
     const g=genItem(day.dom[Math.floor(Math.random()*day.dom.length)],1+(out.length%5));
     if(g&&!used.has(g.id)){used.add(g.id);out.push(g);}}
+  /* trimming to 13 must not drop a benchmark that nothing else covers */
+  if(warm.length+out.length>13){
+    const keep=new Set(), trimmed=[];
+    out.forEach(i=>{if(!keep.has(i.bench)){keep.add(i.bench);trimmed.push(i);}});
+    out.forEach(i=>{if(!trimmed.includes(i))trimmed.push(i);});
+    out.length=0; out.push(...trimmed.slice(0,13-warm.length));}
   return warm.concat(out.sort((a,b)=>a.d-b.d)).slice(0,13);}
 
 /* The three mock forms are the measuring instrument. If practice serves the
