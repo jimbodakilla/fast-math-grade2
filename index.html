@@ -426,6 +426,9 @@ body.reviewmode #review{display:block}
 .counter button{font-family:var(--ff-ui);font-size:14px;font-weight:600;border:1px solid var(--line);
   background:var(--surface);color:var(--ink2);border-radius:8px;padding:9px 14px;cursor:pointer;min-height:44px}
 .counter button:hover{background:var(--surface2)}
+/* the "do it yourself" state of the counter: present, but not a readout */
+.counter.quiet{border-style:dashed;border-color:var(--line);color:var(--ink2);font-size:14px}
+.counter.quiet small{font-size:13px;color:var(--ink2);max-width:34ch;line-height:1.4}
 svg .seg,svg .coin,svg .bar,svg .fivemark{cursor:pointer}
 svg .seg{transition:r .1s}
 svg .seg[fill="transparent"]{pointer-events:all}
@@ -2140,8 +2143,16 @@ function figOptions(f,view,opts){
     return `<button class="${cls}" ${opts.disabled?"disabled":""} onclick="answerValue('${val}')">
       ${c}<span class="lbl">${val}${mark}</span></button>`;}).join("")}</div>`;}
 
-function interactiveFig(it){
+/* The tap tools mark what he has already counted. They must never do the
+   counting for him: on a coins item the running total IS the answer, on a
+   perimeter item the segment count IS the answer, and on a bar-graph item
+   the bar value IS the answer. So the numbers stay hidden until he has
+   committed a choice, and in exam mode the figure is plain paper. */
+function interactiveFig(it,o){
+  o=o||{};
   const f=it.fig, kind=TAPPABLE[f.t];
+  if(o.exam) return `<div class="figwrap" id="figwrap">${renderFig(f)}</div>`;
+  const showNum=!!o.answered;
   let html=renderFig(f), note="", counter="";
   if(kind==="segments"){
     html=html.replace(/<circle cx="([\d.]+)" cy="([\d.]+)" r="3" fill="var\(--accent\)"\/>/g,
@@ -2150,27 +2161,40 @@ function interactiveFig(it){
         const rHit=Math.min(12.5,24/(Math.min(440,Math.max(vb,330))/vb));
         return `<circle class="seg" data-x="${x}" data-y="${y}" cx="${x}" cy="${y}" r="${rHit.toFixed(1)}" fill="transparent"/>`+
                `<circle class="seg" data-x="${x}" data-y="${y}" cx="${x}" cy="${y}" r="7" fill="none" stroke="var(--accent)" stroke-width="2.4"/>`;});
-    note=`<span class="tapnote">tap each dot as you count around the edge</span>`;
-    counter=`<span class="counter"><span id="tapN">0</span><small>segments counted</small>
-      <button onclick="resetTaps()">start again</button></span>`;
+    note=`<span class="tapnote">tap each dot as you count around the edge, so you do not lose your place</span>`;
+    counter=showNum
+      ? `<span class="counter"><span id="tapN">0</span><small>segments you tapped</small>
+          <button onclick="resetTaps()">start again</button></span>`
+      : `<span class="counter quiet"><small>count them yourself — the number shows once you answer</small>
+          <button onclick="resetTaps()">start again</button></span>`;
   } else if(kind==="coins"){
     const vals={p:1,n:5,d:10,q:25};
     let i=0; html=html.replace(/<circle cx="([\d.]+)" cy="([\d.]+)" r="([\d.]+)" fill="(#[0-9A-Fa-f]{6})" stroke/g,
       (m,x,y,r,col)=>{const v=vals[f.c[i++]];return `<circle class="coin" data-v="${v}" cx="${x}" cy="${y}" r="${r}" fill="${col}" stroke`;});
-    note=`<span class="tapnote">tap the coins one at a time, biggest first</span>`;
-    counter=`<span class="counter"><span id="tapN">0</span><small>¢ so far</small>
-      <button onclick="resetTaps()">start again</button></span>`;
+    note=`<span class="tapnote">tap the coins one at a time, biggest first, to keep track of which you have counted</span>`;
+    counter=showNum
+      ? `<span class="counter"><span id="tapN">0</span><small>¢ in the coins you tapped</small>
+          <button onclick="resetTaps()">start again</button></span>`
+      : `<span class="counter quiet"><small>add them up yourself — the total shows once you answer</small>
+          <button onclick="resetTaps()">start again</button></span>`;
   } else if(kind==="bars"){
     let i=0; html=html.replace(/<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" fill="var\(--accent\)"/g,
       (m,x,y,w,h)=>`<rect class="bar" data-v="${f.v[i]}" data-l="${f.lbl[i++]}" x="${x}" y="${y}" width="${w}" height="${h}" fill="var(--accent)"`);
-    note=`<span class="tapnote">tap a bar to read its number</span>`;
-    counter=`<span class="counter" id="barOut"><small>tap a bar</small></span>`;
+    note=`<span class="tapnote">tap a bar to mark the one you are reading</span>`;
+    counter=showNum
+      ? `<span class="counter" id="barOut"><small>tap a bar</small></span>`
+      : `<span class="counter quiet"><small>read the bar against the scale — the number shows once you answer</small></span>`;
   } else if(kind==="fives"){
     let marks="";
     for(let k=0;k<12;k++){const a=k*30*Math.PI/180;
-      marks+=`<circle class="fivemark" data-m="${k*5}" cx="${105+Math.sin(a)*74}" cy="${105-Math.cos(a)*74}" r="13" fill="transparent"/>`;}
-    html=html.replace("</svg>",marks+`<text class="readout" id="fiveOut" x="105" y="186" text-anchor="middle" ${MONO} font-size="13" font-weight="600" fill="var(--accent)"></text></svg>`);
-    note=`<span class="tapnote">tap round the edge to count the minutes by fives</span>`;
+      marks+=`<circle class="fivemark" data-m="${k*5}" cx="${105+Math.sin(a)*74}" cy="${105-Math.cos(a)*74}" r="13" fill="transparent"/>`
+            +`<circle class="fivedot" data-m="${k*5}" cx="${105+Math.sin(a)*74}" cy="${105-Math.cos(a)*74}" r="0" fill="var(--accent)"/>`;}
+    html=html.replace("</svg>",marks+(showNum
+      ? `<text class="readout" id="fiveOut" x="105" y="186" text-anchor="middle" ${MONO} font-size="13" font-weight="600" fill="var(--accent)"></text>`
+      : "")+"</svg>");
+    note=showNum
+      ? `<span class="tapnote">tap round the edge to count the minutes by fives</span>`
+      : `<span class="tapnote">tap round the edge as you count by fives — the minutes show once you answer</span>`;
   }
   return `<div class="figwrap" id="figwrap">${html}${note}${counter}</div>`;}
 
@@ -2178,6 +2202,8 @@ let tapState={n:0,set:new Set()};
 function resetTaps(){tapState={n:0,set:new Set()};
   document.querySelectorAll("#figwrap .seg").forEach(e=>{if(e.getAttribute("fill")!=="transparent"){e.setAttribute("fill","none");e.setAttribute("r","7");}});
   document.querySelectorAll("#figwrap .coin").forEach(e=>e.setAttribute("stroke-width","1.8"));
+  document.querySelectorAll("#figwrap .fivedot").forEach(e=>e.setAttribute("r","0"));
+  document.querySelectorAll("#figwrap .bar").forEach(e=>{e.setAttribute("stroke","none");e.setAttribute("stroke-width","0");});
   const t=$("tapN"); if(t)t.textContent="0";}
 function onFigTap(ev){
   const el=ev.target.closest(".seg,.coin,.bar,.fivemark"); if(!el)return;
@@ -2190,15 +2216,19 @@ function onFigTap(ev){
       twins.forEach(e=>{e.setAttribute("fill","none");e.setAttribute("r","7");});
     } else { tapState.set.add(k); tapState.n++;
       twins.forEach(e=>{e.setAttribute("fill","var(--accent)");e.setAttribute("r","10");}); }
-    $("tapN").textContent=tapState.n;
+    const t=$("tapN"); if(t)t.textContent=tapState.n;
   } else if(el.classList.contains("coin")){
     const k=el.getAttribute("cx")+","+el.getAttribute("cy");
     if(tapState.set.has(k)){tapState.set.delete(k);tapState.n-=+el.dataset.v;el.setAttribute("stroke-width","1.8");}
     else{tapState.set.add(k);tapState.n+=+el.dataset.v;el.setAttribute("stroke-width","4");}
-    $("tapN").textContent=tapState.n;
+    const t=$("tapN"); if(t)t.textContent=tapState.n;
   } else if(el.classList.contains("bar")){
+    document.querySelectorAll("#figwrap .bar").forEach(b=>{b.setAttribute("stroke","none");b.setAttribute("stroke-width","0");});
+    el.setAttribute("stroke","var(--ink)"); el.setAttribute("stroke-width","2.5");
     const o=$("barOut"); if(o)o.innerHTML=`${el.dataset.v}<small>${esc(el.dataset.l)}</small>`;
   } else if(el.classList.contains("fivemark")){
+    document.querySelectorAll(`#figwrap .fivedot`).forEach(d=>d.setAttribute("r",
+      d.dataset.m===el.dataset.m?"5":"0"));
     const o=$("fiveOut"); if(o)o.textContent=el.dataset.m+" minutes";}
 }
 document.addEventListener("click",onFigTap);
@@ -2503,9 +2533,10 @@ function buildDrill(dayN){
   const day=DAYS.find(x=>x.n===dayN);
   // pick from his strongest domains relative to his own profile, not a fixed cutoff
   const rank=[...PM1.keys()].sort((a,b)=>PM1[b]-PM1[a]).slice(0,3);
-  const strong=ITEMS.filter(i=>rank.includes(i.dom)&&i.d<=2);
+  const FREE=practiceItems();
+  const strong=FREE.filter(i=>rank.includes(i.dom)&&i.d<=2);
   const warm=shuffle(strong).slice(0,3);
-  const pool=ITEMS.filter(i=>day.dom.includes(i.dom));
+  const pool=FREE.filter(i=>day.dom.includes(i.dom));
   const benches=[...new Set(pool.map(i=>i.bench))];
   const used=new Set(),out=[];
   benches.forEach(b=>{const c=shuffle(pool.filter(i=>i.bench===b&&i.d<=3));
@@ -2514,7 +2545,22 @@ function buildDrill(dayN){
     const c=pool.filter(i=>!used.has(i.id)); if(!c.length)return;
     let best=c[0],bd=9; for(const i of shuffle(c)){const dd=Math.abs(i.d-t);if(dd<bd){bd=dd;best=i;}}
     used.add(best.id); out.push(best);});
+  /* sealing the mocks thins the authored pool, so top the day up with
+     generated items on the same day's domains rather than repeating one */
+  let guard=0;
+  while(warm.length+out.length<13&&guard++<200){
+    const g=genItem(day.dom[Math.floor(Math.random()*day.dom.length)],1+(out.length%5));
+    if(g&&!used.has(g.id)){used.add(g.id);out.push(g);}}
   return warm.concat(out.sort((a,b)=>a.d-b.d)).slice(0,13);}
+
+/* The three mock forms are the measuring instrument. If practice serves the
+   same questions, a mock stops measuring what he knows and starts measuring
+   what he remembers seeing on Tuesday. These 102 items are sealed: drills and
+   endless practice draw from the other 47 authored items and from the
+   generators, which never repeat. Reviewing his OWN flagged or missed mock
+   questions is deliberately still allowed — that is reviewing his paper. */
+const EXAM_ONLY=new Set([].concat(...buildForms().map(f=>f.map(i=>i.id))));
+const practiceItems=()=>ITEMS.filter(i=>!EXAM_ONLY.has(i.id));
 
 function startEndless(n,hard,mins){
   const day=DAYS.find(x=>x.n===n);
@@ -2692,12 +2738,14 @@ function curItem(){
   if(r.endless){
     if(!r.items[r.i]){
       const d=Math.round(Math.max(r.hard?3:1,Math.min(5,r.theta)));
-      r.items[r.i]=genItem(r.dom,d)||ITEMS.filter(x=>x.dom===r.dom)[0];}
+      r.items[r.i]=genItem(r.dom,d)||practiceItems().filter(x=>x.dom===r.dom)[0];}
     return r.items[r.i];}
   if(r.mode==="drill")return r.items[r.i];
   if(!r.exam)return r.form[r.i];
   if(r.form[r.i])return r.form[r.i];                    // already served (exam never revisits, but be safe)
-  const it=pickAdaptive(ITEMS.filter(x=>x.dom===r.slots[r.i]),r.theta,r.used);
+  /* measure with the reserved items only — the rest are what he practised on */
+  const it=pickAdaptive(ITEMS.filter(x=>x.dom===r.slots[r.i]&&EXAM_ONLY.has(x.id)),r.theta,r.used)
+        || pickAdaptive(ITEMS.filter(x=>x.dom===r.slots[r.i]),r.theta,r.used);
   if(it){r.used.add(it.id);r.form[r.i]=it;}
   return it;}
 function total(){const r=state.run;return r.endless?Infinity:(r.mode==="drill"?r.items.length:34);}
@@ -2737,7 +2785,7 @@ function showQ(){
          </div>`
       : `<button class="speak" onclick="speakItem()">🔊 Read it to me</button>`}
     <div id="ttsNote" hidden class="testnote" style="margin:10px 0 0">This device will not read out loud. Ask a grown-up to read the question to you. That is allowed and it is not cheating.</div>
-    ${it.fig&&!figIsPick(it.fig)?`<div class="figbox">${interactiveFig(it)}</div>`:""}
+    ${it.fig&&!figIsPick(it.fig)?`<div class="figbox">${interactiveFig(it,{exam:r.mode==="mock"&&r.exam,answered:answered})}</div>`:""}
     ${figIsPick(it.fig)
       ? figOptions(it.fig,view,{picked:prev,answer:it.a,marked:showMark,disabled:locked||showMark})
       : `<div class="opts">${view.map((c,k)=>{
